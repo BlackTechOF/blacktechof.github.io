@@ -1,0 +1,16 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Aricanduva I",
+        "endereco": "Rua Professora Alzira Oliveira Gilliolli"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-46.51457426020385, -23.580681846215608]
+      }
+    }
+  ]
+}
