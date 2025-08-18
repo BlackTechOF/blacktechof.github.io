@@ -4,12 +4,56 @@
     {
       "type": "Feature",
       "properties": {
-        "nome": "Aricanduva I",
-        "endereco": "Rua Professora Alzira Oliveira Gilliolli"
+        "nome": "Aricanduva ",
+        "endereco": "Rua Professor Alzira de Oliveira Gilioli, nº 400"
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [-46.51457426020385, -23.580681846215608]
+        "coordinates": [-46.5144248608018, -23.580749870566000]
+      }
+    },
+      {
+      "type": "Feature",
+      "properties": {
+        "nome": "Viaduto Engenheiro Alberto Badra",
+        "endereco": "Avenida Aricanduva, nº 200"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-46.54740230463430, -23.53711055292010]
+      }
+    },
+         {
+      "type": "Feature",
+      "properties": {
+        "nome": "Astarte",
+        "endereco": "Rua Astarte, nº 500"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-46.525069904633900, -23.549926491042700]
+      }
+    },
+     {
+      "type": "Feature",
+      "properties": {
+        "nome": "Nova York",
+        "endereco": "Rua Amélia Vanso Magnoli, nº 480"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-46.508714605383500, -23.5875772340814]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Jardim Maria do Carmo",
+        "endereco": "Rua Amélia Vanso Magnoli, nº 480"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-46.508714605383500, -23.5875772340814]
       }
     }
   ]

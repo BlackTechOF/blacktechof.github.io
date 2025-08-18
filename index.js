@@ -4,7 +4,7 @@ if ("geolocation" in navigator) {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
 
-      const map = L.map('map').setView([latitude, longitude], 12);
+      const map = L.map('map').setView([latitude, longitude], 11);
 
       console.log(`Latitude: ${latitude}`)
       console.log(`Longitude: ${longitude}`)
@@ -16,10 +16,20 @@ if ("geolocation" in navigator) {
       L.marker([latitude, longitude]).addTo(map)
         .bindPopup("📍 Você está aqui!").openPopup();
 
+         const ecoIcon = L.icon({
+        iconUrl: 'imagens/Tagecoponto.png', 
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -40]
+      });
+
       fetch('ecopontos.geojson')
         .then(response => response.json())
         .then(data => {
           L.geoJSON(data, {
+            pointToLayer: (feature, latlng) => {
+              return L.marker(latlng, { icon: ecoIcon });
+            },
             onEachFeature: (feature, layer) => {
               if (feature.properties && feature.properties.nome) {
                 layer.bindPopup(
