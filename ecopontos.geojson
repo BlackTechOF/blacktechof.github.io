@@ -1400,6 +1400,20 @@
           -23.6052668209214
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "SReynaldo José",
+        "endereco": "Rua Silvestro Silvestre, nº 400"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.516080517681300,
+          -23.607312831480000
+        ]
+      }
     }
   ]
 }
