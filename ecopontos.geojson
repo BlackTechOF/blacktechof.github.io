@@ -55,6 +55,83 @@
         "type": "Point",
         "coordinates": [-46.508714605383500, -23.5875772340814]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Jardim Jaqueline",
+        "endereco": "Rua Walter Brito Belletti"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-46.754943440889100, -23.589278470951000]
+      }
+    },
+     {
+      "type": "Feature",
+      "properties": {
+        "nome": "Politécnica",
+        "endereco": "Rua Paulino Baptista Conti, nº 2"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-46.76492478901040, -23.575890148758800]
+      }
+    },
+     {
+      "type": "Feature",
+      "properties": {
+        "nome": "Giovani Gronchi",
+        "endereco": "Avenida Giovani Gronchi, nº 3413"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-4672666113869160, -23609967384716300]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Santo Dias",
+        "endereco": "ATravessa Rosifloras, nº 301"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-46.77630537060630, -23.663796499330400]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Parque Fernanda",
+        "endereco": "Avenida Doutor Salvador Rocco, nº 261"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-4679209007426190, -23.671792330270700]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Olinda",
+        "endereco": "Rua Nelson Brissac, nº 1235"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-46.75762735063390, -23.63416809018470]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vila das Belezas",
+        "endereco": "Rua Campo Novo do Sul, nº 500"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-46.74136475636910, -23.63796648767030]
+      }
     }
   ]
 }

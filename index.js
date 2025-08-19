@@ -17,7 +17,7 @@ if ("geolocation" in navigator) {
         .bindPopup("📍 Você está aqui!").openPopup();
 
          const ecoIcon = L.icon({
-        iconUrl: 'imagens/Tagecoponto.png', 
+        iconUrl: 'imagens/LocalReciclagem.png', 
         iconSize: [40, 40],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40]
