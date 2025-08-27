@@ -1,0 +1,140 @@
+@media screen and (max-width: 768px) {
+
+    body {
+margin: 0;
+    }
+
+    .logo {
+  background: black;
+  display: flex;
+  position: fixed;
+  width: 100%;
+  z-index: 99;
+}
+
+.logo img {
+  width: 20%;
+}
+
+#imgLogo {
+  border: solid white 3px;
+}
+
+.logo nav {
+  display: flex;
+  gap: 7px;
+  margin-top: 4.5%;
+  margin-left: 5%;
+}
+
+.logo nav img {
+  width: 48%;
+}
+
+ #map { 
+  height: 105vh; 
+  width: 100%; 
+  z-index: 98;
+}
+
+#enderecoDigitado {
+  position: fixed;
+  margin-top: -29%;
+  display: flex;
+  margin-left: 5%;
+  gap: 10px;
+  z-index: 100;
+  width: 100%; 
+  align-items: stretch;
+}
+
+#ativarInput {
+  height: 50px;
+  width: 50px;
+  border-radius: 30px;
+  background: white;
+  border: solid black;
+}
+
+#ativarInput img {
+  width: 100%;
+}
+
+#inputEcoPonto {
+  border: solid black;
+  border-radius: 30px;
+  height: 35px;
+  margin-top: 2%;
+  width: 70%;
+  display: none;
+}
+
+@keyframes ativaInput {
+   from {
+    width: 0%;
+    opacity: 0.5;
+  }
+  to {
+    width: 70%;
+    opacity: 1;
+  }
+}
+
+@keyframes desativaInput {
+from {
+    width: 70%;
+    opacity: 1;
+  }
+  to {
+    width: 0%;
+    opacity: 0.5;
+  }
+}
+
+.inputEcoPontoAtiva {
+  animation: ativaInput 0.8s ease-in-out forwards;
+}
+
+.inputEcoPontoDesativa {
+  animation: desativaInput 0.8s ease-in-out forwards;
+}
+
+.leaflet-left {
+  margin-top: 19.8%;
+}
+
+.leaflet-touch .leaflet-control-layers,
+.leaflet-touch .leaflet-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  border: transparent;
+  margin-left: 50%;
+}
+
+.leaflet-touch .leaflet-bar a:first-child {
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  border-radius: 30px;
+  padding: 7.9px;
+  background: greenyellow;
+  border: solid black;
+  font-size: 35px;
+}
+
+.leaflet-touch .leaflet-bar a:last-child {
+  border-top-left-radius: 30px;
+  border-top-right-radius: 30px;
+  border-radius: 30px;
+  padding: 7.9px;
+  border: solid black;
+  font-size: 35px;
+}
+
+.leaflet-touch .leaflet-bar a:first-child,
+.leaflet-touch .leaflet-bar a:last-child {
+  background: rgb(37, 197, 37);
+  color: white;
+  font-weight: bold;
+}
+}
