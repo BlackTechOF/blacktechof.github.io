@@ -52,7 +52,7 @@ section h2:hover {
 }
 
 .logo img {
-  width: 15%;
+  width: 18%;
 }
 
 #imgLogo {
@@ -70,12 +70,12 @@ section h2:hover {
 .logo nav {
   display: flex;
   gap: 7px;
-  margin-top: 4.5%;
+  margin-top: 4.1%;
   margin-left: 5%;
 }
 
 .logo nav img {
-  width: 40%;
+  width: 49%;
 }
 
 section {
