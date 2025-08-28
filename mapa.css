@@ -5,7 +5,7 @@ margin: 0;
     }
 
     .logo {
-  background: black;
+  background: green;
   display: flex;
   position: fixed;
   width: 100%;
@@ -135,4 +135,5 @@ from {
   background: white;
   font-weight: bold;
 }
+
 }
