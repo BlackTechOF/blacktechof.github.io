@@ -39,7 +39,7 @@ margin: 0;
 
 #enderecoDigitado {
   position: fixed;
-  margin-top: -29%;
+  margin-top: -50%;
   display: flex;
   margin-left: 5%;
   gap: 10px;
