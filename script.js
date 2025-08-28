@@ -22,3 +22,31 @@ btnLupaMapa.addEventListener('click', function () {
     });
   }
 });
+
+document.getElementById('inputEcoPonto').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    const nomeBusca = this.value.trim().toLowerCase();
+
+
+    if (nomeBusca === '') {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+             
+      map.setView([latitude, longitude], 15);
+    })
+  }}
+
+    ecopontosLayer.eachLayer(function(layer) {
+      const nomeEcoponto = layer.feature.properties.nome.toLowerCase();
+      if (nomeEcoponto.includes(nomeBusca)) {
+        map.setView(layer.getLatLng(), 16);
+        layer.openPopup();
+      }
+    });
+  }
+});
+
+
