@@ -47,8 +47,8 @@ margin: 0;
 }
 
 #ativarInput {
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
   border-radius: 30px;
   background: white;
   border: solid black;
@@ -133,4 +133,5 @@ from {
   background: white;
   font-weight: bold;
 }
+
 }
