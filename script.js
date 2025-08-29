@@ -35,7 +35,7 @@ document.getElementById('inputEcoPonto').addEventListener('keydown', function(e)
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
              
-      map.setView([latitude, longitude], 13);
+      map.setView([latitude, longitude], 15);
     })
   }}
 
@@ -48,5 +48,6 @@ document.getElementById('inputEcoPonto').addEventListener('keydown', function(e)
     });
   }
 });
+
 
 
