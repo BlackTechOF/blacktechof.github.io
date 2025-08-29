@@ -5,7 +5,7 @@ margin: 0;
     }
 
     .logo {
-  background: black;
+  background: green;
   display: flex;
   position: fixed;
   width: 100%;
@@ -32,14 +32,14 @@ margin: 0;
 }
 
  #map { 
-  height: 105vh; 
+  height: 90vh; 
   width: 100%; 
   z-index: 98;
 }
 
 #enderecoDigitado {
   position: relative;
-  margin-top: -50%;
+  margin-top: -15%;
   display: flex;
   margin-left: 5%;
   gap: 10px;
