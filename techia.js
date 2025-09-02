@@ -31,7 +31,7 @@ async function sendMessage() {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
   try {
-    const response = await fetch("http://localhost:3000/chat", {
+    const response = await fetch("https://blacktechof-github-io.onrender.com/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: userMessage }),
@@ -63,3 +63,4 @@ async function sendMessage() {
 document.getElementById("userInput").addEventListener("keypress", (e) => {
   if (e.key === "Enter") sendMessage();
 });
+
