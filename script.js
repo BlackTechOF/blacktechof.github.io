@@ -35,19 +35,18 @@ document.getElementById('inputEcoPonto').addEventListener('keydown', function(e)
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
              
-      map.setView([latitude, longitude], 15);
+      map.setView([latitude, longitude], 13);
     })
   }}
 
     ecopontosLayer.eachLayer(function(layer) {
       const nomeEcoponto = layer.feature.properties.nome.toLowerCase();
       if (nomeEcoponto.includes(nomeBusca)) {
-        map.setView(layer.getLatLng(), 13);
+        map.setView(layer.getLatLng(), 15);
         layer.openPopup();
       }
     });
   }
 });
-
 
 
