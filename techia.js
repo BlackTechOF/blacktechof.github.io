@@ -40,16 +40,17 @@ async function sendMessage() {
     const data = await response.json();
 
     function typeMessage(element, message) {
-      element.classList.remove("bot_ativo"); // para animação
-      element.textContent = "";
+      element.classList.remove("bot_ativo");
+      element.innerHTML = ""; // agora vai aceitar HTML
       let i = 0;
       const interval = setInterval(() => {
-        element.textContent += message[i];
+        // Mostra parte do texto incrementalmente, mas com HTML preservado
+        element.innerHTML = message.slice(0, i);
         i++;
         if (i >= message.length) clearInterval(interval);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
-      }, 20);
-    }
+      }, 10);
+    }    
 
     typeMessage(botDiv, data.reply);
   } catch (error) {
