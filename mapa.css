@@ -108,6 +108,7 @@ from {
 
 .leaflet-left {
   margin-top: 19%;
+  position: fixed;
 }
 
 .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
