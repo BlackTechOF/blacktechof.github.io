@@ -7,6 +7,8 @@ margin: 0;
     .logo {
       background: green;
       display: flex;
+      z-index: 100;
+      position: fixed;
     }
     
     .logo img {
@@ -45,7 +47,7 @@ margin: 0;
 
 #divPesquisa {
   position: relative;
-  margin-top: -40%;
+  margin-top: -25%;
   display: flex;
   margin-left: 5%;
   gap: 10px;
@@ -105,7 +107,7 @@ from {
 
 
 .leaflet-left {
-  margin-top: 3%;
+  margin-top: 19%;
 }
 
 .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
