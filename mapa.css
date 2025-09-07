@@ -49,7 +49,8 @@ margin: 0;
   position: fixed;
   margin-top: -45%;
   display: flex;
-  gap: 10px;
+  margin-left: 2%;
+   gap: 10px;
   z-index: 100;
 }
 
