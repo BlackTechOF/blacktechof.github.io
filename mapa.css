@@ -47,9 +47,8 @@ margin: 0;
 
 #divPesquisa {
   position: fixed;
-  margin-top: -30%;
+  margin-top: -45%;
   display: flex;
-  margin-left: 5%;
   gap: 10px;
   z-index: 100;
 }
