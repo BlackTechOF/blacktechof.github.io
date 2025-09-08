@@ -17,7 +17,7 @@ if ("geolocation" in navigator) {
         .bindPopup("📍 Você está aqui!").openPopup();
 
       const ecoIcon = L.icon({
-        iconUrl: 'imagens/LocalReciclagem.png', 
+        iconUrl: 'imagens/LocalReciclagem.png',
         iconSize: [40, 40],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40]
@@ -39,11 +39,81 @@ if ("geolocation" in navigator) {
             }
           }).addTo(map);
 
-          // Listener só é adicionado após ecopontosLayer existir
-          document.getElementById('inputEcoPonto').addEventListener('keydown', function(e) {
+          const bairros = {};
+          data.features.forEach(f => {
+            const bairro = f.properties.classe || "Sem bairro";
+            if (!bairros[bairro]) bairros[bairro] = [];
+            bairros[bairro].push(f);
+          });
+
+          const sidebar = document.getElementById("sidebar");
+          const listaBairros = document.getElementById("listaBairros");
+          const listaEcopontos = document.getElementById("listaEcopontos");
+          const tituloBairros = document.getElementById("tituloBairros");
+          const tituloEcopontos = document.getElementById("tituloEcopontos");
+          const voltarBtn = document.getElementById("voltarBtn");
+          const fecharBtn = document.getElementById("fecharSidebar");
+          const abrirBtn = document.getElementById("abrirSideBar");
+
+          function mostrarBairros() {
+            listaBairros.style.display = "block";
+            tituloBairros.style.display = "block";
+            listaEcopontos.style.display = "none";
+            tituloEcopontos.style.display = "none";
+            voltarBtn.style.display = "none";
+          }
+
+          function mostrarEcopontos(bairro) {
+            listaBairros.style.display = "none";
+            tituloBairros.style.display = "none";
+            listaEcopontos.style.display = "block";
+            tituloEcopontos.style.display = "block";
+            voltarBtn.style.display = "block";
+
+            listaEcopontos.innerHTML = "";
+
+            bairros[bairro].forEach(f => {
+              const liEco = document.createElement("li");
+              liEco.textContent = f.properties.nome;
+              liEco.addEventListener("click", () => {
+                const [lng, lat] = f.geometry.coordinates;
+                const latlng = [lat, lng];
+                map.setView(latlng, 16);
+                ecopontosLayer.eachLayer(layer => {
+                  if (layer.feature.properties.nome === f.properties.nome) {
+                    layer.openPopup();
+                  }
+                });
+              });
+              listaEcopontos.appendChild(liEco);
+            });
+          }
+
+          Object.keys(bairros).sort().forEach(bairro => {
+            const li = document.createElement("li");
+            li.textContent = bairro;
+            li.addEventListener("click", () => {
+              mostrarEcopontos(bairro);
+            });
+            listaBairros.appendChild(li);
+          });
+
+          voltarBtn.addEventListener("click", mostrarBairros);
+
+          fecharBtn.addEventListener("click", () => {
+            sidebar.style.display = "none";
+          });
+
+          abrirBtn.addEventListener('click', function(){
+            sidebar.style.display = ''
+          })
+
+          mostrarBairros();
+
+          document.getElementById('inputEcoPonto').addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {
               const nomeBusca = this.value.toLowerCase();
-              ecopontosLayer.eachLayer(function(layer) {
+              ecopontosLayer.eachLayer(function (layer) {
                 const nomeEcoponto = layer.feature.properties.nome.toLowerCase();
                 if (nomeEcoponto.includes(nomeBusca)) {
                   map.setView(layer.getLatLng(), 16);
@@ -52,7 +122,6 @@ if ("geolocation" in navigator) {
               });
             }
           });
-
         })
         .catch(err => console.error("Erro ao carregar GeoJSON:", err));
     },

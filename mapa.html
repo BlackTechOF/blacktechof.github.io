@@ -24,9 +24,21 @@
   <div id="map"></div>
 
   <div id="divPesquisa">
+    <button id="abrirSideBar">☰</button>
     <button id="ativarInput"><img src="imagens/lupa.png"></button>
     <input type="search" id="inputEcoPonto">
   </div>
+
+  <div id="sidebar">
+  <button id="fecharSidebar">✖</button>
+  <h3 id="tituloBairros">Bairros</h3>
+  <ul id="listaBairros"></ul>
+
+  <h3 id="tituloEcopontos">Ecopontos</h3>
+  <ul id="listaEcopontos"></ul>
+
+  <button id="voltarBtn">Voltar</button>
+</div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="index.js"></script>

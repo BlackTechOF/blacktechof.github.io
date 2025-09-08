@@ -4,6 +4,7 @@
     {
       "type": "Feature",
       "properties": {
+        "classe": "Vila Carrão",
         "nome": "Viaduto Engenheiro Alberto Badra",
         "endereco": "Avenida Aricanduva, nº 200"
       },
@@ -19,7 +20,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Astarte",
-        "endereco": "Rua Astarte, nº 500"
+        "endereco": "Rua Astarte, nº 500",
+        "classe": "Vila Carrão"
       },
       "geometry": {
         "type": "Point",
@@ -33,7 +35,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Nova York",
-        "endereco": "Rua Amélia Vanso Magnoli, nº 480"
+        "endereco": "Rua Amélia Vanso Magnoli, nº 480",
+        "classe": "Aricanduva"
       },
       "geometry": {
         "type": "Point",
@@ -47,7 +50,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Aricanduva",
-        "endereco": "Rua Professor Alzira de Oliveira Gilioli, nº 400"
+        "endereco": "Rua Professor Alzira de Oliveira Gilioli, nº 400",
+        "classe": "Aricanduva"
       },
       "geometry": {
         "type": "Point",
@@ -61,7 +65,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Jardim Maria do Carmo",
-        "endereco": "Rua Caminho do Engenho, nº 800"
+        "endereco": "Rua Caminho do Engenho, nº 800",
+        "classe": "Ferreira"
       },
       "geometry": {
         "type": "Point",
@@ -75,7 +80,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Jardim Jaqueline",
-        "endereco": "Rua Walter Brito Belletti, s/nº"
+        "endereco": "Rua Walter Brito Belletti, s/nº",
+        "classe": "Vila Sônia"
       },
       "geometry": {
         "type": "Point",
@@ -89,7 +95,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Politécnica",
-        "endereco": "Rua Paulino Baptista Conti, nº 2"
+        "endereco": "Rua Paulino Baptista Conti, nº 2",
+        "classe": "Parque dos Príncipes"
       },
       "geometry": {
         "type": "Point",
@@ -103,7 +110,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Giovani Gronchi",
-        "endereco": "Avenida Giovani Gronchi, nº 3413"
+        "endereco": "Avenida Giovani Gronchi, nº 3413",
+        "classe": "Morumbi"
       },
       "geometry": {
         "type": "Point",
@@ -117,7 +125,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Santo Dias",
-        "endereco": "Travessa Rosifloras, nº 301"
+        "endereco": "Travessa Rosifloras, nº 301",
+        "classe": "Capão Redondo"
       },
       "geometry": {
         "type": "Point",
@@ -131,7 +140,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Parque Fernanda",
-        "endereco": "Avenida Doutor Salvador Rocco, nº 261"
+        "endereco": "Avenida Doutor Salvador Rocco, nº 261",
+        "classe": "Capão Redondo"
       },
       "geometry": {
         "type": "Point",
@@ -145,7 +155,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Olinda",
-        "endereco": "Rua Nelson Brissac, nº 1235"
+        "endereco": "Rua Nelson Brissac, nº 1235",
+        "classe": "Campo Limpo"
       },
       "geometry": {
         "type": "Point",
@@ -159,7 +170,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Vila das Belezas",
-        "endereco": "Rua Campo Novo do Sul, nº 500"
+        "endereco": "Rua Campo Novo do Sul, nº 500",
+        "classe": "Vila Andrade"
       },
       "geometry": {
         "type": "Point",
@@ -173,7 +185,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Paraisópolis",
-        "endereco": "Rua Irapará, nº 73"
+        "endereco": "Rua Irapará, nº 73",
+        "classe": "Vila Andrade"
       },
       "geometry": {
         "type": "Point",
@@ -187,7 +200,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Cidade Saudável",
-        "endereco": "Rua Ptolomeu, nº 869"
+        "endereco": "Rua Ptolomeu, nº 869",
+        "classe": "Socorro"
       },
       "geometry": {
         "type": "Point",
@@ -201,7 +215,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Parque Peruche",
-        "endereco": "Avenida Engenheiro Caetano Álvares, nº 3142"
+        "endereco": "Avenida Engenheiro Caetano Álvares, nº 3142",
+        "classe": "Casa Verde Alta"
       },
       "geometry": {
         "type": "Point",
@@ -215,7 +230,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Vila Nova Cachoeirinha",
-        "endereco": "Rua Felix Alves Pereira, nº 113"
+        "endereco": "Rua Felix Alves Pereira, nº 113",
+        "classe": "Cachoeirinha"
       },
       "geometry": {
         "type": "Point",
@@ -229,7 +245,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Vila Santa Maria",
-        "endereco": "Rua André Bolsena"
+        "endereco": "Rua André Bolsena",
+        "classe": "VIla Prado"
       },
       "geometry": {
         "type": "Point",
@@ -243,7 +260,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Jardim Antártica",
-        "endereco": "Rua Dom Aquino, nº 103"
+        "endereco": "Rua Dom Aquino, nº 103",
+        "classe": "Jardim Peri"
       },
       "geometry": {
         "type": "Point",
@@ -257,7 +275,8 @@
       "type": "Feature",
       "properties": {
         "nome": "São Leandro",
-        "endereco": "Rua São Leandro, nº 13"
+        "endereco": "Rua São Leandro, nº 13",
+        "classe": "VIla Prado"
       },
       "geometry": {
         "type": "Point",
@@ -271,7 +290,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Alvarenga",
-        "endereco": "Estrada do Alvarenga, nº 2475"
+        "endereco": "Estrada do Alvarenga, nº 2475",
+        "classe": "Pedreira"
       },
       "geometry": {
         "type": "Point",
@@ -285,7 +305,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Cupecê",
-        "endereco": "Rua Anália Maria de Jesus, nº 130"
+        "endereco": "Rua Anália Maria de Jesus, nº 130",
+        "classe": "Jabaquara"
       },
       "geometry": {
         "type": "Point",
@@ -299,7 +320,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Nascer do Sol",
-        "endereco": "Rua Nascer do Sol, nº 356"
+        "endereco": "Rua Nascer do Sol, nº 356",
+        "classe": "Cidade Tiradentes"
       },
       "geometry": {
         "type": "Point",
@@ -313,7 +335,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Setor G",
-        "endereco": "Rua Alfonso Asturaro, nº 600"
+        "endereco": "Rua Alfonso Asturaro, nº 600",
+        "classe": "Cidade Tiradentes"
       },
       "geometry": {
         "type": "Point",
@@ -327,7 +350,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Inácio Monteiro",
-        "endereco": "Rua Regresso Feliz, nº 1190"
+        "endereco": "Rua Regresso Feliz, nº 1190",
+        "classe": "Cidade Tiradentes"
       },
       "geometry": {
         "type": "Point",
@@ -341,7 +365,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Jardim São Nicolau",
-        "endereco": "Rua Agreste de Itabaiana, nº 590"
+        "endereco": "Rua Agreste de Itabaiana, nº 590",
+        "classe": "Burgo Paulista"
       },
       "geometry": {
         "type": "Point",
@@ -355,7 +380,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Boturussu",
-        "endereco": "Rua Nélio Batista Guimarães, nº 183"
+        "endereco": "Rua Nélio Batista Guimarães, nº 183",
+        "classe": "Parque Boturussu"
       },
       "geometry": {
         "type": "Point",
@@ -369,7 +395,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Bandeirantes",
-        "endereco": "Rua Itaiquara, nº 237"
+        "endereco": "Rua Itaiquara, nº 237",
+        "classe": "Parque Monteiro Soares"
       },
       "geometry": {
         "type": "Point",
@@ -383,7 +410,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Freguesia do Ó",
-        "endereco": "Rua Sousa Filho, nº 690"
+        "endereco": "Rua Sousa Filho, nº 690",
+        "classe": "Freguesia do Ó"
       },
       "geometry": {
         "type": "Point",
@@ -397,7 +425,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Vila Rica",
-        "endereco": "Rua Jorge Mamede da Silva, nº 200"
+        "endereco": "Rua Jorge Mamede da Silva, nº 200",
+        "classe": "Brasilândia"
       },
       "geometry": {
         "type": "Point",
@@ -411,7 +440,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Jardim São Paulo",
-        "endereco": "Rua Utaro Kanai, nº 374"
+        "endereco": "Rua Utaro Kanai, nº 374",
+        "classe": "Guaianases"
       },
       "geometry": {
         "type": "Point",
@@ -425,7 +455,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Guaiaponto",
-        "endereco": "Rua da Passagem Funda, nº 250"
+        "endereco": "Rua da Passagem Funda, nº 250",
+        "classe": "Guaianases"
       },
       "geometry": {
         "type": "Point",
@@ -439,7 +470,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Lajeado",
-        "endereco": "Rua Isabela, nº 405"
+        "endereco": "Rua Isabela, nº 405",
+        "classe": "Lajeado"
       },
       "geometry": {
         "type": "Point",
@@ -453,7 +485,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Padre Nildo do Amaral",
-        "endereco": "Rua Padre Nildo do Amaral Júnior, nº 900"
+        "endereco": "Rua Padre Nildo do Amaral Júnior, nº 900",
+        "classe": "Jardim Etelvina"
       },
       "geometry": {
         "type": "Point",
@@ -467,7 +500,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Tereza Cristina",
-        "endereco": "Rua Tereza Cristina, nº 10"
+        "endereco": "Rua Tereza Cristina, nº 10",
+        "classe": "Vila Monumento"
       },
       "geometry": {
         "type": "Point",
@@ -481,7 +515,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Santa Cruz",
-        "endereco": "Rua Santa Cruz, nº 1452"
+        "endereco": "Rua Santa Cruz, nº 1452",
+        "classe": "Vila Firmiano Pinto"
       },
       "geometry": {
         "type": "Point",
@@ -495,7 +530,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Vila das Mercês",
-        "endereco": "Rua Italva, nº 86"
+        "endereco": "Rua Italva, nº 86",
+        "classe": "Vila das Mercês"
       },
       "geometry": {
         "type": "Point",
@@ -509,7 +545,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Comandante Taylor",
-        "endereco": "Rua Comandante Taylor, nº 690"
+        "endereco": "Rua Comandante Taylor, nº 690",
+        "classe": "Ipiranga"
       },
       "geometry": {
         "type": "Point",
@@ -523,7 +560,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Moreira",
-        "endereco": "Rua João Batista de Godói, nº 1164"
+        "endereco": "Rua João Batista de Godói, nº 1164",
+        "classe": "Itaim Paulista"
       },
       "geometry": {
         "type": "Point",
@@ -537,7 +575,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Mãe Preta",
-        "endereco": "Avenida Dama Entre Verdes, nº 21"
+        "endereco": "Avenida Dama Entre Verdes, nº 21",
+        "classe": "Jardim Ipê"
       },
       "geometry": {
         "type": "Point",
@@ -551,7 +590,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Pesqueiro",
-        "endereco": "Rua Caiuás, nº 18"
+        "endereco": "Rua Caiuás, nº 18",
+        "classe": "Jardim Camargo Novo"
       },
       "geometry": {
         "type": "Point",
@@ -565,7 +605,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Flamingo",
-        "endereco": "Rua Alexandre Dias Nogueira, nº 353"
+        "endereco": "Rua Alexandre Dias Nogueira, nº 353",
+        "classe": "Vila Nova Curuça"
       },
       "geometry": {
         "type": "Point",
@@ -579,7 +620,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Itaim Paulista",
-        "endereco": "Rua Barão de Almeida Galeão, nº 61"
+        "endereco": "Rua Barão de Almeida Galeão, nº 61",
+        "classe": "Jardim Camargo Novo"
       },
       "geometry": {
         "type": "Point",
@@ -593,7 +635,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Jardim Indaiá",
-        "endereco": "Rua Rossini Pinto, nº 214"
+        "endereco": "Rua Rossini Pinto, nº 214",
+        "classe": "Itaim Paulista"
       },
       "geometry": {
         "type": "Point",
@@ -607,7 +650,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Parque Guarani",
-        "endereco": "Rua Manuel Alves da Rocha, nº 584"
+        "endereco": "Rua Manuel Alves da Rocha, nº 584",
+        "classe": "Parque Guarani"
       },
       "geometry": {
         "type": "Point",
@@ -621,7 +665,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Oswaldo Valle Cordeiro",
-        "endereco": "Avenida Osvaldo Valle Cordeiro, nº 405"
+        "endereco": "Avenida Osvaldo Valle Cordeiro, nº 405",
+        "classe": "Jardim Brasília"
       },
       "geometry": {
         "type": "Point",
@@ -635,7 +680,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Cidade Lider",
-        "endereco": "Rua Charles Manguin, nº 20"
+        "endereco": "Rua Charles Manguin, nº 20",
+        "classe": "Cidade Líder"
       },
       "geometry": {
         "type": "Point",
@@ -649,7 +695,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Parque do Carmo",
-        "endereco": "Rua Machado Nunes, nº 95"
+        "endereco": "Rua Machado Nunes, nº 95",
+        "classe": "Parque do Carmo"
       },
       "geometry": {
         "type": "Point",
@@ -663,7 +710,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Corinthians",
-        "endereco": "Rua Ana Perena, nº 155"
+        "endereco": "Rua Ana Perena, nº 155",
+        "classe": "José Bonifácio"
       },
       "geometry": {
         "type": "Point",
@@ -677,7 +725,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Caldeirão",
-        "endereco": "Rua Major Vitorino de Souza Rocha, nº 148"
+        "endereco": "Rua Major Vitorino de Souza Rocha, nº 148",
+        "classe": "José Bonifácio"
       },
       "geometry": {
         "type": "Point",
@@ -691,7 +740,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Imigrantes",
-        "endereco": "Rua Opixe"
+        "endereco": "Rua Opixe",
+        "classe": "Cidade Vargas"
       },
       "geometry": {
         "type": "Point",
@@ -705,7 +755,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Jabaquara",
-        "endereco": "Rua Jupatis, nº 140"
+        "endereco": "Rua Jupatis, nº 140",
+        "classe": "Vila Santa Catarina"
       },
       "geometry": {
         "type": "Point",
@@ -719,7 +770,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Anselmo Machado",
-        "endereco": "Avenida Paulo Lincoln do Valle Pontin, nº 550"
+        "endereco": "Avenida Paulo Lincoln do Valle Pontin, nº 550",
+        "classe": "Jardim Guapira"
       },
       "geometry": {
         "type": "Point",
@@ -733,7 +785,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Silvio Bittencourt",
-        "endereco": "Rua Maria Amália Lopes Azevedo, nº 4008"
+        "endereco": "Rua Maria Amália Lopes Azevedo, nº 4008",
+        "classe": "Jardim Guapira"
       },
       "geometry": {
         "type": "Point",
@@ -747,7 +800,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Viaduto Antártica",
-        "endereco": "Rua Robert Bosch"
+        "endereco": "Rua Robert Bosch",
+        "classe": "Barra Funda"
       },
       "geometry": {
         "type": "Point",
@@ -761,7 +815,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Vila Jaguara",
-        "endereco": "Rua Agrestina, nº 189"
+        "endereco": "Rua Agrestina, nº 189",
+        "classe": "Jaguara"
       },
       "geometry": {
         "type": "Point",
@@ -775,7 +830,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Piraporinha",
-        "endereco": "Rua João de Abreu, nº 326"
+        "endereco": "Rua João de Abreu, nº 326",
+        "classe": "Jardim São Luís"
       },
       "geometry": {
         "type": "Point",
@@ -789,7 +845,8 @@
       "type": "Feature",
       "properties": {
         "nome": "São Luis",
-        "endereco": "Rua Pedro Armani, nº 252"
+        "endereco": "Rua Pedro Armani, nº 252",
+        "classe": "Jardim São Luís"
       },
       "geometry": {
         "type": "Point",
@@ -803,7 +860,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Bresser",
-        "endereco": "Praça Giuseppe Cesari, nº 54"
+        "endereco": "Praça Giuseppe Cesari, nº 54",
+        "classe": "Belém"
       },
       "geometry": {
         "type": "Point",
@@ -817,7 +875,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Tatuapé",
-        "endereco": "Avenida Salim Farah Maluf, nº 179"
+        "endereco": "Avenida Salim Farah Maluf, nº 179",
+        "classe": "Vila Azevedo"
       },
       "geometry": {
         "type": "Point",
@@ -831,7 +890,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Brás",
-        "endereco": "Avenida Presidente Wilson, nº 1"
+        "endereco": "Avenida Presidente Wilson, nº 1",
+        "classe": "Mooca"
       },
       "geometry": {
         "type": "Point",
@@ -845,7 +905,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Mooca",
-        "endereco": "Avenida Pires do Rio, nº 600"
+        "endereco": "Avenida Pires do Rio, nº 600",
+        "classe": "Mooca"
       },
       "geometry": {
         "type": "Point",
@@ -859,7 +920,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Pari",
-        "endereco": "Avenida Carlos de Campos, nº 996"
+        "endereco": "Avenida Carlos de Campos, nº 996",
+        "classe": "Canindé"
       },
       "geometry": {
         "type": "Point",
@@ -873,7 +935,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Belém",
-        "endereco": "Rua Belarmino Matos, nº 26"
+        "endereco": "Rua Belarmino Matos, nº 26",
+        "classe": "Belém"
       },
       "geometry": {
         "type": "Point",
@@ -887,7 +950,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Vila Luisa",
-        "endereco": "Praça Dante Maron, nº 92"
+        "endereco": "Praça Dante Maron, nº 92",
+        "classe": "Vila Laís"
       },
       "geometry": {
         "type": "Point",
@@ -901,7 +965,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Água Rasa",
-        "endereco": "Avenida Salim Farah Maluf, nº 1500"
+        "endereco": "Avenida Salim Farah Maluf, nº 1500",
+        "classe": "Belém"
       },
       "geometry": {
         "type": "Point",
@@ -915,7 +980,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Mendes Caldeira",
-        "endereco": "Rua Monsenhor Andrade, nº 865"
+        "endereco": "Rua Monsenhor Andrade, nº 865",
+        "classe": "Brás"
       },
       "geometry": {
         "type": "Point",
@@ -929,7 +995,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Mooca II",
-        "endereco": "Rua Pantojo, nº 1147"
+        "endereco": "Rua Pantojo, nº 1147",
+        "classe": "Jardim Anália Franco"
       },
       "geometry": {
         "type": "Point",
@@ -943,7 +1010,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Condessa",
-        "endereco": "Avenida Condessa Elizabeth de Robiano, nº 930"
+        "endereco": "Avenida Condessa Elizabeth de Robiano, nº 930",
+        "classe": "Parque São Jorge"
       },
       "geometry": {
         "type": "Point",
@@ -957,7 +1025,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Penha I",
-        "endereco": "Rua Doutor Heládio, nº 104"
+        "endereco": "Rua Doutor Heládio, nº 104",
+        "classe": "Vila Esperança"
       },
       "geometry": {
         "type": "Point",
@@ -971,7 +1040,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Tiquatira",
-        "endereco": "Rua Amorim Diniz, nº 415"
+        "endereco": "Rua Amorim Diniz, nº 415",
+        "classe": "Chacara Cruzeiro do Sul"
       },
       "geometry": {
         "type": "Point",
@@ -985,7 +1055,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Gamelinha",
-        "endereco": "Rua Morfeu, nº 25"
+        "endereco": "Rua Morfeu, nº 25",
+        "classe": "Artur Alvim"
       },
       "geometry": {
         "type": "Point",
@@ -999,7 +1070,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Vila Matilde",
-        "endereco": "Rua Mateus de Siqueira, nº 375"
+        "endereco": "Rua Mateus de Siqueira, nº 375",
+        "classe": "Cidade Patriarca"
       },
       "geometry": {
         "type": "Point",
@@ -1013,7 +1085,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Cangaíba",
-        "endereco": "Rua Luciano Nogueira, nº 241"
+        "endereco": "Rua Luciano Nogueira, nº 241",
+        "classe": "Engenheiro Goulart"
       },
       "geometry": {
         "type": "Point",
@@ -1027,7 +1100,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Franquinho",
-        "endereco": "Rua Praia de Mucuripe, nº 685"
+        "endereco": "Rua Praia de Mucuripe, nº 685",
+        "classe": "Jardim Nordeste"
       },
       "geometry": {
         "type": "Point",
@@ -1041,7 +1115,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Dalila",
-        "endereco": "Rua Inacio da Costa, nº 740"
+        "endereco": "Rua Inacio da Costa, nº 740",
+        "classe": "Carrão"
       },
       "geometry": {
         "type": "Point",
@@ -1055,7 +1130,8 @@
       "type": "Feature",
       "properties": {
         "nome": "COHAB Artur Alvim",
-        "endereco": "Avenida Padre Estanislau de Campos, nº 56"
+        "endereco": "Avenida Padre Estanislau de Campos, nº 56",
+        "classe": "Conjunto Habitacional Padre Manoel da Nobrega"
       },
       "geometry": {
         "type": "Point",
@@ -1069,7 +1145,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Vila Talarico",
-        "endereco": "Avenida Bernardino Brito Fonseca de Carvalho, nº 1050"
+        "endereco": "Avenida Bernardino Brito Fonseca de Carvalho, nº 1050",
+        "classe": "Vila Guilhermina"
       },
       "geometry": {
         "type": "Point",
@@ -1083,7 +1160,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Recanto dos Humildes",
-        "endereco": "Rua Sales Gomes, nº 415"
+        "endereco": "Rua Sales Gomes, nº 415",
+        "classe": "Perus"
       },
       "geometry": {
         "type": "Point",
@@ -1097,7 +1175,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Jardim Santa Fé",
-        "endereco": "Rua Salvador Albano, nº 156"
+        "endereco": "Rua Salvador Albano, nº 156",
+        "classe": "Jardim Santa Fé"
       },
       "geometry": {
         "type": "Point",
@@ -1111,7 +1190,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Pinheiros",
-        "endereco": "Praça do Cancioneiro, nº 15"
+        "endereco": "Praça do Cancioneiro, nº 15",
+        "classe": "Vila Olímpia"
       },
       "geometry": {
         "type": "Point",
@@ -1125,7 +1205,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Vila Madalena",
-        "endereco": "Rua Girassol, nº 15"
+        "endereco": "Rua Girassol, nº 15",
+        "classe": "Pinheiros"
       },
       "geometry": {
         "type": "Point",
@@ -1139,7 +1220,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Alto de Pinheiros",
-        "endereco": "Praça Arcipreste Anselmo de Oliveira"
+        "endereco": "Praça Arcipreste Anselmo de Oliveira",
+        "classe": "Vila Beatriz"
       },
       "geometry": {
         "type": "Point",
@@ -1153,7 +1235,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Alceu Maynard de Araújo",
-        "endereco": "Avenida Professor Alceu Maynard de Araújo, nº 330"
+        "endereco": "Avenida Professor Alceu Maynard de Araújo, nº 330",
+        "classe": "Granja Julieta"
       },
       "geometry": {
         "type": "Point",
@@ -1167,7 +1250,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Vicente Rao",
-        "endereco": "Avenida Vicente Rao, nº 308"
+        "endereco": "Avenida Vicente Rao, nº 308",
+        "classe": "Brooklin Velho"
       },
       "geometry": {
         "type": "Point",
@@ -1181,7 +1265,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Pedro Bueno",
-        "endereco": "Rua João de Lery, nº 503"
+        "endereco": "Rua João de Lery, nº 503",
+        "classe": "Campo Belo"
       },
       "geometry": {
         "type": "Point",
@@ -1195,7 +1280,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Vitor Manzini",
-        "endereco": "Praça Dom Francisco de Sousa, nº 635"
+        "endereco": "Praça Dom Francisco de Sousa, nº 635",
+        "classe": "Jardim Santo Amaro"
       },
       "geometry": {
         "type": "Point",
@@ -1209,7 +1295,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Cipoaba",
-        "endereco": "Rua Padre Luis de Siqueira, nº 947"
+        "endereco": "Rua Padre Luis de Siqueira, nº 947",
+        "classe": "São Rafael"
       },
       "geometry": {
         "type": "Point",
@@ -1223,7 +1310,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Iguatemi",
-        "endereco": "Rua Francisco de Melo Palheta, nº 1548"
+        "endereco": "Rua Francisco de Melo Palheta, nº 1548",
+        "classe": "Iguatemi"
       },
       "geometry": {
         "type": "Point",
@@ -1237,7 +1325,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Montalvania",
-        "endereco": "Rua Montalvania, nº 195"
+        "endereco": "Rua Montalvania, nº 195",
+        "classe": "Cidade Líder"
       },
       "geometry": {
         "type": "Point",
@@ -1251,7 +1340,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Lima Bonfante",
-        "endereco": "Rua Capitão-mor Lázaro da Costa, nº 251"
+        "endereco": "Rua Capitão-mor Lázaro da Costa, nº 251",
+        "classe": "São Rafael"
       },
       "geometry": {
         "type": "Point",
@@ -1265,7 +1355,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Imperador",
-        "endereco": "Avenida Ribeirão Jacu, nº 201"
+        "endereco": "Avenida Ribeirão Jacu, nº 201",
+        "classe": "Vila Jacuí"
       },
       "geometry": {
         "type": "Point",
@@ -1279,7 +1370,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Carlito Maia",
-        "endereco": "Rua Domingos Fernandes Nobre, nº 109"
+        "endereco": "Rua Domingos Fernandes Nobre, nº 109",
+        "classe": "Itaim Paulista"
       },
       "geometry": {
         "type": "Point",
@@ -1293,7 +1385,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Pedro Nunes",
-        "endereco": "Rua da Polka, nº 100"
+        "endereco": "Rua da Polka, nº 100",
+        "classe": "Limoeiro"
       },
       "geometry": {
         "type": "Point",
@@ -1307,7 +1400,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Itaqueruna",
-        "endereco": "Rua Domitila d'Abril, nº 88"
+        "endereco": "Rua Domitila d'Abril, nº 88",
+        "classe": "Jardim Ipê"
       },
       "geometry": {
         "type": "Point",
@@ -1321,7 +1415,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Varre Vila",
-        "endereco": "Rua Primeiro de Maio, nº 106"
+        "endereco": "Rua Primeiro de Maio, nº 106",
+        "classe": "União de Vila Nova"
       },
       "geometry": {
         "type": "Point",
@@ -1335,7 +1430,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Vitória Popular",
-        "endereco": "Rua El Rey, nº 508"
+        "endereco": "Rua El Rey, nº 508",
+        "classe": "Limoeiro"
       },
       "geometry": {
         "type": "Point",
@@ -1349,7 +1445,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Jardim Helena",
-        "endereco": "Rua Cosme dos Santos, nº 110"
+        "endereco": "Rua Cosme dos Santos, nº 110",
+        "classe": "Jardim Helena"
       },
       "geometry": {
         "type": "Point",
@@ -1363,7 +1460,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Jardim Romano",
-        "endereco": "Rua Duarte Martins Mourão, nº 400"
+        "endereco": "Rua Duarte Martins Mourão, nº 400",
+        "classe": "Jardim Romano"
       },
       "geometry": {
         "type": "Point",
@@ -1377,7 +1475,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Jardim Lapena",
-        "endereco": "Rua Rafael Zimbard, nº 78"
+        "endereco": "Rua Rafael Zimbard, nº 78",
+        "classe": "São Miguel"
       },
       "geometry": {
         "type": "Point",
@@ -1391,7 +1490,8 @@
       "type": "Feature",
       "properties": {
         "nome": "Sapopemba",
-        "endereco": "Rua Francesco Usper, nº 550"
+        "endereco": "Rua Francesco Usper, nº 550",
+        "classe": "São Mateus"
       },
       "geometry": {
         "type": "Point",
@@ -1405,13 +1505,14 @@
       "type": "Feature",
       "properties": {
         "nome": "SReynaldo José",
-        "endereco": "Rua Silvestro Silvestre, nº 400"
+        "endereco": "Rua Silvestro Silvestre, nº 400",
+        "classe": "Sapopemba"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -46.516080517681300,
-          -23.607312831480000
+          -46.5160805176813,
+          -23.60731283148
         ]
       }
     }

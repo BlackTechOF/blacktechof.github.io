@@ -1,7 +1,9 @@
 @media screen and (max-width: 768px) {
 
-    body {
-margin: 0;
+    body, html {
+height: 100%;
+  margin: 0;
+  padding: 0;
     }
 
     .logo {
@@ -40,18 +42,26 @@ margin: 0;
     
 
  #map { 
-  height: 720px; 
+  height: 100%; 
   width: 100%; 
   z-index: 98;
 }
 
 #divPesquisa {
   position: fixed;
-  margin-top: -45%;
+  margin-top: -20%;
   display: flex;
   margin-left: 2%;
    gap: 10px;
   z-index: 100;
+}
+
+#abrirSideBar {
+ height: 40px;
+  width: 40px;
+  border-radius: 30px;
+  background: white;
+  border: solid black;
 }
 
 #ativarInput {
@@ -140,6 +150,50 @@ from {
   border-top-right-radius: 20px;
   border-bottom-left-radius: 20px;
   border-bottom-right-radius: 20px;
+}
+
+#sidebar {
+  position: absolute;
+  top: 80px;
+  right: 10px;
+  width: 250px;
+  max-height: 80%;
+  overflow-y: auto;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.2);
+  z-index: 100;
+}
+
+#sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+#sidebar li {
+  cursor: pointer;
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+}
+#sidebar li:hover {
+  background: #f0f0f0;
+}
+
+#fecharSidebar {
+  background: transparent;
+  border: none;
+  float: right;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+#voltarBtn {
+  margin-top: 10px;
+  display: none;
+}
+#tituloEcopontos, #listaEcopontos {
+  display: none;
 }
 
 }
