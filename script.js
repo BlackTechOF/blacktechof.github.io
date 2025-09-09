@@ -38,7 +38,6 @@ document.getElementById('inputEcoPonto').addEventListener('keydown', function(e)
       map.setView([latitude, longitude], 13);
     })
   }}
-
     ecopontosLayer.eachLayer(function(layer) {
       const nomeEcoponto = layer.feature.properties.nome.toLowerCase();
       if (nomeEcoponto.includes(nomeBusca)) {
@@ -48,5 +47,4 @@ document.getElementById('inputEcoPonto').addEventListener('keydown', function(e)
     });
   }
 });
-
 
