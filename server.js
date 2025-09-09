@@ -10,7 +10,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-process.env.GOOGLE_APPLICATION_CREDENTIALS = path.join(__dirname, "testapifelipe-6689559d1366.json");
+const visionClient = new ImageAnnotatorClient({
+  credentials: require("./testapifelipe-6689559d1366.json")
+});
+
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -97,5 +100,6 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
 
 
