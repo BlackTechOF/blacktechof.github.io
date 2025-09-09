@@ -31,6 +31,8 @@ async function sendMessage() {
 
   // Botão para interromper a resposta
   const interruptBtn = document.getElementById("interrupt-btn");
+  const enviarBtn = document.getElementById("enviar");
+  enviarBtn.style.display = 'none'
   interruptBtn.style.display = "inline-block";  // Torna o botão visível ao iniciar a resposta
 
   interruptBtn.addEventListener("click", () => {
@@ -45,8 +47,6 @@ async function sendMessage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: userMessage }),
     });
-
-    interruptBtn.style.display = "none";
 
     const data = await response.json();
 
@@ -66,6 +66,8 @@ async function sendMessage() {
             hljs.highlightAll(); // Chama para destacar o código
           }
           botOcupado = false; // Libera o envio de novas mensagens após a conclusão
+          interruptBtn.style.display = "none";
+    enviarBtn.style.display = ''
         }
       }, 10);
     }
@@ -108,7 +110,7 @@ function sendImage(event) {
     const formData = new FormData();
     formData.append("image", file);
 
-    fetch("http://localhost:3000/upload-image", {
+    fetch("https://blacktechof-github-io.onrender.com/upload-image", {
       method: "POST",
       body: formData,
     })

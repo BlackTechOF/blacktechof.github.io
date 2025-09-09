@@ -5,24 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat IA</title>
   <link rel="stylesheet" href="techia.css">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css">
 </head>
 <body>
   <div class="chat-container">
     <div id="messages" class="messages"></div>
     <div class="input-area">
       <input type="text" id="userInput" placeholder="Digite sua mensagem...">
-      <button onclick="sendMessage()">Enviar</button>
+      <button id="enviar" onclick="sendMessage()">Enviar</button>
       <button id="interrupt-btn" onclick="interromperResposta()">Parar</button>
+
+      <!-- Campo de input para escolher arquivo -->
       <input type="file" id="imageInput" accept="image/*" onchange="sendImage(event)">
+      <label for="imageInput">Escolher arquivo</label> <!-- Botão personalizado -->
     </div>
   </div>
 
   <script src="techia.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.1/dist/tesseract.min.js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.1/dist/tesseract.min.js"></script>
 </body>
 </html>

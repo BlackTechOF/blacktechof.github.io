@@ -74,12 +74,12 @@ app.post("/upload-image", upload.single("image"), async (req, res) => {
       const text = detections[0].description;
       res.json({
         reply: `Texto encontrado na imagem: ${text}`,
-        imageUrl: `http://localhost:3000/${imagePath}`, // Retorna o caminho da imagem
+        imageUrl: `https://blacktechof-github-io.onrender.com/${imagePath}`, // Retorna o caminho da imagem
       });
     } else {
       res.json({
         reply: "Não foi encontrado texto na imagem.",
-        imageUrl: `http://localhost:3000/${imagePath}`,
+        imageUrl: `https://blacktechof-github-io.onrender.com/${imagePath}`,
       });
     }
   } catch (error) {

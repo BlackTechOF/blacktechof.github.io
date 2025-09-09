@@ -1,3 +1,4 @@
+/* Resetando estilos e base para o layout */
 body {
   font-family: Arial, sans-serif;
   background: #f4f4f9;
@@ -20,23 +21,32 @@ body {
   height: 500px;
 }
 
+/* Ajuste para a área de mensagens */
 .messages {
   flex: 1;
   overflow-y: auto;
   margin-bottom: 15px;
   padding-right: 5px;
-  padding-left: 10px;
-  max-height: calc(100% - 50px); /* Ajuste da altura da área de mensagens */
+  word-wrap: break-word; /* Faz o texto quebrar corretamente */
+  max-height: 400px; /* Ajusta a altura máxima da área de mensagens */
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
+/* Ajuste das mensagens para que o texto não estoure */
 .message {
   padding: 8px 12px;
   margin: 6px 0;
   border-radius: 10px;
-  max-width: 80%;
-  word-wrap: break-word;
+  max-width: 80%; /* Garantir que as mensagens não sejam maiores que 80% da largura */
+  word-wrap: break-word; /* Permite que o texto quebre para caber na tela */
+  font-size: 14px; /* Ajuste do tamanho da fonte */
+  line-height: 1.4; /* Ajuste da altura da linha para melhorar a legibilidade */
 }
 
+/* Mensagens do usuário e do bot */
 .user {
   background: #007bff;
   color: white;
@@ -49,11 +59,13 @@ body {
   align-self: flex-start;
 }
 
+/* Estilo do input e botão de envio */
 .input-area {
   display: flex;
   gap: 10px;
-  align-items: center; /* Alinha os botões e o input no mesmo nível */
+  align-items: center;
   position: relative;
+  width: 100%;
 }
 
 input {
@@ -94,6 +106,14 @@ button:hover {
   background-color: darkred;
 }
 
+/* Estilo para as imagens */
+img {
+  max-width: 100%; /* Garante que a imagem não ultrapasse a largura do chat */
+  max-height: 300px; /* Garante que a imagem tenha uma altura máxima */
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
 /* Animação do bot "pensando" */
 @keyframes moverDireita {
   0% {opacity: 0.2;}
@@ -121,4 +141,35 @@ pre code {
   background-color: #f7f7f7;
   border-radius: 8px;
   margin: 10px 0;
+}
+
+/* Estilo do campo de input de arquivo */
+.input-area input[type="file"] {
+  display: none; /* Esconde o campo padrão de input de arquivo */
+}
+
+.input-area label {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+/* Ajuste do layout */
+.input-area {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+#imageInput {
+  width: 100%;
+}
+
+.input-area input[type="file"]:focus + label {
+  border: 2px solid #007bff; /* Realce quando o campo de arquivo for selecionado */
 }
