@@ -89,6 +89,9 @@ function sendImage(event) {
   const messagesDiv = document.getElementById("messages");
 
   if (file) {
+    // Log para verificar o arquivo
+    console.log("Arquivo selecionado:", file);
+
     const reader = new FileReader();
     reader.onload = function(e) {
       // Exibir a imagem no chat
@@ -116,6 +119,9 @@ function sendImage(event) {
     })
     .then(response => response.json())
     .then(data => {
+      // Log para verificar a resposta do servidor
+      console.log("Resposta do servidor:", data);
+      
       // Exibir a resposta do bot
       const botDiv = document.createElement("div");
       botDiv.className = "message bot";
@@ -128,6 +134,7 @@ function sendImage(event) {
     });
   }
 }
+
 
 // Função para interromper a resposta
 function interromperResposta(intervaloId, botDiv, interruptBtn) {
