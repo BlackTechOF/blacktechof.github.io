@@ -4,13 +4,12 @@ require("dotenv").config();
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
-const { ImageAnnotatorClient } = require('@google-cloud/vision');
+const { ImageAnnotatorClient } = require('@google-cloud/vision'); // Google Vision API
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Configuração do OpenAI
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -18,20 +17,21 @@ const client = new OpenAI({
 // Configuração do Multer para upload de imagem
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/");
+    cb(null, "uploads/"); // Pasta onde as imagens serão armazenadas
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+    cb(null, Date.now() + path.extname(file.originalname)); // Renomeia a imagem
   },
 });
+
 const upload = multer({ storage: storage });
 
-// Criação do cliente do Google Vision com variáveis de ambiente
+// Criação do cliente do Google Vision
 const visionClient = new ImageAnnotatorClient({
   credentials: {
     client_email: process.env.GOOGLE_CLIENT_EMAIL,
-    private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-  },
+    private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  }
 });
 
 // Rota para enviar mensagem de texto
@@ -54,7 +54,7 @@ app.post("/chat", async (req, res) => {
     console.error(error);
     res.status(500).json({
       reply: "Ocorreu um erro ao se comunicar com a IA.",
-      error: error.message,
+      error: error.message, 
     });
   }
 });
@@ -66,22 +66,29 @@ app.post("/upload-image", upload.single("image"), async (req, res) => {
       return res.status(400).json({ reply: "Nenhuma imagem enviada!" });
     }
 
+    // O arquivo foi recebido, agora podemos analisá-lo com o Google Vision
     const imagePath = path.join(__dirname, req.file.path);
+
+
+    console.log("CLIENT_EMAIL:", process.env.GOOGLE_CLIENT_EMAIL);
+    console.log("PRIVATE_KEY starts with:", process.env.GOOGLE_PRIVATE_KEY?.substring(0, 30));
+    
 
     // Análise da imagem usando Google Vision API
     const [result] = await visionClient.textDetection(imagePath);
     const detections = result.textAnnotations;
 
+    // Verificar se encontrou texto na imagem
     if (detections.length > 0) {
       const text = detections[0].description;
       res.json({
         reply: `Texto encontrado na imagem: ${text}`,
-        imageUrl: `/uploads/${req.file.filename}`,
+        imageUrl: `https://seu-dominio.com/${imagePath}`, // Retorna o caminho da imagem
       });
     } else {
       res.json({
         reply: "Não foi encontrado texto na imagem.",
-        imageUrl: `/uploads/${req.file.filename}`,
+        imageUrl: `https://seu-dominio.com/${imagePath}`,
       });
     }
   } catch (error) {
@@ -94,7 +101,8 @@ app.post("/upload-image", upload.single("image"), async (req, res) => {
 app.use("/uploads", express.static("uploads"));
 
 // Iniciar o servidor
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
