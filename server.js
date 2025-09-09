@@ -10,11 +10,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const visionClient = new ImageAnnotatorClient({
-  credentials: require("./testapifelipe-6689559d1366.json")
-});
-
-
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -32,7 +27,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Criação do cliente do Google Vision
-const visionClient = new ImageAnnotatorClient();
+const visionClient = new ImageAnnotatorClient({
+  credentials: {
+    client_email: process.env.GOOGLE_CLIENT_EMAIL,
+    private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  }
+});
 
 // Rota para enviar mensagem de texto
 app.post("/chat", async (req, res) => {
@@ -100,6 +100,4 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
-
-
 
