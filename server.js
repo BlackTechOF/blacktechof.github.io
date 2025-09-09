@@ -10,8 +10,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Definindo as credenciais para a API do Google Vision
-process.env.GOOGLE_APPLICATION_CREDENTIALS = path.join(__dirname, 'testapifelipe-6689559d1366.json'); // Defina o nome do seu arquivo JSON
+process.env.GOOGLE_APPLICATION_CREDENTIALS = './testapifelipe-6689559d1366.json'; // Caminho para o arquivo JSON no Render
+
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
