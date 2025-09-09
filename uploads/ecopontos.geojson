@@ -1,0 +1,1520 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "classe": "Vila Carrão",
+        "nome": "Viaduto Engenheiro Alberto Badra",
+        "endereco": "Avenida Aricanduva, nº 200"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5474023046343,
+          -23.5371105529201
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Astarte",
+        "endereco": "Rua Astarte, nº 500",
+        "classe": "Vila Carrão"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5250699046339,
+          -23.5499264910427
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Nova York",
+        "endereco": "Rua Amélia Vanso Magnoli, nº 480",
+        "classe": "Aricanduva"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5087146053835,
+          -23.5875772340814
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Aricanduva",
+        "endereco": "Rua Professor Alzira de Oliveira Gilioli, nº 400",
+        "classe": "Aricanduva"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5144248608018,
+          -23.580749870566
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Jardim Maria do Carmo",
+        "endereco": "Rua Caminho do Engenho, nº 800",
+        "classe": "Ferreira"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7465688789333,
+          -23.5954182689443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Jardim Jaqueline",
+        "endereco": "Rua Walter Brito Belletti, s/nº",
+        "classe": "Vila Sônia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7549434408891,
+          -23.589278470951
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Politécnica",
+        "endereco": "Rua Paulino Baptista Conti, nº 2",
+        "classe": "Parque dos Príncipes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7649247890104,
+          -23.5758901487588
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Giovani Gronchi",
+        "endereco": "Avenida Giovani Gronchi, nº 3413",
+        "classe": "Morumbi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7266611386916,
+          -23.6099673847163
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Santo Dias",
+        "endereco": "Travessa Rosifloras, nº 301",
+        "classe": "Capão Redondo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7763053706063,
+          -23.6637964993304
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Parque Fernanda",
+        "endereco": "Avenida Doutor Salvador Rocco, nº 261",
+        "classe": "Capão Redondo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7920900742619,
+          -23.6717923302707
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Olinda",
+        "endereco": "Rua Nelson Brissac, nº 1235",
+        "classe": "Campo Limpo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7576273506339,
+          -23.6341680901847
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vila das Belezas",
+        "endereco": "Rua Campo Novo do Sul, nº 500",
+        "classe": "Vila Andrade"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7413647563691,
+          -23.6379664876703
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Paraisópolis",
+        "endereco": "Rua Irapará, nº 73",
+        "classe": "Vila Andrade"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7248670606218,
+          -23.6230256750056
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Cidade Saudável",
+        "endereco": "Rua Ptolomeu, nº 869",
+        "classe": "Socorro"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7221431025349,
+          -23.6622397306395
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Parque Peruche",
+        "endereco": "Avenida Engenheiro Caetano Álvares, nº 3142",
+        "classe": "Casa Verde Alta"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6545488483853,
+          -23.4914127491408
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vila Nova Cachoeirinha",
+        "endereco": "Rua Felix Alves Pereira, nº 113",
+        "classe": "Cachoeirinha"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6698066301471,
+          -23.4722040121228
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vila Santa Maria",
+        "endereco": "Rua André Bolsena",
+        "classe": "VIla Prado"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6711105038063,
+          -23.4938867044236
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Jardim Antártica",
+        "endereco": "Rua Dom Aquino, nº 103",
+        "classe": "Jardim Peri"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6592885234254,
+          -23.4550387532383
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "São Leandro",
+        "endereco": "Rua São Leandro, nº 13",
+        "classe": "VIla Prado"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6831830017933,
+          -23.4967516293043
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Alvarenga",
+        "endereco": "Estrada do Alvarenga, nº 2475",
+        "classe": "Pedreira"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6511020644402,
+          -23.6952164759019
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Cupecê",
+        "endereco": "Rua Anália Maria de Jesus, nº 130",
+        "classe": "Jabaquara"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6532463845998,
+          -23.6654046872626
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Nascer do Sol",
+        "endereco": "Rua Nascer do Sol, nº 356",
+        "classe": "Cidade Tiradentes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4144400594632,
+          -23.593599020311
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Setor G",
+        "endereco": "Rua Alfonso Asturaro, nº 600",
+        "classe": "Cidade Tiradentes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.3955886846261,
+          -23.5860778142447
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Inácio Monteiro",
+        "endereco": "Rua Regresso Feliz, nº 1190",
+        "classe": "Cidade Tiradentes"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4009726668624,
+          -23.5734160995129
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Jardim São Nicolau",
+        "endereco": "Rua Agreste de Itabaiana, nº 590",
+        "classe": "Burgo Paulista"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.48227783618,
+          -23.5230035038029
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Boturussu",
+        "endereco": "Rua Nélio Batista Guimarães, nº 183",
+        "classe": "Parque Boturussu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4840568422798,
+          -23.5036979581253
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Bandeirantes",
+        "endereco": "Rua Itaiquara, nº 237",
+        "classe": "Parque Monteiro Soares"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6946837073488,
+          -23.4862054198557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Freguesia do Ó",
+        "endereco": "Rua Sousa Filho, nº 690",
+        "classe": "Freguesia do Ó"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7039048324625,
+          -23.505651221612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vila Rica",
+        "endereco": "Rua Jorge Mamede da Silva, nº 200",
+        "classe": "Brasilândia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6737616655665,
+          -23.4696408400525
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Jardim São Paulo",
+        "endereco": "Rua Utaro Kanai, nº 374",
+        "classe": "Guaianases"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.3978315362012,
+          -23.5653605613175
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Guaiaponto",
+        "endereco": "Rua da Passagem Funda, nº 250",
+        "classe": "Guaianases"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4124220496604,
+          -23.5550391329784
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Lajeado",
+        "endereco": "Rua Isabela, nº 405",
+        "classe": "Lajeado"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4057504398844,
+          -23.5308098598382
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Padre Nildo do Amaral",
+        "endereco": "Rua Padre Nildo do Amaral Júnior, nº 900",
+        "classe": "Jardim Etelvina"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4283699208437,
+          -23.5205163510618
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Tereza Cristina",
+        "endereco": "Rua Tereza Cristina, nº 10",
+        "classe": "Vila Monumento"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6071251753078,
+          -23.5690178617718
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Santa Cruz",
+        "endereco": "Rua Santa Cruz, nº 1452",
+        "classe": "Vila Firmiano Pinto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6230316993742,
+          -23.5994780953868
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vila das Mercês",
+        "endereco": "Rua Italva, nº 86",
+        "classe": "Vila das Mercês"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6048962441595,
+          -23.623616935191
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Comandante Taylor",
+        "endereco": "Rua Comandante Taylor, nº 690",
+        "classe": "Ipiranga"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5965465324867,
+          -23.6000728795262
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Moreira",
+        "endereco": "Rua João Batista de Godói, nº 1164",
+        "classe": "Itaim Paulista"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.369814867396,
+          -23.4973582123221
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Mãe Preta",
+        "endereco": "Avenida Dama Entre Verdes, nº 21",
+        "classe": "Jardim Ipê"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4159276422987,
+          -23.5082737793548
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Pesqueiro",
+        "endereco": "Rua Caiuás, nº 18",
+        "classe": "Jardim Camargo Novo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.3885017729423,
+          -23.5008616326551
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Flamingo",
+        "endereco": "Rua Alexandre Dias Nogueira, nº 353",
+        "classe": "Vila Nova Curuça"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4204483171213,
+          -23.5142561175226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Itaim Paulista",
+        "endereco": "Rua Barão de Almeida Galeão, nº 61",
+        "classe": "Jardim Camargo Novo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.3719901748189,
+          -23.5044130815772
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Jardim Indaiá",
+        "endereco": "Rua Rossini Pinto, nº 214",
+        "classe": "Itaim Paulista"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.3931732618467,
+          -23.5160059465558
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Parque Guarani",
+        "endereco": "Rua Manuel Alves da Rocha, nº 584",
+        "classe": "Parque Guarani"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4627052133901,
+          -23.5207106261998
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Oswaldo Valle Cordeiro",
+        "endereco": "Avenida Osvaldo Valle Cordeiro, nº 405",
+        "classe": "Jardim Brasília"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4893938141936,
+          -23.5563485656153
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Cidade Lider",
+        "endereco": "Rua Charles Manguin, nº 20",
+        "classe": "Cidade Líder"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4958573618423,
+          -23.5626739227323
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Parque do Carmo",
+        "endereco": "Rua Machado Nunes, nº 95",
+        "classe": "Parque do Carmo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.485906358952,
+          -23.578807170603
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Corinthians",
+        "endereco": "Rua Ana Perena, nº 155",
+        "classe": "José Bonifácio"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4359281060385,
+          -23.5477724918251
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Caldeirão",
+        "endereco": "Rua Major Vitorino de Souza Rocha, nº 148",
+        "classe": "José Bonifácio"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4308455269228,
+          -23.5375573297238
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Imigrantes",
+        "endereco": "Rua Opixe",
+        "classe": "Cidade Vargas"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6301310110378,
+          -23.6321017600457
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Jabaquara",
+        "endereco": "Rua Jupatis, nº 140",
+        "classe": "Vila Santa Catarina"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6488589036185,
+          -23.653009022097
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Anselmo Machado",
+        "endereco": "Avenida Paulo Lincoln do Valle Pontin, nº 550",
+        "classe": "Jardim Guapira"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5849315171609,
+          -23.4587503373458
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Silvio Bittencourt",
+        "endereco": "Rua Maria Amália Lopes Azevedo, nº 4008",
+        "classe": "Jardim Guapira"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.587923409199,
+          -23.4568241981883
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Viaduto Antártica",
+        "endereco": "Rua Robert Bosch",
+        "classe": "Barra Funda"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6696603827491,
+          -23.5243311884976
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vila Jaguara",
+        "endereco": "Rua Agrestina, nº 189",
+        "classe": "Jaguara"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7411661552142,
+          -23.5163348448141
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Piraporinha",
+        "endereco": "Rua João de Abreu, nº 326",
+        "classe": "Jardim São Luís"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7360458821872,
+          -23.669667827168
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "São Luis",
+        "endereco": "Rua Pedro Armani, nº 252",
+        "classe": "Jardim São Luís"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7447241263917,
+          -23.6667503145628
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Bresser",
+        "endereco": "Praça Giuseppe Cesari, nº 54",
+        "classe": "Belém"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6052961711277,
+          -23.5436010212929
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Tatuapé",
+        "endereco": "Avenida Salim Farah Maluf, nº 179",
+        "classe": "Vila Azevedo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5826212687055,
+          -23.5297226648214
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Brás",
+        "endereco": "Avenida Presidente Wilson, nº 1",
+        "classe": "Mooca"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6100041287686,
+          -23.5545067112959
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Mooca",
+        "endereco": "Avenida Pires do Rio, nº 600",
+        "classe": "Mooca"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6017980961983,
+          -23.5478257042961
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Pari",
+        "endereco": "Avenida Carlos de Campos, nº 996",
+        "classe": "Canindé"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6085626287717,
+          -23.5244467312273
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Belém",
+        "endereco": "Rua Belarmino Matos, nº 26",
+        "classe": "Belém"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5928601845852,
+          -23.5431304927142
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vila Luisa",
+        "endereco": "Praça Dante Maron, nº 92",
+        "classe": "Vila Laís"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5487807631737,
+          -23.5296548350177
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Água Rasa",
+        "endereco": "Avenida Salim Farah Maluf, nº 1500",
+        "classe": "Belém"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5803378570661,
+          -23.5435750498238
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Mendes Caldeira",
+        "endereco": "Rua Monsenhor Andrade, nº 865",
+        "classe": "Brás"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6216275785097,
+          -23.5391736755001
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Mooca II",
+        "endereco": "Rua Pantojo, nº 1147",
+        "classe": "Jardim Anália Franco"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5657185287691,
+          -23.5612817903832
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Condessa",
+        "endereco": "Avenida Condessa Elizabeth de Robiano, nº 930",
+        "classe": "Parque São Jorge"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.568120894048,
+          -23.5276124856734
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Penha I",
+        "endereco": "Rua Doutor Heládio, nº 104",
+        "classe": "Vila Esperança"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5244846557188,
+          -23.5311937502367
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Tiquatira",
+        "endereco": "Rua Amorim Diniz, nº 415",
+        "classe": "Chacara Cruzeiro do Sul"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5427896692423,
+          -23.5133109821258
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Gamelinha",
+        "endereco": "Rua Morfeu, nº 25",
+        "classe": "Artur Alvim"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4937906791045,
+          -23.5506427016804
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vila Matilde",
+        "endereco": "Rua Mateus de Siqueira, nº 375",
+        "classe": "Cidade Patriarca"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5043660189658,
+          -23.5391130788665
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Cangaíba",
+        "endereco": "Rua Luciano Nogueira, nº 241",
+        "classe": "Engenheiro Goulart"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5264813808558,
+          -23.5036576645689
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Franquinho",
+        "endereco": "Rua Praia de Mucuripe, nº 685",
+        "classe": "Jardim Nordeste"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4868909882773,
+          -23.531961821839
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Dalila",
+        "endereco": "Rua Inacio da Costa, nº 740",
+        "classe": "Carrão"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5214005115698,
+          -23.5504530958328
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "COHAB Artur Alvim",
+        "endereco": "Avenida Padre Estanislau de Campos, nº 56",
+        "classe": "Conjunto Habitacional Padre Manoel da Nobrega"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4825475612669,
+          -23.5489366348229
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vila Talarico",
+        "endereco": "Avenida Bernardino Brito Fonseca de Carvalho, nº 1050",
+        "classe": "Vila Guilhermina"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5144196599653,
+          -23.5391532754786
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Recanto dos Humildes",
+        "endereco": "Rua Sales Gomes, nº 415",
+        "classe": "Perus"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7496498674022,
+          -23.4089899592971
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Jardim Santa Fé",
+        "endereco": "Rua Salvador Albano, nº 156",
+        "classe": "Jardim Santa Fé"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7914625822009,
+          -23.431650991443
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Pinheiros",
+        "endereco": "Praça do Cancioneiro, nº 15",
+        "classe": "Vila Olímpia"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6909953705654,
+          -23.597866788426
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vila Madalena",
+        "endereco": "Rua Girassol, nº 15",
+        "classe": "Pinheiros"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6870192705558,
+          -23.5581017882472
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Alto de Pinheiros",
+        "endereco": "Praça Arcipreste Anselmo de Oliveira",
+        "classe": "Vila Beatriz"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7096453710991,
+          -23.5568114622932
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Alceu Maynard de Araújo",
+        "endereco": "Avenida Professor Alceu Maynard de Araújo, nº 330",
+        "classe": "Granja Julieta"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7130809478045,
+          -23.6359060391194
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vicente Rao",
+        "endereco": "Avenida Vicente Rao, nº 308",
+        "classe": "Brooklin Velho"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6851269282112,
+          -23.6281463179486
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Pedro Bueno",
+        "endereco": "Rua João de Lery, nº 503",
+        "classe": "Campo Belo"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6605055919975,
+          -23.6382454988187
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vitor Manzini",
+        "endereco": "Praça Dom Francisco de Sousa, nº 635",
+        "classe": "Jardim Santo Amaro"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.7047849306127,
+          -23.660444826035
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Cipoaba",
+        "endereco": "Rua Padre Luis de Siqueira, nº 947",
+        "classe": "São Rafael"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4615614515058,
+          -23.6292660483489
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Iguatemi",
+        "endereco": "Rua Francisco de Melo Palheta, nº 1548",
+        "classe": "Iguatemi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4507841403904,
+          -23.6061438413299
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Montalvania",
+        "endereco": "Rua Montalvania, nº 195",
+        "classe": "Cidade Líder"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4939285121021,
+          -23.5789692732084
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Lima Bonfante",
+        "endereco": "Rua Capitão-mor Lázaro da Costa, nº 251",
+        "classe": "São Rafael"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4461193601099,
+          -23.6284555531752
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Imperador",
+        "endereco": "Avenida Ribeirão Jacu, nº 201",
+        "classe": "Vila Jacuí"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4560317920015,
+          -23.5139041057507
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Carlito Maia",
+        "endereco": "Rua Domingos Fernandes Nobre, nº 109",
+        "classe": "Itaim Paulista"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.3922891464721,
+          -23.4898311052242
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Pedro Nunes",
+        "endereco": "Rua da Polka, nº 100",
+        "classe": "Limoeiro"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4609348176365,
+          -23.5062879142931
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Itaqueruna",
+        "endereco": "Rua Domitila d'Abril, nº 88",
+        "classe": "Jardim Ipê"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4154713766974,
+          -23.507616107452
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Varre Vila",
+        "endereco": "Rua Primeiro de Maio, nº 106",
+        "classe": "União de Vila Nova"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4580038959571,
+          -23.4873228421557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Vitória Popular",
+        "endereco": "Rua El Rey, nº 508",
+        "classe": "Limoeiro"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4710041618414,
+          -23.5090915957018
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Jardim Helena",
+        "endereco": "Rua Cosme dos Santos, nº 110",
+        "classe": "Jardim Helena"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4110933287326,
+          -23.4797254711148
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Jardim Romano",
+        "endereco": "Rua Duarte Martins Mourão, nº 400",
+        "classe": "Jardim Romano"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.3823596324589,
+          -23.4779983937595
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Jardim Lapena",
+        "endereco": "Rua Rafael Zimbard, nº 78",
+        "classe": "São Miguel"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4511045832529,
+          -23.4912233054493
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "Sapopemba",
+        "endereco": "Rua Francesco Usper, nº 550",
+        "classe": "São Mateus"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.4960299232327,
+          -23.6052668209214
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "nome": "SReynaldo José",
+        "endereco": "Rua Silvestro Silvestre, nº 400",
+        "classe": "Sapopemba"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.5160805176813,
+          -23.60731283148
+        ]
+      }
+    }
+  ]
+}
