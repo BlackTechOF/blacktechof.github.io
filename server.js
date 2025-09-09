@@ -4,12 +4,14 @@ require("dotenv").config();
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
-const fs = require("fs");
-const { ImageAnnotatorClient } = require('@google-cloud/vision'); // Importa o cliente do Google Cloud Vision
+const { ImageAnnotatorClient } = require('@google-cloud/vision'); // Google Vision API
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// Definindo as credenciais para a API do Google Vision
+process.env.GOOGLE_APPLICATION_CREDENTIALS = path.join(__dirname, 'testapifelipe-6689559d1366.json'); // Defina o nome do seu arquivo JSON
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -21,7 +23,7 @@ const storage = multer.diskStorage({
     cb(null, "uploads/"); // Pasta onde as imagens serão armazenadas
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Renomeia a imagem para evitar conflitos
+    cb(null, Date.now() + path.extname(file.originalname)); // Renomeia a imagem
   },
 });
 
@@ -74,12 +76,12 @@ app.post("/upload-image", upload.single("image"), async (req, res) => {
       const text = detections[0].description;
       res.json({
         reply: `Texto encontrado na imagem: ${text}`,
-        imageUrl: `https://blacktechof-github-io.onrender.com/${imagePath}`, // Retorna o caminho da imagem
+        imageUrl: `https://seu-dominio.com/${imagePath}`, // Retorna o caminho da imagem
       });
     } else {
       res.json({
         reply: "Não foi encontrado texto na imagem.",
-        imageUrl: `https://blacktechof-github-io.onrender.com/${imagePath}`,
+        imageUrl: `https://seu-dominio.com/${imagePath}`,
       });
     }
   } catch (error) {
