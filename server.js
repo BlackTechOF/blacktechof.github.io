@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-process.env.GOOGLE_APPLICATION_CREDENTIALS = path.join(__dirname, 'testapifelipe-6689559d1366.json');
+process.env.GOOGLE_APPLICATION_CREDENTIALS = path.join('./testapifelipe-6689559d1366.json');
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
