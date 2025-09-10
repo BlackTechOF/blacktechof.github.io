@@ -58,21 +58,25 @@ async function sendMessage() {
       let i = 0;
       intervaloId = setInterval(() => {
         const slicedMessage = message.slice(0, i);
-        element.innerHTML = slicedMessage;  // Se usar markdown, reative marked.parse()
-        i++;
 
+        // Aqui processa a mensagem com markdown
+        element.innerHTML = marked.parse(slicedMessage);  // Usando marked para interpretar o Markdown
+
+        // Adiciona highlight de sintaxe se necessário
         if (i >= message.length) {
           clearInterval(intervaloId);
-          // Se usar highlight.js, reative aqui:
-          // if (typeof hljs !== "undefined") hljs.highlightAll();
+          if (typeof hljs !== "undefined") {
+            hljs.highlightAll();  // Aplica o highlight.js
+          }
           botOcupado = false;
           newInterruptBtn.style.display = "none";
           enviarBtn.style.display = '';
         }
+        i++;
       }, 10);
     }
 
-    typeMessage(botDiv, data.reply);
+    typeMessage(botDiv, data.reply);  // Passa a resposta do bot
   } catch (error) {
     botDiv.textContent = "Erro ao se comunicar com o servidor.";
     console.error(error);
