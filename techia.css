@@ -1,4 +1,5 @@
-/* Resetando estilos e base para o layout */
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Story+Script&family=Kanit&Poppins&family=Cormorant+Garamont&family=Quicksand&Changa+One&display=swap');
+
 body, html {
   font-family: Arial, sans-serif;
   background: white;
@@ -52,14 +53,14 @@ main {
   flex-direction: column;
   align-items: flex-start;
   /* Remover limites que encolhem a área */
-  margin-top: -7%;
-  max-height: 73%;
+  max-height: 490px;
+  margin-top: -10%;
 }
 
 
 /* Ajuste das mensagens para que o texto não estoure */
 .message {
-  padding: 8px 12px;
+  padding: 7px 12px;
   margin: 6px 0;
   border-radius: 10px;
   max-width: 80%; /* Garantir que as mensagens não sejam maiores que 80% da largura */
@@ -68,18 +69,26 @@ main {
   line-height: 1.4; /* Ajuste da altura da linha para melhorar a legibilidade */
 }
 
-/* Mensagens do usuário e do bot */
-.user {
-  background: #007bff;
-  color: white;
-  align-self: flex-end;
-}
-
 .bot {
-  background: #e9ecef;
-  color: #333;
+  background: white;
+  color: black;
+  border: solid black;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 6px 10px;
   align-self: flex-start;
 }
+
+.user {
+  background: white;
+  color: black;
+  border: solid black;
+  font-size: 16px;
+  padding: 6px 10px;
+  align-self: flex-end;
+  align-items: center;
+}
+
 
 input {
   flex: 1;
@@ -95,7 +104,7 @@ button {
   background: black;
   border: none;
   width: 15%;
-  height: 50px;
+  height: 48px;
   border-radius: 30px;
   color: white;
   cursor: pointer;
@@ -113,7 +122,7 @@ button:hover {
   background: black;
   border: none;
   width: 15%;
-  height: 52px;
+  height: 48px;
   border-radius: 30px;
   color: white;
   cursor: pointer;
@@ -122,6 +131,12 @@ button:hover {
 
 #interrupt-btn:hover {
   background-color: red;
+}
+
+#interrupt-btn svg {
+  width: 20px;
+  height: 35px;
+  align-items: center;
 }
 
 /* Estilo para as imagens */
@@ -196,4 +211,46 @@ pre code {
 
 .input-area input[type="file"]:focus + label {
   border: 2px solid #007bff; /* Realce quando o campo de arquivo for selecionado */
+}
+
+.message.user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-end;     /* sempre cola à direita */
+  justify-content: flex-end;
+  text-align: right;        /* texto acompanha o alinhamento */
+}
+
+
+.message.user svg {
+  width: 20px;
+  height: 20px;
+  background: white;
+  color: black;
+  border: solid black;
+  padding: 2px;
+  border-radius: 20px;
+}
+
+.message.bot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;   /* sempre cola à esquerda */
+  justify-content: flex-start;
+}
+
+.message.bot svg {
+  width: 20px;
+  height: 20px;
+  background: white;
+  color: black;
+  padding: 2px;
+  border-radius: 20px;
+}
+
+.divisoria {
+  height: 8px;
+  color: black;
 }
