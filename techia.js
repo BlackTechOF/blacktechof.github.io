@@ -94,3 +94,8 @@ function interromperResposta(intervaloId, botDiv, interruptBtn) {
   interruptBtn.style.display = "none";
   botOcupado = false;
 }
+
+  document.getElementById("inputs").addEventListener("click", function(e) {
+      e.preventDefault();
+      sendMessage();
+    });

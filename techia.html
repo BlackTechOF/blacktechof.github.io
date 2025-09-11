@@ -11,24 +11,24 @@
   <div class="chat-container">
     <div id="messages" class="messages"></div>
     
-    <form id="chatForm" autocomplete="off" class="input-area">
-      <input type="text" id="userInput" placeholder="Digite sua mensagem..." autocomplete="off" />
-      <button id="enviar" type="submit">Enviar</button>
-      <button id="interrupt-btn" type="button" style="display:none;">Parar</button>
-    </form>
+    <div id="inputs" class="input-area">
+      <input type="text" id="userInput" placeholder="Digite sua mensagem..."/>
+      <button id="enviar" type="submit">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="icon">
+          <path d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"></path>
+        </svg>
+      </button>
+      <button id="interrupt-btn" type="button" style="display:none;">
+        <svg width="35" height="35" viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="icon">
+          <path d="M4.5 5.75C4.5 5.05964 5.05964 4.5 5.75 4.5H14.25C14.9404 4.5 15.5 5.05964 15.5 5.75V14.25C15.5 14.9404 14.9404 15.5 14.25 15.5H5.75C5.05964 15.5 4.5 14.9404 4.5 14.25V5.75Z"></path>
+        </svg>
+      </button>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
   <script>hljs.highlightAll();</script>
   <script src="techia.js"></script>
-
-  <script>
-    // Previne o comportamento padrão do form (recarregar a página)
-    document.getElementById("chatForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      sendMessage();
-    });
-  </script>
 </body>
 </html>
