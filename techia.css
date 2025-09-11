@@ -2,11 +2,32 @@
 body, html {
   font-family: Arial, sans-serif;
   background: white;
+  height: 100%;
+  margin: 0;
+}
+
+main {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  margin: 0;
+}
+
+.menu h2 {
+  display: flex;
+  align-items: center; /* alinha verticalmente */
+  gap: 8px; /* espaço entre logo e texto */
+  font-size: 22px; /* ajuste do tamanho do texto */
+  margin-left: 5%;
+}
+
+.menu h2 .icon {
+  display: block;
+  width: 40px; /* ajuste de tamanho do logo */
+  height: 40px;
+}
+
+.menu svg {
+  border-radius: 50%;
 }
 
 .chat-container {
@@ -24,17 +45,17 @@ body, html {
 /* Ajuste para a área de mensagens */
 .messages {
   flex: 1;
-  overflow-y: none;
-  margin-bottom: 15px;
-  padding-right: 5px;
-  word-wrap: break-word; /* Faz o texto quebrar corretamente */
-  max-height: 50%; /* Ajusta a altura máxima da área de mensagens */
+  overflow-y: auto;
   padding: 10px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  /* Remover limites que encolhem a área */
+  margin-top: -7%;
+  max-height: 73%;
 }
+
 
 /* Ajuste das mensagens para que o texto não estoure */
 .message {
@@ -74,7 +95,7 @@ button {
   background: black;
   border: none;
   width: 15%;
-  height: 52px;
+  height: 50px;
   border-radius: 30px;
   color: white;
   cursor: pointer;
@@ -159,11 +180,11 @@ pre code {
   display: flex;
   gap: 10px;
   align-items: center;
-  position: relative;
-  width: 100%;
-  margin-top: 60%;
+  position: fixed;
+  width: 85%;
+  top: 85%;
   border: solid black 1px;
-  padding: 15px;
+  padding: 13px;
   border-radius: 20px;
   background: white;
   box-shadow: 0 0 5px #888888;
