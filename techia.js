@@ -1,7 +1,95 @@
 let botOcupado = false;
-let intervaloId; 
+let intervaloId;
 let controller; // 👈 controlador global do fetch
 
+// ================= CONFIG =================
+const API_URL = "https://blacktechof-github-io.onrender.com"; // 🔥 troque pela URL do Render se for deploy
+// ==========================================
+
+// =============== AUTENTICAÇÃO ===============
+async function register() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch(`${API_URL}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+
+  const data = await res.json();
+  alert(data.message || data.error);
+}
+
+async function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+
+  const data = await res.json();
+
+  if (data.token) {
+    localStorage.setItem("token", data.token);
+
+    // esconde login, mostra chat
+    document.getElementById("auth-container").style.display = "none";
+    document.getElementById("chat-container").style.display = "block";
+
+    // carrega histórico
+    loadHistory();
+  } else {
+    alert(data.error);
+  }
+}
+
+// carregar histórico
+async function loadHistory() {
+  const res = await fetch(`${API_URL}/chatdb/history`, {
+    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+  });
+
+  const history = await res.json();
+  const messagesDiv = document.getElementById("messages");
+  messagesDiv.innerHTML = "";
+
+  history.forEach(msg => {
+    const div = document.createElement("div");
+    div.className = `message ${msg.role}`;
+
+    if (msg.role === "user") {
+      div.innerHTML = `
+        <svg viewBox="0 0 30 30" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="icon">
+          <path d="M16 14c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zm0-12c-2.757 0-5 2.243-5 5s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5zM27 32a1 1 0 0 1-1-1v-6.115a6.95 6.95 0 0 0-6.942-6.943h-6.116A6.95 6.95 0 0 0 6 24.885V31a1 1 0 1 1-2 0v-6.115c0-4.93 4.012-8.943 8.942-8.943h6.116c4.93 0 8.942 4.012 8.942 8.943V31a1 1 0 0 1-1 1z"></path>
+        </svg>
+        <hr id='divisoria'>
+        ${msg.content}
+      `;
+    } else {
+      div.innerHTML = `
+        <div class="bot-icon">
+          <svg viewBox="0 0 300.000000 300.000000" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="icon">
+            <g transform="translate(0.000000,300.000000) scale(0.100000,-0.100000)"
+              fill="#000000" stroke="none">
+              <path d="M0 1500 l0 -1500 743 1 ..."/>
+            </g>
+          </svg>
+        </div>
+        <div class="bot-content">${msg.content}</div>
+      `;
+    }
+
+    messagesDiv.appendChild(div);
+  });
+
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// =============== CHAT ===============
 async function sendMessage() {
   if (botOcupado) return;
   botOcupado = true;
@@ -17,28 +105,33 @@ async function sendMessage() {
 
   // Mensagem do usuário
   const userDiv = document.createElement("div");
-  userDiv.className = 'message user'
-
+  userDiv.className = 'message user';
   userDiv.innerHTML = `
-  <svg viewBox="0 0 30 30" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="icon">
-          <path d="M16 14c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zm0-12c-2.757 0-5 2.243-5 5s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5zM27 32a1 1 0 0 1-1-1v-6.115a6.95 6.95 0 0 0-6.942-6.943h-6.116A6.95 6.95 0 0 0 6 24.885V31a1 1 0 1 1-2 0v-6.115c0-4.93 4.012-8.943 8.942-8.943h6.116c4.93 0 8.942 4.012 8.942 8.943V31a1 1 0 0 1-1 1z"></path>
-        </svg>
-        <hr class='divisoria'>
-  ${userMessage}
-  
-        </div>
-  `
+    <svg viewBox="0 0 30 30" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="icon">
+      <path d="M16 14c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zm0-12c-2.757 0-5 2.243-5 5s2.243 5 5 5 5-2.243 5-5-2.243-5-5-5zM27 32a1 1 0 0 1-1-1v-6.115a6.95 6.95 0 0 0-6.942-6.943h-6.116A6.95 6.95 0 0 0 6 24.885V31a1 1 0 1 1-2 0v-6.115c0-4.93 4.012-8.943 8.942-8.943h6.116c4.93 0 8.942 4.012 8.942 8.943V31a1 1 0 0 1-1 1z"></path>
+    </svg>
+    <hr id='divisoria'>
+    ${userMessage}
+  `;
+  messagesDiv.appendChild(userDiv);
 
-   messagesDiv.appendChild(userDiv);
+  // salvar no banco
+  await fetch(`${API_URL}/chatdb/save`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + localStorage.getItem("token")
+    },
+    body: JSON.stringify({ role: "user", content: userMessage })
+  });
 
   input.value = "";
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-  // Mensagem do bot (placeholder "pensando")
+  // Placeholder do bot
   const botDiv = document.createElement("div");
   botDiv.className = "message bot bot_ativo";
-  botDiv.innerHTML = `
-  <span>Pensando</span> <span>Na</span> <span>Resposta</span>`;
+  botDiv.innerHTML = `<span>Pensando</span> <span>Na</span> <span>Resposta</span>`;
   messagesDiv.appendChild(botDiv);
 
   const interruptBtn = document.getElementById("interrupt-btn");
@@ -46,7 +139,6 @@ async function sendMessage() {
   enviarBtn.style.display = 'none';
   interruptBtn.style.display = "inline-block";
 
-  // Limpar listeners antigos
   interruptBtn.replaceWith(interruptBtn.cloneNode(true));
   const newInterruptBtn = document.getElementById("interrupt-btn");
   newInterruptBtn.addEventListener("click", () => {
@@ -56,64 +148,53 @@ async function sendMessage() {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
   try {
-    // 👇 Criando controlador do fetch
     controller = new AbortController();
 
-    const response = await fetch("https://blacktechof-github-io.onrender.com/chat", {
+    const response = await fetch(`${API_URL}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: userMessage }),
-      signal: controller.signal // 👈 permite abortar depois
+      signal: controller.signal
     });
 
     const data = await response.json();
 
-    function typeMessage(element, message) {
+    async function typeMessage(element, message) {
       element.classList.remove("bot_ativo");
-      element.innerHTML = ``
-      let i = 0;
-      intervaloId = setInterval(() => {
-        const slicedMessage = message.slice(0, i);
+      element.innerHTML = `
+        <div class="bot-icon">
+          <svg viewBox="0 0 300.000000 300.000000" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="icon">
+            <g transform="translate(0.000000,300.000000) scale(0.100000,-0.100000)"
+              fill="#000000" stroke="none">
+              <path d="M0 1500 l0 -1500 743 1 ..."/>
+            </g>
+          </svg>
+        </div>
+        <div class="bot-content">TechIA</div>
+      `;
 
-        // Renderiza como Markdown
-        element.innerHTML = `<svg viewBox="0 0 300.000000 300.000000" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="icon">
-       <g transform="translate(0.000000,300.000000) scale(0.100000,-0.100000)"
-fill="#000000" stroke="none">
-<path d="M0 1500 l0 -1500 743 1 c408 1 733 4 722 6 -11 3 -285 158 -610 345
--395 228 -602 353 -627 379 l-38 38 0 735 0 736 28 29 c15 16 194 125 397 242
-204 117 471 271 594 342 123 71 236 133 250 137 14 5 -308 9 -716 9 l-743 1 0
--1500z"/>
-<path d="M1540 2991 c14 -5 261 -144 550 -311 289 -167 560 -323 603 -348 122
--68 118 -54 115 -387 l-3 -280 -109 -62 c-85 -49 -113 -60 -127 -53 -16 9 -18
-32 -21 268 l-3 259 -26 34 c-19 24 -101 76 -270 173 -134 77 -348 200 -475
-273 -198 113 -238 133 -274 133 -46 0 -20 14 -715 -388 -223 -129 -295 -175
--312 -201 l-23 -35 2 -570 c3 -664 -8 -601 125 -678 43 -24 258 -149 479 -276
-358 -208 405 -232 445 -232 38 0 74 17 274 133 127 73 341 198 478 276 169 98
-254 153 270 175 21 29 22 43 25 218 l4 188 101 60 c65 38 111 59 127 58 l25
--3 3 -300 c1 -165 0 -314 -3 -331 -7 -41 -43 -77 -125 -123 -36 -21 -303 -175
--595 -343 -291 -168 -539 -308 -550 -311 -11 -2 314 -5 723 -6 l742 -1 0 1500
-0 1500 -742 -1 c-409 0 -732 -4 -718 -8z m155 -607 c171 -98 179 -105 171
--131 -7 -21 -195 -133 -225 -133 -11 0 -42 12 -68 26 -66 35 -99 29 -224 -42
--124 -70 -153 -93 -144 -116 11 -27 233 -150 282 -156 50 -5 64 1 376 182 119
-69 224 126 233 126 22 0 213 -108 241 -136 l23 -23 0 -480 0 -480 -22 -24
-c-13 -14 -90 -63 -173 -110 -82 -46 -253 -144 -380 -217 -184 -107 -239 -134
--277 -138 -46 -4 -55 0 -425 213 -208 120 -393 228 -410 242 l-33 24 0 359 c0
-340 1 360 19 369 14 8 40 -2 127 -52 l109 -62 5 -232 c3 -135 9 -236 15 -242
-6 -5 129 -78 275 -163 235 -136 270 -153 310 -153 40 0 76 18 320 160 l275
-160 3 343 c1 188 -1 342 -4 342 -3 0 -128 -71 -278 -157 -240 -138 -276 -157
--316 -157 -40 0 -82 21 -407 210 -393 226 -404 235 -372 293 10 18 123 89 374
-234 324 187 364 207 405 207 39 0 67 -12 195 -86z"/>
-</g>
-        </svg>` + marked.parse(slicedMessage);
+      let i = 0;
+      intervaloId = setInterval(async () => {
+        const slicedMessage = message.slice(0, i);
+        element.querySelector(".bot-content").innerHTML =
+          "TechIA " + marked.parse(slicedMessage);
 
         if (i >= message.length) {
           clearInterval(intervaloId);
-          if (typeof hljs !== "undefined") {
-            hljs.highlightAll();
-          }
+          if (typeof hljs !== "undefined") hljs.highlightAll();
           botOcupado = false;
           newInterruptBtn.style.display = "none";
           enviarBtn.style.display = '';
+
+          // salvar resposta do bot
+          await fetch(`${API_URL}/chatdb/save`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ role: "bot", content: message })
+          });
         }
         i++;
       }, 10);
@@ -135,10 +216,10 @@ c-13 -14 -90 -63 -173 -110 -82 -46 -253 -144 -380 -217 -184 -107 -239 -134
 
 // 🚨 Função para parar tudo
 function interromperResposta(intervaloId, botDiv, interruptBtn) {
-  clearInterval(intervaloId); // para a digitação
+  clearInterval(intervaloId);
 
   if (controller) {
-    controller.abort(); // encerra a requisição no fetch
+    controller.abort();
   }
 
   botDiv.innerHTML = "Resposta interrompida.";
@@ -146,12 +227,12 @@ function interromperResposta(intervaloId, botDiv, interruptBtn) {
   botOcupado = false;
 }
 
-
+// listeners
 document.getElementById("userInput").addEventListener("keypress", (e) => {
   if (e.key === "Enter") sendMessage();
 });
 
-  document.getElementById("inputs").addEventListener("click", function(e) {
-      e.preventDefault();
-      sendMessage();
-    });
+document.getElementById("inputs").addEventListener("click", function(e) {
+  e.preventDefault();
+  sendMessage();
+});

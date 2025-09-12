@@ -13,6 +13,11 @@ main {
   align-items: center;
 }
 
+.menu {
+  display: flex;
+  
+}
+
 .menu h2 {
   display: flex;
   align-items: center; /* alinha verticalmente */
@@ -54,7 +59,7 @@ main {
   align-items: flex-start;
   /* Remover limites que encolhem a área */
   max-height: 490px;
-  margin-top: -10%;
+  margin-top: -5%;
 }
 
 
@@ -75,6 +80,8 @@ main {
   border: solid black;
   font-size: 14px;
   font-weight: bold;
+  display: flex;
+  flex-direction: column;
   padding: 6px 10px;
   align-self: flex-start;
 }
@@ -236,10 +243,74 @@ pre code {
 .message.bot {
   display: flex;
   align-items: center;
-  gap: 10px;
-  align-self: flex-start;   /* sempre cola à esquerda */
+  gap: 1px;
+  align-self: flex-start;
   justify-content: flex-start;
 }
+
+.message.bot {
+  display: flex;
+  flex-direction: row; /* ícone do lado */
+  align-items: flex-start;
+  gap: 8px;
+  background: white;
+  border: solid black;
+  padding: 6px 10px;
+  max-width: 80%;
+}
+
+.bot-icon {
+  flex-shrink: 0; /* não deixa o ícone esticar */
+}
+
+.bot-icon svg {
+  width: 24px;
+  height: 24px;
+  background: white;
+  color: black;
+  border-radius: 20px;
+  padding: 2px;
+}
+
+.bot-content {
+  display: flex;
+  flex-direction: column; /* o texto do bot continua empilhado */
+}
+
+
+#darkModeToggle {
+  position: relative;
+  left: 100%;
+  background: white;
+  border: solid black;
+  cursor: pointer;
+  color: black;
+  width: 40px;   /* tamanho fixo do botão */
+  height: 40px;
+  border-radius: 50%; /* deixa redondinho */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 2%;
+}
+
+#darkModeToggle svg {
+  width: 20px;
+  height: 20px;
+  pointer-events: none; /* evita bug de clique no ícone */
+}
+
+
+body.dark #darkModeToggle {
+  color: white;
+}
+
+
+.message.bot.bot_ativo {
+  flex-direction: row;
+  gap: 6px;
+}
+
 
 .message.bot svg {
   width: 20px;
@@ -251,6 +322,74 @@ pre code {
 }
 
 .divisoria {
-  height: 8px;
+  height: 1px;
   color: black;
+  background: black;
+}
+
+#divisoria {
+  height: 10px;
+  background: black;
+  color: black;
+}
+
+/* ===== DARK MODE ===== */
+body.dark {
+  background: #121212;
+  color: #f0f0f0;
+}
+
+body.dark .chat-container {
+  background: #121212;
+}
+
+body.dark .messages {
+  background: #121212;
+}
+
+body.dark .message.bot {
+  background: #2a2a2a;
+  border-color: #555;
+  color: #fff;
+}
+
+body.dark .message.user {
+  background: #333;
+  border-color: #555;
+  color: #fff;
+}
+
+body.dark input {
+  background: whitesmoke;
+  color: black;
+  border: 1px solid #555;
+}
+
+body.dark button {
+  background: #555;
+  color: #fff;
+  border: 1px solid #555;
+}
+
+body.dark button:hover {
+  background: #333;
+  color: #fff;
+}
+
+body.dark .divisoria {
+  height: 1px;
+  color: white;
+  background: white;
+}
+
+body.dark .input-area {
+  background: #333;
+  border: solid black;
+}
+
+.menu h2 .icon {
+    display: block;
+    width: 40px;
+    height: 40px;
+    background: white;
 }

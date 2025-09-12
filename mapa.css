@@ -56,12 +56,21 @@ height: 100%;
   z-index: 100;
 }
 
+#divPesquisa svg{
+ margin-top: 20%;
+}
+
 #abrirSideBar {
  height: 40px;
   width: 40px;
   border-radius: 30px;
   background: white;
   border: solid black;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
 }
 
 #ativarInput {
