@@ -143,14 +143,46 @@ async function loadChats() {
 
   chats.forEach(c => {
     const li = document.createElement("li");
-    li.textContent = c.title;
-    li.onclick = () => {
+    li.style.display = "flex";
+    li.style.justifyContent = "space-between";
+    li.style.alignItems = "center";
+
+    // título do chat (clique para abrir)
+    const span = document.createElement("span");
+    span.textContent = c.title;
+    span.style.cursor = "pointer";
+    span.onclick = () => {
       currentChatId = c._id;
       loadHistory(currentChatId);
     };
+
+    // botão apagar
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "🗑️";
+    delBtn.style.marginLeft = "8px";
+    delBtn.onclick = async (e) => {
+      e.stopPropagation(); // não abrir chat ao clicar no 🗑️
+      if (confirm("Tem certeza que deseja excluir este chat?")) {
+        await fetch(`${API_URL}/chatdb/${c._id}`, {
+          method: "DELETE",
+          headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+        });
+        loadChats();
+
+        // se você estava nesse chat, limpa mensagens
+        if (currentChatId === c._id) {
+          currentChatId = null;
+          document.getElementById("messages").innerHTML = "";
+        }
+      }
+    };
+
+    li.appendChild(span);
+    li.appendChild(delBtn);
     chatList.appendChild(li);
   });
 }
+
 
 async function loadHistory(chatId) {
   if (!chatId) return;
@@ -262,3 +294,20 @@ async function sendMessage() {
     botOcupado = false;
   }
 }
+
+// ================= LOGOUT =================
+function logout() {
+  localStorage.removeItem("token");
+  currentChatId = null;
+  document.getElementById("chat-container").style.display = "none";
+  document.getElementById("auth-container").style.display = "block";
+}
+
+// listener para logout
+window.addEventListener("DOMContentLoaded", () => {
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", logout);
+  }
+});
+
