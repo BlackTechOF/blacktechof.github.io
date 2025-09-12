@@ -132,14 +132,32 @@ app.get("/chatdb/:id", authMiddleware, async (req, res) => {
 });
 
 // salvar mensagem em um chat
+// salvar mensagem em um chat
 app.post("/chatdb/:id/save", authMiddleware, async (req, res) => {
   const { role, content } = req.body;
   let chat = await Chat.findOne({ _id: req.params.id, userId: req.userId });
   if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
 
   chat.messages.push({ role, content });
+
+  // se for a primeira mensagem do usuário, usa como título
+  if (chat.messages.length === 1 && role === "user") {
+    chat.title = content.substring(0, 40) + (content.length > 40 ? "..." : "");
+  }
+
   await chat.save();
   res.json({ success: true });
+});
+
+// deletar um chat
+app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
+  try {
+    const chat = await Chat.findOneAndDelete({ _id: req.params.id, userId: req.userId });
+    if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao deletar chat" });
+  }
 });
 
 // =================== START ===================
