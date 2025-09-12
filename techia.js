@@ -158,8 +158,14 @@ async function loadChats() {
 
     // botão apagar
     const delBtn = document.createElement("button");
-    delBtn.textContent = "🗑️";
-    delBtn.style.marginLeft = "8px";
+    delBtn.innerHTML = `
+    <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10 11V17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14 11V17" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4 7H20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6 7H12H18V18C18 19.6569 16.6569 21 15 21H9C7.34315 21 6 19.6569 6 18V7Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`
     delBtn.onclick = async (e) => {
       e.stopPropagation(); // não abrir chat ao clicar no 🗑️
       if (confirm("Tem certeza que deseja excluir este chat?")) {
@@ -183,7 +189,6 @@ async function loadChats() {
   });
 }
 
-
 async function loadHistory(chatId) {
   if (!chatId) return;
 
@@ -200,13 +205,26 @@ async function loadHistory(chatId) {
   history.forEach(msg => {
     const div = document.createElement("div");
     div.className = `message ${msg.role}`;
+
     if (msg.role === "user") {
-      div.innerHTML = `<svg viewBox="0 0 30 30"><path d="..."/></svg> ${msg.content}`;
+      div.innerHTML = `
+        <svg viewBox="0 0 30 30"><path d="..."/></svg>
+        ${marked.parse(msg.content)}
+      `;
     } else {
-      div.innerHTML = `<div class="bot-icon">🤖</div><div class="bot-content">${msg.content}</div>`;
+      div.innerHTML = `
+        <div class="bot-icon">🤖</div>
+        <div class="bot-content">${marked.parse(msg.content)}</div>
+      `;
     }
+
     messagesDiv.appendChild(div);
   });
+
+  // aplicar highlight.js nos códigos depois de renderizar
+  if (typeof hljs !== "undefined") {
+    hljs.highlightAll();
+  }
 
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
@@ -267,26 +285,36 @@ async function sendMessage() {
     const data = await response.json();
 
     // digita resposta
-    let i = 0;
-    intervaloId = setInterval(async () => {
-      const sliced = data.reply.slice(0, i);
-      botDiv.innerHTML = `<div class="bot-icon">🤖</div><div class="bot-content">${sliced}</div>`;
-      if (i >= data.reply.length) {
-        clearInterval(intervaloId);
-        botOcupado = false;
+let i = 0;
+intervaloId = setInterval(async () => {
+  const sliced = data.reply.slice(0, i);
 
-        // salva resposta
-        await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("token")
-          },
-          body: JSON.stringify({ role: "bot", content: data.reply })
-        });
-      }
-      i++;
-    }, 15);
+  botDiv.innerHTML = `
+    <div class="bot-icon">🤖</div>
+    <div class="bot-content">${marked.parse(sliced)}</div>
+  `;
+
+  if (i >= data.reply.length) {
+    clearInterval(intervaloId);
+    botOcupado = false;
+
+    // aplica highlight.js depois que terminar de escrever
+    if (typeof hljs !== "undefined") {
+      hljs.highlightAll();
+    }
+
+    // salva resposta
+    await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem("token")
+      },
+      body: JSON.stringify({ role: "bot", content: data.reply })
+    });
+  }
+  i++;
+}, 15);
 
   } catch (err) {
     botDiv.textContent = "Erro na IA.";

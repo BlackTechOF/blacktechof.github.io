@@ -5,6 +5,7 @@ body, html {
   background: white;
   height: 100%;
   margin: 0;
+  width: 100%;
 }
 
 main {
@@ -15,8 +16,27 @@ main {
 
 .menu {
   display: flex;
-  
+  align-items: center;
+  justify-content: space-between; /* 🔥 distribui os 3 blocos */
+  padding: 10px;
 }
+
+.menu-left {
+  flex: 1;
+}
+
+.menu-center {
+  flex: 1;
+  display: flex;
+  justify-content: center; /* 🔥 centraliza o botão logout */
+}
+
+.menu-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end; /* 🔥 empurra o darkmode pro fim */
+}
+
 
 .menu h2 {
   display: flex;
@@ -38,7 +58,7 @@ main {
 
 .chat-container {
   width: 100%;
-  max-width: 100%;
+  max-width: 95%;
   padding: 20px;
   border-radius: 12px;
   display: flex;
@@ -58,7 +78,7 @@ main {
   flex-direction: column;
   align-items: flex-start;
   /* Remover limites que encolhem a área */
-  max-height: 490px;
+  max-height: 93%;
   margin-top: -5%;
 }
 
@@ -74,10 +94,53 @@ main {
   line-height: 1.4; /* Ajuste da altura da linha para melhorar a legibilidade */
 }
 
+.sidebar {
+  position: absolute;
+  width: 50%;
+  height: 85%;
+  background: white;
+  border: solid black;
+  margin-top: 25%;
+  margin-left: 1%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 100;
+}
+
+#new-chat-btn {
+  width: 80%;
+  margin-top: 5%;
+  height: auto;
+}
+
+#chat-list {
+  width: 70%;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Nunito";
+  border: solid black;
+  display: flex;
+  border-radius: 20px;
+}
+
+#chat-list button {
+  width: 50px;
+  margin-left: 60px;
+  border-radius: 20px;
+  border-radius: 0;
+  background: transparent;
+}
+
+#chat-list button:hover {
+  border-radius: 20px;
+  border: solid black;
+}
+
 .bot {
   background: white;
   color: black;
-  border: solid black;
+  border: transparent;
   font-size: 14px;
   font-weight: bold;
   display: flex;
@@ -177,10 +240,10 @@ pre code {
   word-wrap: break-word;
   white-space: pre-wrap;
   display: block;
-  padding: 10px;
+  padding: 20px;
   background-color: #f7f7f7;
   border-radius: 8px;
-  margin: 10px 0;
+  width: 100%;
 }
 
 /* Estilo do campo de input de arquivo */
@@ -210,6 +273,11 @@ pre code {
   border-radius: 20px;
   background: white;
   box-shadow: 0 0 5px #888888;
+  z-index: 99;
+}
+
+#logoutBtn {
+  width: 50%;
 }
 
 #imageInput {
@@ -240,23 +308,14 @@ pre code {
   border-radius: 20px;
 }
 
+/* garantir que a msg do bot não quebre o layout */
 .message.bot {
   display: flex;
-  align-items: center;
-  gap: 1px;
-  align-self: flex-start;
-  justify-content: flex-start;
-}
-
-.message.bot {
-  display: flex;
-  flex-direction: row; /* ícone do lado */
   align-items: flex-start;
   gap: 8px;
-  background: white;
-  border: solid black;
-  padding: 6px 10px;
-  max-width: 80%;
+  max-width: 85%;   /* limita largura */
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .bot-icon {
@@ -272,26 +331,44 @@ pre code {
   padding: 2px;
 }
 
+
+/* conteúdo do bot (mantém em coluna) */
 .bot-content {
   display: flex;
-  flex-direction: column; /* o texto do bot continua empilhado */
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;  /* ocupa só o necessário */
+  width: 100%;
 }
 
+/* garante que código não exploda pro lado */
+.message pre, 
+.message code {
+  max-width: 100%;
+  overflow-x: auto;
+  word-break: break-word;
+  white-space: pre-wrap; 
+  box-sizing: border-box;
+}
 
+/* botão central (ex: logout) */
+#logoutBtn {
+  margin: 0 auto; /* 🔥 empurra para o centro */
+}
+
+/* botão darkmode no final */
 #darkModeToggle {
-  position: relative;
-  left: 100%;
+  margin-left: auto; /* 🔥 empurra pro canto direito */
   background: white;
   border: solid black;
   cursor: pointer;
   color: black;
-  width: 40px;   /* tamanho fixo do botão */
+  width: 40px;
   height: 40px;
-  border-radius: 50%; /* deixa redondinho */
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  top: 2%;
 }
 
 #darkModeToggle svg {

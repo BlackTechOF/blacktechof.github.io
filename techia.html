@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TechIA Chat</title>
   <link rel="stylesheet" href="techia.css">
-
-  <!-- markdown + highlight.js -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/default.min.css">
 </head>
 <body>
   <!-- ==================== LOGIN/CADASTRO ==================== -->
@@ -23,32 +19,31 @@
     </div>
   </div>
 
-  <!-- ==================== CHAT ==================== -->
-  <div id="chat-container" style="display:none">
-    <div class="menu">
-      <h2>
-        <span class="icon">🤖</span> TechIA
-      </h2>
-      <!-- botão modo escuro -->
-      <button id="darkModeToggle">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" 
-             viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" 
-                stroke-width="2" 
-                d="M12 3v1m0 16v1m8.485-8.485h1M3.515 12.515h1M16.95 7.05l.707.707M6.343 17.657l.707.707M16.95 16.95l.707-.707M6.343 6.343l.707-.707M12 5a7 7 0 000 14a7 7 0 000-14z"/>
-        </svg>
-      </button>
-    </div>
-
-    <main style="display:flex; height:100vh;">
-      <!-- sidebar -->
-      <div class="sidebar" style="width:220px; border-right:1px solid #ccc; padding:10px;">
+  <div class="sidebar">
         <button id="new-chat-btn">+ Novo Chat</button>
         <ul id="chat-list"></ul>
       </div>
 
-      <!-- área do chat -->
-      <div class="chat-container" style="flex:1; display:flex; flex-direction:column;">
+  <!-- ==================== CHAT ==================== -->
+  <div id="chat-container" style="display:none">
+    <!-- MENU -->
+    <div class="menu">
+      <div class="menu-left">
+        <h2><span class="icon">🤖</span> TechIA</h2>
+      </div>
+      <div class="menu-center">
+        <button id="logoutBtn">Sair</button>
+      </div>
+      <div class="menu-right">
+        <button id="darkModeToggle">🌙</button>
+      </div>
+    </div>
+
+    <!-- LAYOUT PRINCIPAL -->
+    <main>
+
+      <!-- ÁREA DO CHAT -->
+      <div class="chat-container">
         <div id="messages" class="messages"></div>
 
         <div class="input-area">
@@ -61,6 +56,8 @@
 
   <!-- ==================== SCRIPTS ==================== -->
   <script src="techia.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const darkToggle = document.getElementById("darkModeToggle");
