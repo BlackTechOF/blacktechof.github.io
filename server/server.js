@@ -29,6 +29,7 @@ const UserSchema = new mongoose.Schema({
 
 const ChatSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  title: { type: String, default: "Novo Chat" },
   messages: [
     {
       role: { type: String, enum: ["user", "bot"], required: true },
@@ -88,7 +89,6 @@ function authMiddleware(req, res, next) {
 app.post("/chat", async (req, res) => {
   try {
     const { message } = req.body;
-
     const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
 
     const prompt = `
@@ -110,23 +110,36 @@ ${message}
 });
 
 // =================== CHATDB (Mongo) ===================
-// salvar mensagem
-app.post("/chatdb/save", authMiddleware, async (req, res) => {
-  const { role, content } = req.body;
+// criar novo chat
+app.post("/chatdb/new", authMiddleware, async (req, res) => {
+  const { title } = req.body;
+  const chat = new Chat({ userId: req.userId, title: title || "Novo Chat", messages: [] });
+  await chat.save();
+  res.json(chat);
+});
 
-  let chat = await Chat.findOne({ userId: req.userId });
-  if (!chat) chat = new Chat({ userId: req.userId, messages: [] });
+// listar chats do usuário
+app.get("/chatdb/list", authMiddleware, async (req, res) => {
+  const chats = await Chat.find({ userId: req.userId }).select("_id title");
+  res.json(chats);
+});
+
+// obter histórico de um chat
+app.get("/chatdb/:id", authMiddleware, async (req, res) => {
+  const chat = await Chat.findOne({ _id: req.params.id, userId: req.userId });
+  if (!chat) return res.json([]);
+  res.json(chat.messages);
+});
+
+// salvar mensagem em um chat
+app.post("/chatdb/:id/save", authMiddleware, async (req, res) => {
+  const { role, content } = req.body;
+  let chat = await Chat.findOne({ _id: req.params.id, userId: req.userId });
+  if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
 
   chat.messages.push({ role, content });
   await chat.save();
-
   res.json({ success: true });
-});
-
-// carregar histórico
-app.get("/chatdb/history", authMiddleware, async (req, res) => {
-  const chat = await Chat.findOne({ userId: req.userId });
-  res.json(chat ? chat.messages : []);
 });
 
 // =================== START ===================
