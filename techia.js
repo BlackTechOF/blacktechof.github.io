@@ -143,9 +143,6 @@ async function loadChats() {
 
   chats.forEach(c => {
     const li = document.createElement("li");
-    li.style.display = "flex";
-    li.style.justifyContent = "space-between";
-    li.style.alignItems = "center";
 
     // título do chat (clique para abrir)
     const span = document.createElement("span");
@@ -380,6 +377,26 @@ window.addEventListener("DOMContentLoaded", () => {
     logoutBtn.addEventListener("click", logout);
   }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const sidebar = document.querySelector(".sidebar");
+  const toggleBtn = document.getElementById("toggleSidebar");
+  const main = document.querySelector(".principal");
+
+  if (toggleBtn && sidebar && main) {
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+
+      if (sidebar.classList.contains("active")) {
+        main.classList.add("blurred");   // aplica blur
+      } else {
+        main.classList.remove("blurred"); // remove blur
+      }
+    });
+  }
+});
+
+
 
 
 

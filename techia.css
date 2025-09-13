@@ -8,16 +8,16 @@ body, html {
 }
 
 main {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: flex; /* espaço pro menu fixo */
+  height: calc(100vh - 60px); /* ocupa o resto da tela */
+  width: 100%;
 }
 
 .menu {
   display: flex;
   align-items: center;
   justify-content: space-between; /* 🔥 distribui os 3 blocos */
-  padding: 10px;
+  padding: 5px;
   position: fixed;
   width: 100%;
   background: white;
@@ -25,7 +25,7 @@ main {
 }
 
 .menu-left {
-  flex: 1;
+  display: flex;
 }
 
 .menu-center {
@@ -59,16 +59,12 @@ main {
   border-radius: 50%;
 }
 
+/* Chat ocupa o resto */
 .chat-container {
-  width: 100%;
-  max-width: 95%;
-  padding: 20px;
-  border-radius: 12px;
+  flex: 1; /* ocupa o espaço que sobra */
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  height: 100%;
+  padding: 20px;
 }
 
 /* Ajuste para a área de mensagens */
@@ -98,23 +94,35 @@ main {
 }
 
 .sidebar {
-  position: absolute;
+  position: fixed;
+  left: -300px; /* começa fora da tela */
+  top: 80px; /* abaixo do menu */
   width: 60%;
-  height: 85%;
+  height: calc(100% - 50px);
   background: white;
   border: solid black;
-  margin-top: 25%;
-  margin-left: 1%;
+  padding: 10px;
+  transition: left 0.3s ease; /* animação suave */
+  z-index: 100;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  z-index: 100;
+  align-items: self-end; /* 🔥 joga conteúdo pro lado esquerdo */ 
+}
+
+.principal.blurred {
+  user-select: none;   /* impede seleção de texto */
+}
+
+/* quando aberta */
+.sidebar.active {
+  left: 0;
 }
 
 #new-chat-btn {
+  align-self: center;
   width: 80%;
   margin-top: 5%;
-  height: 4%;
+  height: 5%;
   border: solid black;
   border-radius: 20px;
   background: black;
@@ -122,25 +130,22 @@ main {
 }
 
 #chat-list {
-  width: 90%;
+  width: 100%;
   font-size: 20px;
   font-weight: bold;
   font-family: "Nunito";
   display: flex;
   flex-direction: column;
+  align-items: center;
   border-radius: 20px;
-  gap: 10px;
 }
 
 #chat-list li {
-    border: solid black;
-    width: 100%;
-    margin-left: -10%;
-}
-
-#chat-list span {
-  position: relative;
-  left: 5%;
+  display: flex;
+  justify-content: space-between;
+  width: 90%; /* ocupa só 90% da sidebar */
+  list-style: none;
+  border: solid black;
 }
 
 #chat-list button {
