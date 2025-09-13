@@ -102,7 +102,7 @@ app.post("/chat/:id", authMiddleware, async (req, res) => {
     const history = chat.messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join("\n");
 
     // 3. Envia todo histórico pro modelo
-    const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash-exp" });
+    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
     const prompt = `
 Você é um assistente.  
 Responda sempre em Markdown.  
@@ -165,4 +165,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
+
 
