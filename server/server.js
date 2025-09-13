@@ -101,16 +101,18 @@ app.post("/chat/:id", authMiddleware, async (req, res) => {
     // 2. Monta histórico
     const history = chat.messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join("\n");
 
-    // 3. Envia todo histórico pro modelo
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
-    const prompt = `
-Você é um assistente.  
-Responda sempre em Markdown.  
+    // 🚀 Usa o modelo atualizado e grátis
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
+    const prompt = `
+Você é um assistente útil que responde em Markdown.
 Histórico da conversa:
 ${history}
 
-Responda à última mensagem do usuário.
+Se o usuário perguntar sobre ano, data ou hora atual, considere que agora é:
+${new Date().toLocaleString("pt-BR")}
+
+Responda à última mensagem do usuário de forma natural.
     `;
 
     const result = await model.generateContent(prompt);
@@ -165,5 +167,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
-
-
