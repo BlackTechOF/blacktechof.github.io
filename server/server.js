@@ -101,11 +101,22 @@ app.post("/chat/:id", authMiddleware, async (req, res) => {
     // 2. Monta histórico
     const history = chat.messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join("\n");
 
+    // 📅 Data atual do servidor
+    const hoje = new Date().toLocaleDateString("pt-BR", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+
     // 3. Envia todo histórico pro modelo
-    const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: process.env.GEMINI_MODEL || "models/gemini-2.5-flash" });
+
     const prompt = `
 Você é um assistente.  
 Responda sempre em Markdown.  
+
+📅 Hoje é **${hoje}**.  
 
 Histórico da conversa:
 ${history}
@@ -165,4 +176,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
-
