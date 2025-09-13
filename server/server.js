@@ -85,26 +85,44 @@ function authMiddleware(req, res, next) {
   }
 }
 
-// =================== CHAT GEMINI ===================
-app.post("/chat", async (req, res) => {
+// =================== CHAT GEMINI COM MEMÓRIA ===================
+app.post("/chat/:id", authMiddleware, async (req, res) => {
   try {
+    const { id } = req.params;
     const { message } = req.body;
+
+    const chat = await Chat.findOne({ _id: id, userId: req.userId });
+    if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+
+    // 1. Salva mensagem do usuário
+    chat.messages.push({ role: "user", content: message });
+    await chat.save();
+
+    // 2. Monta histórico
+    const history = chat.messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join("\n");
+
+    // 3. Envia todo histórico pro modelo
     const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
-
     const prompt = `
-Responda usando Markdown.  
-Se for código, use blocos \`\`\`.  
+Você é um assistente.  
+Responda sempre em Markdown.  
 
-Pergunta do usuário:  
-${message}
-`;
+Histórico da conversa:
+${history}
+
+Responda à última mensagem do usuário.
+    `;
 
     const result = await model.generateContent(prompt);
     const text = result.response.text();
 
+    // 4. Salva resposta do bot
+    chat.messages.push({ role: "bot", content: text });
+    await chat.save();
+
     res.json({ reply: text });
   } catch (error) {
-    console.error("❌ Erro na rota /chat:", error);
+    console.error("❌ Erro na rota /chat/:id:", error);
     res.status(500).json({ reply: "Erro ao se comunicar com a IA." });
   }
 });
@@ -129,24 +147,6 @@ app.get("/chatdb/:id", authMiddleware, async (req, res) => {
   const chat = await Chat.findOne({ _id: req.params.id, userId: req.userId });
   if (!chat) return res.json([]);
   res.json(chat.messages);
-});
-
-// salvar mensagem em um chat
-// salvar mensagem em um chat
-app.post("/chatdb/:id/save", authMiddleware, async (req, res) => {
-  const { role, content } = req.body;
-  let chat = await Chat.findOne({ _id: req.params.id, userId: req.userId });
-  if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
-
-  chat.messages.push({ role, content });
-
-  // se for a primeira mensagem do usuário, usa como título
-  if (chat.messages.length === 1 && role === "user") {
-    chat.title = content.substring(0, 40) + (content.length > 40 ? "..." : "");
-  }
-
-  await chat.save();
-  res.json({ success: true });
 });
 
 // deletar um chat
