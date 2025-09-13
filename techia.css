@@ -65,6 +65,8 @@ main {
   display: flex;
   flex-direction: column;
   padding: 20px;
+  margin-top: 30%;
+  width: 100%;
 }
 
 /* Ajuste para a área de mensagens */
