@@ -381,6 +381,7 @@ window.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
   const sidebar = document.querySelector(".sidebar");
   const toggleBtn = document.getElementById("toggleSidebar");
+  const fecharSideBar = document.getElementById("fecharSideBar");
   const main = document.querySelector(".principal");
 
   if (toggleBtn && sidebar && main) {
@@ -394,7 +395,21 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  if (fecharSideBar && sidebar && main) {
+    fecharSideBar.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+
+      if (sidebar.classList.contains("active")) {
+        main.classList.remove("blurred");   // aplica blur
+      } else {
+        main.classList.add("blurred"); // remove blur
+      }
+    });
+  }
 });
+
+
 
 
 
