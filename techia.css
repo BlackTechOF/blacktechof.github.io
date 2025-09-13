@@ -96,9 +96,8 @@ main {
 .sidebar {
   position: fixed;
   left: -300px; /* começa fora da tela */
-  top: 80px; /* abaixo do menu */
-  width: 60%;
-  height: calc(100% - 50px);
+  width: 50%;
+  height: 100%;
   background: white;
   border: solid black;
   padding: 10px;
@@ -117,6 +116,19 @@ main {
 .sidebar.active {
   left: 0;
 }
+
+.sidebar h2 {
+  display: flex;
+  align-self: center;
+  gap: 10px;
+}
+
+.sidebar h2 svg {
+ width: 30px;
+ height: 30px;
+ border-radius: 30px;
+}
+
 
 #new-chat-btn {
   align-self: center;
@@ -142,10 +154,15 @@ main {
 
 #chat-list li {
   display: flex;
-  justify-content: space-between;
   width: 90%; /* ocupa só 90% da sidebar */
   list-style: none;
   border: solid black;
+  justify-content: space-between;
+}
+
+#chat-list li span {
+  align-self: center;
+  margin-left: 5%;
 }
 
 #chat-list button {
