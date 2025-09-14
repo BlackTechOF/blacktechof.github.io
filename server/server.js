@@ -2,154 +2,70 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
+const duckduckgo = require("duckduckgo-search");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-
-// 🔍 DuckDuckGo
-const duckduckgo = require("duckduckgo-search"); 
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// ================= CONFIG =================
-const JWT_SECRET = "seu_segredo";
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const SECRET = "segredo123";
 
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
-
-// ================= MODELOS =================
-const UserSchema = new mongoose.Schema({
-  username: String,
-  password: String
-});
-
-const ChatSchema = new mongoose.Schema({
-  userId: String,
-  title: String,
-  messages: [{ role: String, content: String }]
-});
-
-const User = mongoose.model("User", UserSchema);
-const Chat = mongoose.model("Chat", ChatSchema);
-
-// ================= MIDDLEWARE =================
+// ==================== AUTENTICAÇÃO ====================
 function authMiddleware(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  if (!authHeader) return res.status(403).json({ error: "Token não fornecido" });
+  const token = req.headers["authorization"]?.split(" ")[1];
+  if (!token) return res.status(401).json({ error: "Token ausente" });
 
-  const token = authHeader.split(" ")[1];
-  jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    if (err) return res.status(403).json({ error: "Token inválido" });
+  try {
+    const decoded = jwt.verify(token, SECRET);
     req.user = decoded;
     next();
-  });
+  } catch (err) {
+    return res.status(401).json({ error: "Token inválido" });
+  }
 }
 
-// ================= AUTENTICAÇÃO =================
-app.post("/auth/register", async (req, res) => {
-  const { username, password } = req.body;
-  const hashed = await bcrypt.hash(password, 10);
-
-  const user = new User({ username, password: hashed });
-  await user.save();
-
-  res.json({ message: "Usuário registrado!" });
+app.post("/auth/register", (req, res) => {
+  return res.json({ message: "Registro OK (mock)" });
 });
 
-app.post("/auth/login", async (req, res) => {
-  const { username, password } = req.body;
-  const user = await User.findOne({ username });
-  if (!user) return res.status(400).json({ error: "Usuário não encontrado" });
-
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(400).json({ error: "Senha incorreta" });
-
-  const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "7d" });
-  res.json({ token });
+app.post("/auth/login", (req, res) => {
+  const { username } = req.body;
+  const token = jwt.sign({ username }, SECRET, { expiresIn: "1h" });
+  return res.json({ token });
 });
 
-// ================= CHAT =================
-app.post("/chat/:id", authMiddleware, async (req, res) => {
+// ==================== GEMINI CONFIG ====================
+const genAI = new GoogleGenerativeAI({
+  apiKey: process.env.GEMINI_API_KEY || "SUA_CHAVE_AQUI"
+});
+
+// ==================== CHAT ENDPOINT ====================
+app.post("/chat/:chatId", authMiddleware, async (req, res) => {
+  const { message } = req.body;
+
+  let respostaFinal = "";
+
   try {
-    const { id } = req.params;
-    const { message } = req.body;
+    // 1) Buscar na web
+    const results = await duckduckgo(message, { maxResults: 3 });
 
-    let reply = "";
-
-    // 🔹 1. IA responde primeiro
-    try {
+    if (results && results.length > 0) {
+      respostaFinal = `📡 Resultado da web: ${results[0].snippet}`;
+    } else {
+      // 2) Se não achar nada → Gemini
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateContent(message);
-      reply = result.response.text();
-    } catch (err) {
-      console.error("Erro na IA:", err);
+      respostaFinal = result.response.text();
     }
-
-    // 🔹 2. Se IA não responder bem → busca na web
-    if (!reply || reply.trim() === "" || reply.includes("não sei")) {
-      try {
-        const results = await duckduckgo(query);
-        if (results && results.length > 0) {
-          // pega o melhor resumo
-          reply = results[0].snippet || results[0].title || "Não encontrei nada relevante.";
-        } else {
-          reply = "❌ Não encontrei nada na web.";
-        }
-      } catch (err) {
-        console.error("Erro ao buscar na web:", err);
-        reply = "⚠️ Erro ao buscar informações na web.";
-      }
-    }
-
-    // 🔹 Salvar no histórico
-    const chat = await Chat.findById(id);
-    if (chat) {
-      chat.messages.push({ role: "user", content: message });
-      chat.messages.push({ role: "bot", content: reply });
-      await chat.save();
-    }
-
-    res.json({ reply });
   } catch (err) {
-    console.error("Erro geral:", err);
-    res.status(500).json({ error: "Erro no servidor" });
+    console.error("Erro ao processar:", err);
+    respostaFinal = "⚠️ Erro ao buscar informações.";
   }
+
+  return res.json({ reply: respostaFinal });
 });
 
-// ================= CHAT DB =================
-app.get("/chatdb/list", authMiddleware, async (req, res) => {
-  const chats = await Chat.find({ userId: req.user.id });
-  res.json(chats);
-});
-
-app.post("/chatdb/new", authMiddleware, async (req, res) => {
-  const chat = new Chat({ userId: req.user.id, title: req.body.title, messages: [] });
-  await chat.save();
-  res.json(chat);
-});
-
-app.get("/chatdb/:id", authMiddleware, async (req, res) => {
-  const chat = await Chat.findById(req.params.id);
-  res.json(chat ? chat.messages : []);
-});
-
-app.post("/chatdb/:id/save", authMiddleware, async (req, res) => {
-  const chat = await Chat.findById(req.params.id);
-  if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
-
-  chat.messages.push(req.body);
-  await chat.save();
-  res.json({ message: "Mensagem salva" });
-});
-
-app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
-  await Chat.findByIdAndDelete(req.params.id);
-  res.json({ message: "Chat deletado" });
-});
-
-// ================= SERVER =================
+// ==================== SERVER ====================
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
-
+app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
