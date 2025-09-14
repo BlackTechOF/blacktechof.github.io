@@ -84,11 +84,12 @@ const genAI = new GoogleGenerativeAI({
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   const { message } = req.body;
   let respostaFinal = "";
+  let results = []; // ✅ declarado fora
 
   try {
     // 1) Buscar na web
     try {
-      const results = await duckduckgo.search(message, { maxResults: 3 });
+      results = await duckduckgo(message, { maxResults: 3 }); // ✅ forma correta
     } catch (err) {
       console.warn("⚠️ Falha na busca web:", err.message);
     }
@@ -97,7 +98,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
       respostaFinal = `📡 Resultado da web: ${results[0].snippet || results[0].title}`;
     } else {
       // 2) Gemini fallback
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateContent(message);
       respostaFinal = result.response.text();
     }
@@ -116,7 +117,6 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
 
   return res.json({ reply: respostaFinal });
 });
-
 // ==================== CHATDB ENDPOINTS ====================
 app.get("/chatdb/list", authMiddleware, async (req, res) => {
   const chats = await Chat.find({ userId: req.userId }).select("_id title");
@@ -157,4 +157,5 @@ app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
 // ==================== START ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
+
 
