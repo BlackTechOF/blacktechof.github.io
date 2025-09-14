@@ -118,14 +118,22 @@ app.get("/chatdb/:id", authMiddleware, async (req, res) => {
 app.post("/chatdb/:id/save", authMiddleware, async (req, res) => {
   try {
     const { role, content } = req.body;
+
+    if (!role || !content) {
+      return res.status(400).json({ error: "role e content são obrigatórios" });
+    }
+
     const chat = await Chat.findById(req.params.id);
-    if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+    if (!chat) {
+      return res.status(404).json({ error: "Chat não encontrado" });
+    }
 
     chat.messages.push({ role, content });
     await chat.save();
-    res.json({ success: true });
+
+    res.json({ success: true, chat });
   } catch (err) {
-    console.error("Erro em /chatdb/:id/save:", err);
+    console.error("❌ Erro em /chatdb/:id/save:", err);
     res.status(500).json({ error: "Erro ao salvar mensagem" });
   }
 });
@@ -143,3 +151,4 @@ app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
 // ==================== SERVER ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
+
