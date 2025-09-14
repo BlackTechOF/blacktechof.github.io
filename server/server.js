@@ -77,25 +77,25 @@ app.post("/auth/login", async (req, res) => {
 
 // ==================== GEMINI CONFIG ====================
 const genAI = new GoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY, // precisa estar no Render
+  apiKey: process.env.GEMINI_API_KEY // precisa estar no Render
 });
 
 // ==================== CHAT COM GEMINI + WEB ====================
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   const { message } = req.body;
   let respostaFinal = "";
-  let results = []; // ✅ declarado fora
+  let results = [];
 
   try {
     // 1) Buscar na web
     try {
-      results = await duckduckgo(message, { maxResults: 3 }); // ✅ forma correta
+      results = await duckduckgo(message, { maxResults: 3 });
     } catch (err) {
       console.warn("⚠️ Falha na busca web:", err.message);
     }
 
     if (results && results.length > 0) {
-      respostaFinal = `📡 Resultado da web: ${results[0].snippet || results[0].title}`;
+      respostaFinal = `📡 Resultado da web: ${results[0].snippet || results[0].title || results[0].url}`;
     } else {
       // 2) Gemini fallback
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -103,7 +103,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
       respostaFinal = result.response.text();
     }
 
-    // salvar no chat
+    // salvar no Mongo
     const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
     if (chat) {
       chat.messages.push({ role: "user", content: message });
@@ -157,5 +157,6 @@ app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
 // ==================== START ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
+
 
 
