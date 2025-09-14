@@ -2,7 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-const { search } = require("duckduckgo-search"); // ✅ busca web
+const duckduckgo = require("duckduckgo-search");
+ // ✅ busca web
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const mongoose = require("mongoose");
 const Chat = require("../models/Chat.js"); // ✅ agora certo
@@ -151,6 +152,7 @@ app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
 // ==================== SERVER ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
+
 
 
 
