@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-const duckduckgo = require("duckduckgo-search"); // ✅ busca web
+const { search } = require("duckduckgo-search"); // ✅ busca web
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const mongoose = require("mongoose");
 const Chat = require("../models/Chat.js"); // ✅ agora certo
@@ -53,7 +53,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
 
   try {
     // 1) Buscar na web
-    const results = await duckduckgo(message, { maxResults: 3 });
+    const results = await search(message, { maxResults: 3 });
 
     if (results && results.length > 0) {
       respostaFinal = `📡 Resultado da web: ${results[0].snippet || results[0].title || results[0].url}`;
@@ -151,5 +151,6 @@ app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
 // ==================== SERVER ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
+
 
 
