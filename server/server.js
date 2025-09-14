@@ -77,7 +77,7 @@ app.post("/auth/login", async (req, res) => {
 
 // ==================== GEMINI CONFIG ====================
 const genAI = new GoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY // precisa estar no Render
+  apiKey: process.env.GEMINI_API_KEY, // precisa estar no Render
 });
 
 // ==================== CHAT COM GEMINI + WEB ====================
@@ -157,6 +157,7 @@ app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
 // ==================== START ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
+
 
 
 
