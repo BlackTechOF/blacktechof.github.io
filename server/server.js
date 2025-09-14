@@ -2,8 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-const duckduckgo = require("duckduckgo-search");
+const duckduckgo = require("duckduckgo-search"); // ✅ Lib de busca
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const Chat = require("./models/Chat");
 
 const app = express();
 app.use(cors());
@@ -43,23 +44,22 @@ const genAI = new GoogleGenerativeAI({
 // ==================== CHAT ENDPOINT ====================
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   const { message } = req.body;
-
   let respostaFinal = "";
 
   try {
-    // 1) Buscar na web
-    const results = await duckduckgo(message, { maxResults: 3 });
+    // 1) Buscar na web com DuckDuckGo
+    const results = await duckduckgo.search(message, { maxResults: 3 });
 
     if (results && results.length > 0) {
-      respostaFinal = `📡 Resultado da web: ${results[0].snippet}`;
+      respostaFinal = `📡 Resultado da web: ${results[0].snippet || results[0].title || results[0].url}`;
     } else {
-      // 2) Se não achar nada → Gemini
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      // 2) Se não achar nada → fallback para Gemini
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const result = await model.generateContent(message);
       respostaFinal = result.response.text();
     }
   } catch (err) {
-    console.error("Erro ao processar:", err);
+    console.error("❌ Erro ao processar:", err);
     respostaFinal = "⚠️ Erro ao buscar informações.";
   }
 
