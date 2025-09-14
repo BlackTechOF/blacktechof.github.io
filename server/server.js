@@ -87,6 +87,7 @@ function authMiddleware(req, res, next) {
 }
 
 // =================== CHAT GEMINI + BUSCA WEB ===================
+// =================== CHAT GEMINI + BUSCA WEB ===================
 app.post("/chat/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
@@ -102,16 +103,15 @@ app.post("/chat/:id", authMiddleware, async (req, res) => {
     // 2. Monta histórico
     const history = chat.messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join("\n");
 
-    // 3. IA com busca na web se necessário
+    // 3. IA (primeira tentativa)
     let botReply = "";
     const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
 
     try {
       const result = await model.generateContent(`
-Você é um assistente.  
-Responda sempre em Markdown.  
-
-Histórico da conversa:
+Você é um assistente.
+Se não tiver 100% de certeza da resposta, apenas diga "preciso verificar na web".
+Histórico:
 ${history}
 
 Responda à última mensagem do usuário.
@@ -120,15 +120,17 @@ Responda à última mensagem do usuário.
       botReply = result.response.text();
     } catch (err) {
       console.error("❌ Erro no Gemini:", err);
-      botReply = "⚠️ Não consegui responder com a IA.";
+      botReply = "preciso verificar na web";
     }
 
-    // Se a IA não souber responder -> tenta buscar no DuckDuckGo
-    if (botReply.includes("não sei") || botReply.includes("não tenho certeza")) {
+    // 4. Se for algo de evento/data/resultado → força busca web
+    const precisaBuscar = /quem|quando|qual|campeão|ganhou|ano|data|resultado/i.test(message) || botReply.includes("preciso verificar na web");
+
+    if (precisaBuscar) {
       try {
         const results = await search(message, { safeSearch: "moderate" });
         if (results.length > 0) {
-          botReply = `🔎 Resultado da web:\n\n${results[0].title}\n${results[0].description}`;
+          botReply = `🔎 Resultado atualizado da web:\n\n${results[0].title}\n${results[0].description}`;
         } else {
           botReply = "❌ Não encontrei nada na web.";
         }
@@ -137,7 +139,7 @@ Responda à última mensagem do usuário.
       }
     }
 
-    // 4. Salva resposta do bot
+    // 5. Salva resposta do bot
     chat.messages.push({ role: "bot", content: botReply });
     await chat.save();
 
@@ -147,6 +149,7 @@ Responda à última mensagem do usuário.
     res.status(500).json({ reply: "Erro ao se comunicar com a IA." });
   }
 });
+
 
 // =================== CHATDB (Mongo) ===================
 // criar novo chat
@@ -186,3 +189,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
+
