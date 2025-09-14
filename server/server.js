@@ -1,200 +1,199 @@
-const express = require("express");
-const cors = require("cors");
-const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const fetch = require("node-fetch"); // npm install node-fetch@2
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import fetch from "node-fetch";
+import { MongoClient, ObjectId } from "mongodb";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import { search } from "duckduckgo-search"; // 🔎 DuckDuckGo search
 
 const app = express();
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
-// =================== IA GEMINI ===================
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const PORT = process.env.PORT || 3000;
+const JWT_SECRET = process.env.JWT_SECRET || "segredo123";
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017";
+const client = new MongoClient(MONGO_URI);
+const dbName = "techia";
 
-// =================== MONGODB ===================
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log("✅ MongoDB conectado"))
-.catch(err => console.error("❌ Erro no MongoDB:", err));
+// ============ IA MOCK (troque por OpenAI, Gemini, etc.) ============
+async function gerarRespostaComIA(prompt) {
+  // Exemplo com OpenAI (caso queira usar)
+  // const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     "Authorization": `Bearer ${process.env.OPENAI_KEY}`
+  //   },
+  //   body: JSON.stringify({
+  //     model: "gpt-4o-mini",
+  //     messages: [{ role: "user", content: prompt }]
+  //   })
+  // });
+  // const data = await response.json();
+  // return data.choices[0].message.content.trim();
 
-// =================== MODELS ===================
-const UserSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-});
-
-const ChatSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  title: { type: String, default: "Novo Chat" },
-  messages: [
-    {
-      role: { type: String, enum: ["user", "bot"], required: true },
-      content: { type: String, required: true },
-      timestamp: { type: Date, default: Date.now },
-    }
-  ]
-});
-
-const User = mongoose.model("User", UserSchema);
-const Chat = mongoose.model("Chat", ChatSchema);
-
-// =================== AUTENTICAÇÃO ===================
-const SECRET = process.env.SECRET || "segredo_forte";
-
-// cadastro
-app.post("/auth/register", async (req, res) => {
-  const { username, password } = req.body;
-  try {
-    const hashed = await bcrypt.hash(password, 10);
-    const user = new User({ username, password: hashed });
-    await user.save();
-    res.json({ message: "✅ Usuário registrado com sucesso!" });
-  } catch (err) {
-    res.status(400).json({ error: "Usuário já existe ou erro ao registrar" });
-  }
-});
-
-// login
-app.post("/auth/login", async (req, res) => {
-  const { username, password } = req.body;
-  const user = await User.findOne({ username });
-  if (!user) return res.status(400).json({ error: "Usuário não encontrado" });
-
-  const valid = await bcrypt.compare(password, user.password);
-  if (!valid) return res.status(400).json({ error: "Senha inválida" });
-
-  const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "1d" });
-  res.json({ token });
-});
-
-// middleware de autenticação
-function authMiddleware(req, res, next) {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ error: "Token necessário" });
-
-  try {
-    const decoded = jwt.verify(token, SECRET);
-    req.userId = decoded.id;
-    next();
-  } catch {
-    res.status(401).json({ error: "Token inválido" });
-  }
+  // 🔹 Se não tiver chave, só retorna direto (pra testes)
+  return `🤖 (IA simulada) ${prompt.slice(0, 150)}...`;
 }
 
-// =================== BUSCA NA WEB ===================
+// ============ Busca na web ============
 async function buscaWeb(query) {
-  const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`;
   try {
-    const res = await fetch(url);
-    const data = await res.json();
+    const results = await search(query, { maxResults: 5 });
 
-    if (data.AbstractText) return data.AbstractText;
-    if (data.RelatedTopics && data.RelatedTopics.length > 0) {
-      return data.RelatedTopics[0].Text;
+    if (!results.length) {
+      return "❌ Não encontrei nada relevante na web.";
     }
-    return "❌ Não encontrei nada na web.";
+
+    const contexto = results
+      .map(r => `${r.title}: ${r.description}`)
+      .join("\n");
+
+    const respostaIA = await gerarRespostaComIA(`
+      Pergunta: ${query}
+      Contexto da web:
+      ${contexto}
+
+      Responda de forma objetiva e direta com base no contexto.
+      Se não achar nada útil, diga claramente que não encontrou.
+    `);
+
+    return respostaIA;
   } catch (err) {
-    console.error("Erro busca web:", err);
+    console.error("Erro buscaWeb:", err);
     return "⚠️ Erro ao buscar na web.";
   }
 }
 
-// =================== CHAT GEMINI + WEB ===================
-app.post("/chat/:id", authMiddleware, async (req, res) => {
+// ============ Middleware de autenticação ============
+function autenticar(req, res, next) {
+  const token = req.headers["authorization"]?.split(" ")[1];
+  if (!token) return res.status(401).json({ error: "Token necessário" });
+
   try {
-    const { id } = req.params;
-    const { message } = req.body;
-
-    const chat = await Chat.findOne({ _id: id, userId: req.userId });
-    if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
-
-    // salva msg user
-    chat.messages.push({ role: "user", content: message });
-    await chat.save();
-
-    // monta histórico
-    const history = chat.messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join("\n");
-
-    let text;
-    try {
-      // tenta IA
-      const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-flash" });
-      const prompt = `
-Você é um assistente útil.  
-Responda sempre em Markdown.  
-
-Histórico da conversa:
-${history}
-
-Responda à última mensagem do usuário.  
-Se não tiver certeza ou a informação for sobre eventos recentes, apenas diga "não sei".
-      `;
-
-      const result = await model.generateContent(prompt);
-      text = result.response.text();
-    } catch (err) {
-      console.error("Erro no Gemini:", err);
-      text = "não sei";
-    }
-
-    // se IA não souber → tenta web
-    if (!text || text.toLowerCase().includes("não sei") || text.includes("ainda não aconteceu")) {
-      console.log("🌐 Buscando na web:", message);
-      const webInfo = await buscaWeb(message);
-      text = `🔎 Resultado da web: ${webInfo}`;
-    }
-
-    // salva msg bot
-    chat.messages.push({ role: "bot", content: text });
-    await chat.save();
-
-    res.json({ reply: text });
-  } catch (error) {
-    console.error("❌ Erro na rota /chat/:id:", error);
-    res.status(500).json({ reply: "Erro ao se comunicar com a IA." });
+    const user = jwt.verify(token, JWT_SECRET);
+    req.user = user;
+    next();
+  } catch {
+    res.status(403).json({ error: "Token inválido" });
   }
+}
+
+// ============ Rotas de Auth ============
+app.post("/auth/register", async (req, res) => {
+  const { username, password } = req.body;
+  const db = client.db(dbName);
+  const users = db.collection("users");
+
+  const existe = await users.findOne({ username });
+  if (existe) return res.status(400).json({ error: "Usuário já existe" });
+
+  const hash = await bcrypt.hash(password, 10);
+  await users.insertOne({ username, password: hash });
+
+  res.json({ message: "Usuário registrado com sucesso!" });
 });
 
-// =================== CHATDB (Mongo) ===================
-// criar novo chat
-app.post("/chatdb/new", authMiddleware, async (req, res) => {
-  const { title } = req.body;
-  const chat = new Chat({ userId: req.userId, title: title || "Novo Chat", messages: [] });
-  await chat.save();
-  res.json(chat);
+app.post("/auth/login", async (req, res) => {
+  const { username, password } = req.body;
+  const db = client.db(dbName);
+  const users = db.collection("users");
+
+  const user = await users.findOne({ username });
+  if (!user) return res.status(400).json({ error: "Usuário não encontrado" });
+
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) return res.status(400).json({ error: "Senha incorreta" });
+
+  const token = jwt.sign({ id: user._id, username }, JWT_SECRET, {
+    expiresIn: "7d",
+  });
+
+  res.json({ token });
 });
 
-// listar chats
-app.get("/chatdb/list", authMiddleware, async (req, res) => {
-  const chats = await Chat.find({ userId: req.userId }).select("_id title");
-  res.json(chats);
+// ============ Rotas de Chat ============
+app.post("/chatdb/new", autenticar, async (req, res) => {
+  const db = client.db(dbName);
+  const chats = db.collection("chats");
+
+  const newChat = {
+    userId: req.user.id,
+    title: req.body.title || "Novo Chat",
+    messages: [],
+  };
+
+  const result = await chats.insertOne(newChat);
+  res.json({ ...newChat, _id: result.insertedId });
 });
 
-// obter histórico
-app.get("/chatdb/:id", authMiddleware, async (req, res) => {
-  const chat = await Chat.findOne({ _id: req.params.id, userId: req.userId });
-  if (!chat) return res.json([]);
-  res.json(chat.messages);
+app.get("/chatdb/list", autenticar, async (req, res) => {
+  const db = client.db(dbName);
+  const chats = db.collection("chats");
+
+  const list = await chats.find({ userId: req.user.id }).toArray();
+  res.json(list);
 });
 
-// deletar chat
-app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
+app.get("/chatdb/:id", autenticar, async (req, res) => {
+  const db = client.db(dbName);
+  const chats = db.collection("chats");
+
+  const chat = await chats.findOne({ _id: new ObjectId(req.params.id) });
+  res.json(chat?.messages || []);
+});
+
+app.post("/chatdb/:id/save", autenticar, async (req, res) => {
+  const db = client.db(dbName);
+  const chats = db.collection("chats");
+
+  const { role, content } = req.body;
+
+  await chats.updateOne(
+    { _id: new ObjectId(req.params.id) },
+    { $push: { messages: { role, content, date: new Date() } } }
+  );
+
+  res.json({ success: true });
+});
+
+// ============ Rota principal de chat ============
+app.post("/chat/:id", autenticar, async (req, res) => {
+  const { message } = req.body;
+
+  let resposta;
+  if (message.toLowerCase().includes("quem") || message.toLowerCase().includes("quando")) {
+    resposta = await buscaWeb(message);
+  } else {
+    resposta = await gerarRespostaComIA(message);
+  }
+
+  // salvar no histórico
+  const db = client.db(dbName);
+  const chats = db.collection("chats");
+  await chats.updateOne(
+    { _id: new ObjectId(req.params.id) },
+    {
+      $push: {
+        messages: [
+          { role: "user", content: message, date: new Date() },
+          { role: "bot", content: resposta, date: new Date() },
+        ],
+      },
+    }
+  );
+
+  res.json({ reply: resposta });
+});
+
+// ============ Inicialização ============
+app.listen(PORT, async () => {
   try {
-    const chat = await Chat.findOneAndDelete({ _id: req.params.id, userId: req.userId });
-    if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
-    res.json({ success: true });
+    await client.connect();
+    console.log("✅ Conectado ao MongoDB");
   } catch (err) {
-    res.status(500).json({ error: "Erro ao deletar chat" });
+    console.error("❌ Erro ao conectar MongoDB:", err);
   }
-});
-
-// =================== START ===================
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
