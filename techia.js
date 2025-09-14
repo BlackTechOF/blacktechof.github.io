@@ -3,7 +3,7 @@ let intervaloId;
 let controller;
 let currentChatId = null; // chat atual
 
-const API_URL = "https://blacktechof-github-io.onrender.com"; // sua API
+const API_URL = "https://blacktechof-github-io.onrender.com"; // troque pela URL no deploy
 
 // ================= AUTENTICAÇÃO =================
 async function register() {
@@ -39,13 +39,13 @@ async function login() {
     document.getElementById("chat-container").style.display = "";
 
     await loadChats();
-    await ensureChatExists();
+    await ensureChatExists(); // 🔥 garante que sempre haja um chat
   } else {
     alert(data.error);
   }
 }
 
-// 🔑 auto login
+// 🔑 auto login se já tem token
 window.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -57,7 +57,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("auth-container").style.display = "none";
         document.getElementById("chat-container").style.display = "block";
         await loadChats();
-        await ensureChatExists();
+        await ensureChatExists(); // 🔥 garante chat também no autologin
       } else {
         localStorage.removeItem("token");
       }
@@ -154,12 +154,13 @@ async function loadChats() {
     delBtn.textContent = "🗑️";
     delBtn.onclick = async (e) => {
       e.stopPropagation();
-      if (confirm("Excluir este chat?")) {
+      if (confirm("Tem certeza que deseja excluir este chat?")) {
         await fetch(`${API_URL}/chatdb/${c._id}`, {
           method: "DELETE",
           headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
         });
         loadChats();
+
         if (currentChatId === c._id) {
           currentChatId = null;
           document.getElementById("messages").innerHTML = "";
@@ -189,14 +190,13 @@ async function loadHistory(chatId) {
   history.forEach(msg => {
     const div = document.createElement("div");
     div.className = `message ${msg.role}`;
-    div.innerHTML = marked.parse(msg.content);
+    div.innerHTML = msg.role === "user"
+      ? `<b>👤</b> ${marked.parse(msg.content)}`
+      : `<b>🤖</b> ${marked.parse(msg.content)}`;
     messagesDiv.appendChild(div);
   });
 
-  if (typeof hljs !== "undefined") {
-    hljs.highlightAll();
-  }
-
+  if (typeof hljs !== "undefined") hljs.highlightAll();
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
@@ -221,7 +221,7 @@ async function sendMessage() {
   // mostra msg user
   const userDiv = document.createElement("div");
   userDiv.className = "message user";
-  userDiv.textContent = userMessage;
+  userDiv.innerHTML = `<b>👤</b> ${userMessage}`;
   messagesDiv.appendChild(userDiv);
 
   input.value = "";
@@ -236,6 +236,7 @@ async function sendMessage() {
   try {
     controller = new AbortController();
 
+    // 🔥 agora usa /chat/:id
     const response = await fetch(`${API_URL}/chat/${currentChatId}`, {
       method: "POST",
       headers: {
@@ -248,11 +249,17 @@ async function sendMessage() {
 
     const data = await response.json();
 
-    botDiv.innerHTML = marked.parse(data.reply);
-
-    if (typeof hljs !== "undefined") hljs.highlightAll();
-
-    botOcupado = false;
+    let i = 0;
+    intervaloId = setInterval(() => {
+      const sliced = data.reply.slice(0, i);
+      botDiv.innerHTML = `<b>🤖</b> ${marked.parse(sliced)}`;
+      if (i >= data.reply.length) {
+        clearInterval(intervaloId);
+        botOcupado = false;
+        if (typeof hljs !== "undefined") hljs.highlightAll();
+      }
+      i++;
+    }, 15);
   } catch (err) {
     if (err.name === "AbortError") {
       botDiv.textContent = "⏹ Resposta interrompida.";
@@ -263,6 +270,7 @@ async function sendMessage() {
   }
 }
 
+// ================= LOGOUT =================
 function logout() {
   localStorage.removeItem("token");
   currentChatId = null;
