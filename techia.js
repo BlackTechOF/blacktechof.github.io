@@ -3,7 +3,7 @@ let intervaloId;
 let controller;
 let currentChatId = null; // chat atual
 
-const API_URL = "https://blacktechof-github-io.onrender.com"; // troque pela URL no deploy
+const API_URL = "https://blacktechof-github-io.onrender.com"; // troque pela sua URL do backend
 
 // ================= AUTENTICAÇÃO =================
 async function register() {
@@ -36,10 +36,10 @@ async function login() {
     localStorage.setItem("token", data.token);
 
     document.getElementById("auth-container").style.display = "none";
-    document.getElementById("chat-container").style.display = "";
+    document.getElementById("chat-container").style.display = "block";
 
     await loadChats();
-    await ensureChatExists(); // 🔥 garante que sempre haja um chat
+    await ensureChatExists();
   } else {
     alert(data.error);
   }
@@ -53,17 +53,19 @@ window.addEventListener("DOMContentLoaded", async () => {
       const res = await fetch(`${API_URL}/chatdb/list`, {
         headers: { "Authorization": "Bearer " + token }
       });
+
       if (res.ok) {
         document.getElementById("auth-container").style.display = "none";
         document.getElementById("chat-container").style.display = "block";
         await loadChats();
-        await ensureChatExists(); // 🔥 garante chat também no autologin
+        await ensureChatExists();
       } else {
-        console.error("Erro ao validar token");
-        localStorage.removeItem("token");
+        console.warn("⚠️ Token inválido ou expirado. Fazendo logout...");
+        logout();
       }
-    } catch {
-      console.error("Erro ao validar token");
+    } catch (err) {
+      console.error("Erro ao validar token:", err);
+      logout();
     }
   }
 
@@ -91,38 +93,34 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 // ================= CHATS =================
 async function ensureChatExists() {
-  const token = localStorage.getItem("token");
   const res = await fetch(`${API_URL}/chatdb/list`, {
-    headers: { "Authorization": "Bearer " + token }
+    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
   });
   const chats = await res.json();
 
   if (chats.length === 0) {
-    // se não existir nenhum chat, cria um novo
     const newC = await fetch(`${API_URL}/chatdb/new`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
+        "Authorization": "Bearer " + localStorage.getItem("token")
       },
       body: JSON.stringify({ title: "Novo Chat" })
     });
     const chat = await newC.json();
     currentChatId = chat._id;
   } else {
-    // usa o primeiro chat da lista
     currentChatId = chats[0]._id;
     loadHistory(currentChatId);
   }
 }
 
 async function newChat() {
-  const token = localStorage.getItem("token");
   const res = await fetch(`${API_URL}/chatdb/new`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
+      "Authorization": "Bearer " + localStorage.getItem("token")
     },
     body: JSON.stringify({ title: "Novo Chat" })
   });
@@ -134,9 +132,8 @@ async function newChat() {
 }
 
 async function loadChats() {
-  const token = localStorage.getItem("token");
   const res = await fetch(`${API_URL}/chatdb/list`, {
-    headers: { "Authorization": "Bearer " + token }
+    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
   });
 
   const chats = await res.json();
@@ -148,24 +145,25 @@ async function loadChats() {
   chats.forEach(c => {
     const li = document.createElement("li");
 
-    // título do chat (clique para abrir)
+    // título
     const span = document.createElement("span");
     span.textContent = c.title;
     span.style.cursor = "pointer";
     span.onclick = () => {
       currentChatId = c._id;
+      console.log("📌 Chat selecionado:", currentChatId);
       loadHistory(currentChatId);
     };
 
-    // botão apagar
+    // botão deletar
     const delBtn = document.createElement("button");
-    delBtn.innerHTML = `🗑️`;
+    delBtn.textContent = "🗑️";
     delBtn.onclick = async (e) => {
       e.stopPropagation();
-      if (confirm("Tem certeza que deseja excluir este chat?")) {
+      if (confirm("Excluir este chat?")) {
         await fetch(`${API_URL}/chatdb/${c._id}`, {
           method: "DELETE",
-          headers: { "Authorization": "Bearer " + token }
+          headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
         });
         loadChats();
 
@@ -184,10 +182,9 @@ async function loadChats() {
 
 async function loadHistory(chatId) {
   if (!chatId) return;
-  const token = localStorage.getItem("token");
 
   const res = await fetch(`${API_URL}/chatdb/${chatId}`, {
-    headers: { "Authorization": "Bearer " + token }
+    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
   });
 
   const history = await res.json();
@@ -203,8 +200,31 @@ async function loadHistory(chatId) {
     messagesDiv.appendChild(div);
   });
 
-  if (typeof hljs !== "undefined") hljs.highlightAll();
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// ================= SALVAR MENSAGEM =================
+async function saveMessage(role, content) {
+  if (!currentChatId) {
+    console.error("❌ Nenhum chat selecionado.");
+    return;
+  }
+
+  console.log("💾 Salvando mensagem em chat:", currentChatId);
+
+  const res = await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + localStorage.getItem("token")
+    },
+    body: JSON.stringify({ role, content })
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    console.error("❌ Erro ao salvar mensagem:", res.status, errText);
+  }
 }
 
 // ================= CHAT MENSAGENS =================
@@ -212,13 +232,9 @@ async function sendMessage() {
   if (botOcupado || !currentChatId) return;
   botOcupado = true;
 
-  const token = localStorage.getItem("token");
   const input = document.getElementById("userInput");
   const messagesDiv = document.getElementById("messages");
-  if (!input || !messagesDiv) {
-    botOcupado = false;
-    return;
-  }
+  const token = localStorage.getItem("token");
 
   const userMessage = input.value.trim();
   if (!userMessage) {
@@ -232,18 +248,8 @@ async function sendMessage() {
   userDiv.textContent = userMessage;
   messagesDiv.appendChild(userDiv);
 
-  // salva no banco
-  await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token
-    },
-    body: JSON.stringify({ role: "user", content: userMessage }),
-  });
-
+  await saveMessage("user", userMessage);
   input.value = "";
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
   // placeholder bot
   const botDiv = document.createElement("div");
@@ -267,30 +273,21 @@ async function sendMessage() {
     const data = await response.json();
 
     let i = 0;
-    intervaloId = setInterval(() => {
+    intervaloId = setInterval(async () => {
       botDiv.innerHTML = marked.parse(data.reply.slice(0, i));
       if (i >= data.reply.length) {
         clearInterval(intervaloId);
         botOcupado = false;
-        if (typeof hljs !== "undefined") hljs.highlightAll();
+        await saveMessage("bot", data.reply);
       }
       i++;
     }, 15);
+
   } catch (err) {
-    if (err.name === "AbortError") {
-      botDiv.textContent = "⏹ Resposta interrompida.";
-    } else {
-      botDiv.textContent = "⚠️ Erro ao obter resposta.";
-      console.error("Erro na IA:", err);
-    }
+    botDiv.textContent = "⚠️ Erro na IA.";
+    console.error("Erro na IA:", err);
     botOcupado = false;
   }
-}
-
-function interromperResposta() {
-  clearInterval(intervaloId);
-  if (controller) controller.abort();
-  botOcupado = false;
 }
 
 // ================= LOGOUT =================
@@ -303,5 +300,29 @@ function logout() {
 
 window.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) logoutBtn.addEventListener("click", logout);
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", logout);
+  }
+});
+
+// ================= SIDEBAR =================
+document.addEventListener("DOMContentLoaded", () => {
+  const sidebar = document.querySelector(".sidebar");
+  const toggleBtn = document.getElementById("toggleSidebar");
+  const fecharSideBar = document.getElementById("fecharSideBar");
+  const main = document.querySelector(".principal");
+
+  if (toggleBtn && sidebar && main) {
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+      main.classList.toggle("blurred", sidebar.classList.contains("active"));
+    });
+  }
+
+  if (fecharSideBar && sidebar && main) {
+    fecharSideBar.addEventListener("click", () => {
+      sidebar.classList.toggle("active");
+      main.classList.toggle("blurred", sidebar.classList.contains("active"));
+    });
+  }
 });
