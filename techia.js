@@ -3,7 +3,7 @@ let intervaloId;
 let controller;
 let currentChatId = null;
 
-const API_URL = "https://blacktechof-github-io.onrender.com"; // 🔗 backend
+const API_URL = "https://blacktechof-github-io.onrender.com"; // sua API no Render
 
 // ================= AUTENTICAÇÃO =================
 async function register() {
@@ -45,7 +45,7 @@ async function login() {
   }
 }
 
-// 🔑 Auto login se já tem token
+// auto login
 window.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -60,7 +60,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         await loadChats();
         await ensureChatExists();
       } else {
-        console.warn("⚠️ Token inválido ou expirado. Fazendo logout...");
         logout();
       }
     } catch (err) {
@@ -69,6 +68,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // listeners
   const input = document.getElementById("userInput");
   if (input) {
     input.addEventListener("keypress", (e) => {
@@ -144,15 +144,16 @@ async function loadChats() {
   chats.forEach(c => {
     const li = document.createElement("li");
 
+    // título
     const span = document.createElement("span");
     span.textContent = c.title;
     span.style.cursor = "pointer";
     span.onclick = () => {
       currentChatId = c._id;
-      console.log("📌 Chat selecionado:", currentChatId);
       loadHistory(currentChatId);
     };
 
+    // deletar
     const delBtn = document.createElement("button");
     delBtn.textContent = "🗑️";
     delBtn.onclick = async (e) => {
@@ -193,21 +194,24 @@ async function loadHistory(chatId) {
   history.forEach(msg => {
     const div = document.createElement("div");
     div.className = `message ${msg.role}`;
-    div.innerHTML = marked.parse(msg.content);
+
+    if (msg.role === "bot" && msg.content.startsWith("🌐")) {
+      div.innerHTML = `<b>${msg.content}</b>`;
+    } else {
+      div.innerHTML = marked.parse(msg.content);
+    }
+
     messagesDiv.appendChild(div);
   });
 
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-// ================= SALVAR MENSAGEM =================
+// ================= SALVAR =================
 async function saveMessage(role, content) {
-  if (!currentChatId) {
-    console.error("❌ Nenhum chat selecionado.");
-    return;
-  }
+  if (!currentChatId) return;
 
-  const res = await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
+  await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -215,14 +219,9 @@ async function saveMessage(role, content) {
     },
     body: JSON.stringify({ role, content })
   });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    console.error("❌ Erro ao salvar mensagem:", res.status, errText);
-  }
 }
 
-// ================= CHAT MENSAGENS =================
+// ================= CHAT =================
 async function sendMessage() {
   if (botOcupado || !currentChatId) return;
   botOcupado = true;
@@ -237,6 +236,7 @@ async function sendMessage() {
     return;
   }
 
+  // user msg
   const userDiv = document.createElement("div");
   userDiv.className = "message user";
   userDiv.textContent = userMessage;
@@ -245,6 +245,7 @@ async function sendMessage() {
   await saveMessage("user", userMessage);
   input.value = "";
 
+  // bot pensando
   const botDiv = document.createElement("div");
   botDiv.className = "message bot bot_ativo";
   botDiv.textContent = "⏳ Pensando...";
@@ -265,13 +266,20 @@ async function sendMessage() {
 
     const data = await response.json();
 
+    let replyText = data.reply;
+
+    // marca resposta se veio da web
+    if (replyText && !replyText.startsWith("🌐") && (replyText.includes("http") || replyText.includes("duckduckgo"))) {
+      replyText = "🌐 " + replyText;
+    }
+
     let i = 0;
     intervaloId = setInterval(async () => {
-      botDiv.innerHTML = marked.parse(data.reply.slice(0, i));
-      if (i >= data.reply.length) {
+      botDiv.innerHTML = marked.parse(replyText.slice(0, i));
+      if (i >= replyText.length) {
         clearInterval(intervaloId);
         botOcupado = false;
-        await saveMessage("bot", data.reply);
+        await saveMessage("bot", replyText);
       }
       i++;
     }, 15);
@@ -290,13 +298,6 @@ function logout() {
   document.getElementById("chat-container").style.display = "none";
   document.getElementById("auth-container").style.display = "block";
 }
-
-window.addEventListener("DOMContentLoaded", () => {
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", logout);
-  }
-});
 
 // ================= SIDEBAR =================
 document.addEventListener("DOMContentLoaded", () => {
