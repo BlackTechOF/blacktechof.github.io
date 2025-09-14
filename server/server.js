@@ -15,6 +15,18 @@ app.use(cors());
 // =================== IA GEMINI ===================
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+async function buscaWeb(query) {
+  const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`;
+  const res = await fetch(url);
+  const data = await res.json();
+
+  if (data.AbstractText) return data.AbstractText;
+  if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+    return data.RelatedTopics[0].Text;
+  }
+  return "❌ Não encontrei nada na web.";
+}
+
 // =================== MONGODB ===================
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -204,3 +216,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
+
