@@ -4,9 +4,10 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const fetch = require("node-fetch"); // 🔎 substitui duckduckgo
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 const mongoose = require("mongoose");
+const fetch = require("node-fetch"); // busca web
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
 const User = require("../models/User.js");
 const Chat = require("../models/Chat.js");
 
@@ -18,7 +19,7 @@ app.use(bodyParser.json());
 
 const SECRET = process.env.SECRET || "segredo123";
 
-// ==================== MONGODB ====================
+// ==================== DB ====================
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -26,21 +27,21 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log("✅ MongoDB conectado"))
 .catch(err => console.error("❌ Erro no MongoDB:", err));
 
-// ==================== AUTENTICAÇÃO ====================
+// ==================== AUTH MIDDLEWARE ====================
 function authMiddleware(req, res, next) {
   const token = req.headers["authorization"]?.split(" ")[1];
   if (!token) return res.status(401).json({ error: "Token ausente" });
 
   try {
     const decoded = jwt.verify(token, SECRET);
-    req.userId = decoded.id; // ✅ userId único
+    req.userId = decoded.id; // sempre id do user
     next();
   } catch (err) {
     return res.status(401).json({ error: "Token inválido" });
   }
 }
 
-// Registro de usuário
+// ==================== AUTH ====================
 app.post("/auth/register", async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -62,7 +63,6 @@ app.post("/auth/register", async (req, res) => {
   }
 });
 
-// Login
 app.post("/auth/login", async (req, res) => {
   const { username, password } = req.body;
   const user = await User.findOne({ username });
@@ -77,36 +77,29 @@ app.post("/auth/login", async (req, res) => {
 
 // ==================== GEMINI CONFIG ====================
 const genAI = new GoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY, // ✅ pego do Render
+  apiKey: process.env.GEMINI_API_KEY, // ⚠️ chave precisa vir do AI Studio
 });
 
-// ==================== FUNÇÃO DE BUSCA WEB ====================
-async function buscarNaWeb(query) {
-  try {
-    const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`;
-    const response = await fetch(url);
-    const data = await response.json();
-
-    if (data.AbstractText) return data.AbstractText;
-    if (data.RelatedTopics?.length > 0) return data.RelatedTopics[0].Text;
-    return null;
-  } catch (err) {
-    console.error("Erro na busca web:", err);
-    return null;
-  }
-}
-
-// ==================== CHAT COM GEMINI + WEB ====================
+// ==================== CHAT ====================
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   const { message } = req.body;
   let respostaFinal = "";
 
   try {
-    // 1) Buscar na web
-    const resultadoWeb = await buscarNaWeb(message);
+    // 1) Buscar na web (igual eu faço aqui)
+    let webSnippet = null;
+    try {
+      const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(message)}&format=json&no_redirect=1&no_html=1`;
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.AbstractText) webSnippet = data.AbstractText;
+      else if (data.RelatedTopics?.length > 0) webSnippet = data.RelatedTopics[0].Text;
+    } catch (err) {
+      console.warn("⚠️ Falha na busca web:", err.message);
+    }
 
-    if (resultadoWeb) {
-      respostaFinal = `📡 Da web: ${resultadoWeb}`;
+    if (webSnippet) {
+      respostaFinal = `🌐 Da web: ${webSnippet}`;
     } else {
       // 2) Gemini fallback
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -114,7 +107,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
       respostaFinal = result.response.text();
     }
 
-    // salvar no MongoDB no chat do usuário logado
+    // salvar no chat
     const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
     if (chat) {
       chat.messages.push({ role: "user", content: message });
@@ -129,7 +122,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   return res.json({ reply: respostaFinal });
 });
 
-// ==================== CHATDB ENDPOINTS ====================
+// ==================== CHATDB ====================
 app.get("/chatdb/list", authMiddleware, async (req, res) => {
   const chats = await Chat.find({ userId: req.userId }).select("_id title");
   res.json(chats);
@@ -169,3 +162,4 @@ app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
 // ==================== START ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
+
