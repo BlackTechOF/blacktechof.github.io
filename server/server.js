@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const duckduckgo = require("duckduckgo-search"); // ✅ Lib de busca
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const Chat = require("./models/Chat");
+const Chat = require("./models/Chat.js");
 
 const app = express();
 app.use(cors());
@@ -69,3 +69,4 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
 // ==================== SERVER ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
+
