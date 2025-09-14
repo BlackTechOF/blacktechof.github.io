@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const fetch = require("node-fetch");
 require("dotenv").config();
 
 const app = express();
@@ -85,7 +86,20 @@ function authMiddleware(req, res, next) {
   }
 }
 
-// =================== CHAT GEMINI COM MEMÓRIA ===================
+// =================== BUSCA NA WEB ===================
+function precisaWeb(texto) {
+  const gatilhos = ["quem ganhou", "resultado", "placar", "notícia", "agora", "hoje"];
+  return gatilhos.some(p => texto.toLowerCase().includes(p));
+}
+
+async function buscaWeb(query) {
+  const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.AbstractText || "Não encontrei nada relevante.";
+}
+
+// =================== CHAT GEMINI COM MEMÓRIA + WEB ===================
 app.post("/chat/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
@@ -101,24 +115,32 @@ app.post("/chat/:id", authMiddleware, async (req, res) => {
     // 2. Monta histórico
     const history = chat.messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join("\n");
 
-    // 🚀 Usa o modelo atualizado e grátis
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // 3. Busca extra na web se necessário
+    let contextoExtra = "";
+    if (precisaWeb(message)) {
+      contextoExtra = await buscaWeb(message);
+    }
 
+    // 4. Chama o Gemini
+    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
     const prompt = `
-Você é um assistente útil que responde em Markdown.
+Você é um assistente em português.  
+Responda sempre em Markdown.  
+Data atual: ${new Date().toLocaleString("pt-BR")}
+
 Histórico da conversa:
 ${history}
 
-Se o usuário perguntar sobre ano, data ou hora atual, considere que agora é:
-${new Date().toLocaleString("pt-BR")}
+Informações da web (se houver):
+${contextoExtra}
 
-Responda à última mensagem do usuário de forma natural.
+Responda à última mensagem do usuário.
     `;
 
     const result = await model.generateContent(prompt);
     const text = result.response.text();
 
-    // 4. Salva resposta do bot
+    // 5. Salva resposta do bot
     chat.messages.push({ role: "bot", content: text });
     await chat.save();
 
