@@ -3,10 +3,10 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const fetch = require("node-fetch");
+const cheerio = require("cheerio");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 require("dotenv").config();
-
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const app = express();
 app.use(express.json());
@@ -47,7 +47,6 @@ const Chat = mongoose.model("Chat", ChatSchema);
 // =================== AUTENTICAÇÃO ===================
 const SECRET = process.env.SECRET || "segredo_forte";
 
-// cadastro
 app.post("/auth/register", async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -60,7 +59,6 @@ app.post("/auth/register", async (req, res) => {
   }
 });
 
-// login
 app.post("/auth/login", async (req, res) => {
   const { username, password } = req.body;
   const user = await User.findOne({ username });
@@ -73,7 +71,6 @@ app.post("/auth/login", async (req, res) => {
   res.json({ token });
 });
 
-// middleware de autenticação
 function authMiddleware(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(401).json({ error: "Token necessário" });
@@ -87,20 +84,41 @@ function authMiddleware(req, res, next) {
   }
 }
 
-// =================== BUSCA NA WEB ===================
-function precisaWeb(texto) {
-  const gatilhos = ["quem ganhou", "resultado", "placar", "notícia", "agora", "hoje"];
-  return gatilhos.some(p => texto.toLowerCase().includes(p));
+// =================== FUNÇÃO DE BUSCA NA WEB ===================
+async function searchDuckDuckGo(query) {
+  try {
+    const url = `https://duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
+    const response = await fetch(url);
+    const html = await response.text();
+    const $ = cheerio.load(html);
+
+    // pega até 2 links principais
+    let results = [];
+    $("a.result__a").each((i, el) => {
+      if (i < 2) results.push($(el).attr("href"));
+    });
+
+    let texts = [];
+    for (let link of results) {
+      try {
+        const page = await fetch(link);
+        const pageHtml = await page.text();
+        const $$ = cheerio.load(pageHtml);
+        let text = $$("body").text();
+        texts.push(text.substring(0, 1000)); // pega só um pedaço p/ não pesar
+      } catch (err) {
+        console.error("❌ Erro ao abrir link:", err);
+      }
+    }
+
+    return texts.join("\n\n");
+  } catch (err) {
+    console.error("❌ Erro na busca DuckDuckGo:", err);
+    return "";
+  }
 }
 
-async function buscaWeb(query) {
-  const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`;
-  const res = await fetch(url);
-  const data = await res.json();
-  return data.AbstractText || "Não encontrei nada relevante.";
-}
-
-// =================== CHAT GEMINI COM MEMÓRIA + WEB ===================
+// =================== CHAT COM MEMÓRIA E WEB ===================
 app.post("/chat/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
@@ -109,39 +127,39 @@ app.post("/chat/:id", authMiddleware, async (req, res) => {
     const chat = await Chat.findOne({ _id: id, userId: req.userId });
     if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
 
-    // 1. Salva mensagem do usuário
+    // salva mensagem do usuário
     chat.messages.push({ role: "user", content: message });
     await chat.save();
 
-    // 2. Monta histórico
+    // histórico
     const history = chat.messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join("\n");
 
-    // 3. Busca extra na web se necessário
-    let contextoExtra = "";
-    if (precisaWeb(message)) {
-      contextoExtra = await buscaWeb(message);
-    }
-
-    // 4. Chama o Gemini
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-flash" });
-    const prompt = `
+    // tenta responder só com a IA
+    const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
+    let prompt = `
 Você é um assistente em português.  
-Responda sempre em Markdown.  
-Data atual: ${new Date().toLocaleString("pt-BR")}
+Data atual: ${new Date().toLocaleDateString("pt-BR")}  
 
 Histórico da conversa:
 ${history}
 
-Informações da web (se houver):
-${contextoExtra}
-
-Responda à última mensagem do usuário.
+Responda à última mensagem do usuário. Se não souber, diga claramente.
     `;
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    let result = await model.generateContent(prompt);
+    let text = result.response.text();
 
-    // 5. Salva resposta do bot
+    // se a resposta da IA parecer inconclusiva → busca na web
+    if (text.includes("não sei") || text.includes("não tenho informações") || text.length < 30) {
+      const webData = await searchDuckDuckGo(message);
+      if (webData) {
+        prompt += `\n\nInformações da web:\n${webData}\n\nUse isso para responder de forma atualizada.`;
+        result = await model.generateContent(prompt);
+        text = result.response.text();
+      }
+    }
+
+    // salva resposta do bot
     chat.messages.push({ role: "bot", content: text });
     await chat.save();
 
@@ -152,8 +170,7 @@ Responda à última mensagem do usuário.
   }
 });
 
-// =================== CHATDB (Mongo) ===================
-// criar novo chat
+// =================== CHATDB ===================
 app.post("/chatdb/new", authMiddleware, async (req, res) => {
   const { title } = req.body;
   const chat = new Chat({ userId: req.userId, title: title || "Novo Chat", messages: [] });
@@ -161,20 +178,17 @@ app.post("/chatdb/new", authMiddleware, async (req, res) => {
   res.json(chat);
 });
 
-// listar chats do usuário
 app.get("/chatdb/list", authMiddleware, async (req, res) => {
   const chats = await Chat.find({ userId: req.userId }).select("_id title");
   res.json(chats);
 });
 
-// obter histórico de um chat
 app.get("/chatdb/:id", authMiddleware, async (req, res) => {
   const chat = await Chat.findOne({ _id: req.params.id, userId: req.userId });
   if (!chat) return res.json([]);
   res.json(chat.messages);
 });
 
-// deletar um chat
 app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
   try {
     const chat = await Chat.findOneAndDelete({ _id: req.params.id, userId: req.userId });
@@ -190,4 +204,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
-
