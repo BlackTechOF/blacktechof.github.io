@@ -95,7 +95,7 @@ app.post("/chat/:id", authMiddleware, async (req, res) => {
   try {
     // 🔎 Se a pergunta parecer sobre eventos atuais (quem ganhou, que dia é hoje, etc)
     if (/quem ganhou|campeão|que dia|hoje|atual/i.test(userMessage)) {
-      const results = await search(userMessage, { safeSearch: "moderate" });
+      const results = await duckduckgo.search(query);
       if (results && results.length > 0) {
         reply = results[0].snippet || results[0].title;
       } else {
@@ -117,3 +117,4 @@ app.post("/chat/:id", authMiddleware, async (req, res) => {
 // ================= START =================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
+
