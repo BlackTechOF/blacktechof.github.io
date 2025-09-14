@@ -4,13 +4,20 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const duckduckgo = require("duckduckgo-search"); // ✅ Lib de busca
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const Chat = require("../models/Chat.js");
+const mongoose = require("mongoose");
+const Chat = require("./models/Chat.js"); // ✅ Ajuste caminho se necessário
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
 const SECRET = "segredo123";
+
+// ==================== MONGODB ====================
+mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/techia", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 // ==================== AUTENTICAÇÃO ====================
 function authMiddleware(req, res, next) {
@@ -27,6 +34,7 @@ function authMiddleware(req, res, next) {
 }
 
 app.post("/auth/register", (req, res) => {
+  // ⚠️ Mock — aqui você poderia criar usuário no Mongo
   return res.json({ message: "Registro OK (mock)" });
 });
 
@@ -38,7 +46,7 @@ app.post("/auth/login", (req, res) => {
 
 // ==================== GEMINI CONFIG ====================
 const genAI = new GoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY || "SUA_CHAVE_AQUI"
+  apiKey: process.env.GEMINI_API_KEY || "SUA_CHAVE_AQUI", // 🔑 coloque sua chave
 });
 
 // ==================== CHAT ENDPOINT ====================
@@ -54,7 +62,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
       respostaFinal = `📡 Resultado da web: ${results[0].snippet || results[0].title || results[0].url}`;
     } else {
       // 2) Se não achar nada → fallback para Gemini
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateContent(message);
       respostaFinal = result.response.text();
     }
@@ -76,7 +84,7 @@ app.post("/chatdb/new", authMiddleware, async (req, res) => {
   const newChat = new Chat({
     userId: req.user.username,
     messages: [],
-    title: req.body.title || "Novo Chat"
+    title: req.body.title || "Novo Chat",
   });
   await newChat.save();
   res.json(newChat);
@@ -102,10 +110,6 @@ app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
   res.json({ success: true });
 });
 
-
 // ==================== SERVER ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
-
-
-
