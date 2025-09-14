@@ -4,7 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const duckduckgo = require("duckduckgo-search"); // ✅ busca web
+const fetch = require("node-fetch"); // 🔎 substitui duckduckgo
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const mongoose = require("mongoose");
 const User = require("../models/User.js");
@@ -33,7 +33,7 @@ function authMiddleware(req, res, next) {
 
   try {
     const decoded = jwt.verify(token, SECRET);
-    req.userId = decoded.id;
+    req.userId = decoded.id; // ✅ userId único
     next();
   } catch (err) {
     return res.status(401).json({ error: "Token inválido" });
@@ -77,25 +77,36 @@ app.post("/auth/login", async (req, res) => {
 
 // ==================== GEMINI CONFIG ====================
 const genAI = new GoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY, // precisa estar no Render
+  apiKey: process.env.GEMINI_API_KEY, // ✅ pego do Render
 });
+
+// ==================== FUNÇÃO DE BUSCA WEB ====================
+async function buscarNaWeb(query) {
+  try {
+    const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.AbstractText) return data.AbstractText;
+    if (data.RelatedTopics?.length > 0) return data.RelatedTopics[0].Text;
+    return null;
+  } catch (err) {
+    console.error("Erro na busca web:", err);
+    return null;
+  }
+}
 
 // ==================== CHAT COM GEMINI + WEB ====================
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   const { message } = req.body;
   let respostaFinal = "";
-  let results = [];
 
   try {
     // 1) Buscar na web
-    try {
-      results = await duckduckgo(message, { maxResults: 3 });
-    } catch (err) {
-      console.warn("⚠️ Falha na busca web:", err.message);
-    }
+    const resultadoWeb = await buscarNaWeb(message);
 
-    if (results && results.length > 0) {
-      respostaFinal = `📡 Resultado da web: ${results[0].snippet || results[0].title || results[0].url}`;
+    if (resultadoWeb) {
+      respostaFinal = `📡 Da web: ${resultadoWeb}`;
     } else {
       // 2) Gemini fallback
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -103,7 +114,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
       respostaFinal = result.response.text();
     }
 
-    // salvar no Mongo
+    // salvar no MongoDB no chat do usuário logado
     const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
     if (chat) {
       chat.messages.push({ role: "user", content: message });
@@ -117,6 +128,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
 
   return res.json({ reply: respostaFinal });
 });
+
 // ==================== CHATDB ENDPOINTS ====================
 app.get("/chatdb/list", authMiddleware, async (req, res) => {
   const chats = await Chat.find({ userId: req.userId }).select("_id title");
@@ -157,7 +169,3 @@ app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
 // ==================== START ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
-
-
-
-
