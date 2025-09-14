@@ -1,9 +1,9 @@
 let botOcupado = false;
 let intervaloId;
 let controller;
-let currentChatId = null; // chat atual
+let currentChatId = null;
 
-const API_URL = "https://blacktechof-github-io.onrender.com"; // troque pela sua URL do backend
+const API_URL = "https://blacktechof-github-io.onrender.com"; // 🔗 backend
 
 // ================= AUTENTICAÇÃO =================
 async function register() {
@@ -45,7 +45,7 @@ async function login() {
   }
 }
 
-// 🔑 auto login se já tem token
+// 🔑 Auto login se já tem token
 window.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -69,7 +69,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // listeners
   const input = document.getElementById("userInput");
   if (input) {
     input.addEventListener("keypress", (e) => {
@@ -145,7 +144,6 @@ async function loadChats() {
   chats.forEach(c => {
     const li = document.createElement("li");
 
-    // título
     const span = document.createElement("span");
     span.textContent = c.title;
     span.style.cursor = "pointer";
@@ -155,7 +153,6 @@ async function loadChats() {
       loadHistory(currentChatId);
     };
 
-    // botão deletar
     const delBtn = document.createElement("button");
     delBtn.textContent = "🗑️";
     delBtn.onclick = async (e) => {
@@ -210,8 +207,6 @@ async function saveMessage(role, content) {
     return;
   }
 
-  console.log("💾 Salvando mensagem em chat:", currentChatId);
-
   const res = await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
     method: "POST",
     headers: {
@@ -242,7 +237,6 @@ async function sendMessage() {
     return;
   }
 
-  // mostra msg user
   const userDiv = document.createElement("div");
   userDiv.className = "message user";
   userDiv.textContent = userMessage;
@@ -251,10 +245,9 @@ async function sendMessage() {
   await saveMessage("user", userMessage);
   input.value = "";
 
-  // placeholder bot
   const botDiv = document.createElement("div");
   botDiv.className = "message bot bot_ativo";
-  botDiv.textContent = "⏳ Pesquisando...";
+  botDiv.textContent = "⏳ Pensando...";
   messagesDiv.appendChild(botDiv);
 
   try {
@@ -272,23 +265,20 @@ async function sendMessage() {
 
     const data = await response.json();
 
-    // ✅ Mostra a resposta (IA ou Web)
-    let reply = data.reply || "⚠️ Não recebi resposta.";
-
     let i = 0;
     intervaloId = setInterval(async () => {
-      botDiv.innerHTML = marked.parse(reply.slice(0, i));
-      if (i >= reply.length) {
+      botDiv.innerHTML = marked.parse(data.reply.slice(0, i));
+      if (i >= data.reply.length) {
         clearInterval(intervaloId);
         botOcupado = false;
-        await saveMessage("bot", reply);
+        await saveMessage("bot", data.reply);
       }
       i++;
     }, 15);
 
   } catch (err) {
-    botDiv.textContent = "⚠️ Erro ao buscar resposta.";
-    console.error("Erro na IA/Web:", err);
+    botDiv.textContent = "⚠️ Erro na IA.";
+    console.error("Erro na IA:", err);
     botOcupado = false;
   }
 }
