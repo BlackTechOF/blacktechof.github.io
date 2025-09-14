@@ -59,6 +59,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         await loadChats();
         await ensureChatExists(); // 🔥 garante chat também no autologin
       } else {
+        console.error("Erro ao validar token");
         localStorage.removeItem("token");
       }
     } catch {
@@ -90,34 +91,38 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 // ================= CHATS =================
 async function ensureChatExists() {
+  const token = localStorage.getItem("token");
   const res = await fetch(`${API_URL}/chatdb/list`, {
-    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+    headers: { "Authorization": "Bearer " + token }
   });
   const chats = await res.json();
 
   if (chats.length === 0) {
+    // se não existir nenhum chat, cria um novo
     const newC = await fetch(`${API_URL}/chatdb/new`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("token")
+        "Authorization": "Bearer " + token
       },
       body: JSON.stringify({ title: "Novo Chat" })
     });
     const chat = await newC.json();
     currentChatId = chat._id;
   } else {
+    // usa o primeiro chat da lista
     currentChatId = chats[0]._id;
     loadHistory(currentChatId);
   }
 }
 
 async function newChat() {
+  const token = localStorage.getItem("token");
   const res = await fetch(`${API_URL}/chatdb/new`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": "Bearer " + localStorage.getItem("token")
+      "Authorization": "Bearer " + token
     },
     body: JSON.stringify({ title: "Novo Chat" })
   });
@@ -129,8 +134,9 @@ async function newChat() {
 }
 
 async function loadChats() {
+  const token = localStorage.getItem("token");
   const res = await fetch(`${API_URL}/chatdb/list`, {
-    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+    headers: { "Authorization": "Bearer " + token }
   });
 
   const chats = await res.json();
@@ -142,6 +148,7 @@ async function loadChats() {
   chats.forEach(c => {
     const li = document.createElement("li");
 
+    // título do chat (clique para abrir)
     const span = document.createElement("span");
     span.textContent = c.title;
     span.style.cursor = "pointer";
@@ -150,14 +157,15 @@ async function loadChats() {
       loadHistory(currentChatId);
     };
 
+    // botão apagar
     const delBtn = document.createElement("button");
-    delBtn.textContent = "🗑️";
+    delBtn.innerHTML = `🗑️`;
     delBtn.onclick = async (e) => {
       e.stopPropagation();
       if (confirm("Tem certeza que deseja excluir este chat?")) {
         await fetch(`${API_URL}/chatdb/${c._id}`, {
           method: "DELETE",
-          headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+          headers: { "Authorization": "Bearer " + token }
         });
         loadChats();
 
@@ -176,9 +184,10 @@ async function loadChats() {
 
 async function loadHistory(chatId) {
   if (!chatId) return;
+  const token = localStorage.getItem("token");
 
   const res = await fetch(`${API_URL}/chatdb/${chatId}`, {
-    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+    headers: { "Authorization": "Bearer " + token }
   });
 
   const history = await res.json();
@@ -190,9 +199,7 @@ async function loadHistory(chatId) {
   history.forEach(msg => {
     const div = document.createElement("div");
     div.className = `message ${msg.role}`;
-    div.innerHTML = msg.role === "user"
-      ? `<b>👤</b> ${marked.parse(msg.content)}`
-      : `<b>🤖</b> ${marked.parse(msg.content)}`;
+    div.innerHTML = marked.parse(msg.content);
     messagesDiv.appendChild(div);
   });
 
@@ -205,6 +212,7 @@ async function sendMessage() {
   if (botOcupado || !currentChatId) return;
   botOcupado = true;
 
+  const token = localStorage.getItem("token");
   const input = document.getElementById("userInput");
   const messagesDiv = document.getElementById("messages");
   if (!input || !messagesDiv) {
@@ -221,8 +229,18 @@ async function sendMessage() {
   // mostra msg user
   const userDiv = document.createElement("div");
   userDiv.className = "message user";
-  userDiv.innerHTML = `<b>👤</b> ${userMessage}`;
+  userDiv.textContent = userMessage;
   messagesDiv.appendChild(userDiv);
+
+  // salva no banco
+  await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify({ role: "user", content: userMessage }),
+  });
 
   input.value = "";
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
@@ -230,18 +248,17 @@ async function sendMessage() {
   // placeholder bot
   const botDiv = document.createElement("div");
   botDiv.className = "message bot bot_ativo";
-  botDiv.innerHTML = `<span>Pensando...</span>`;
+  botDiv.textContent = "⏳ Pensando...";
   messagesDiv.appendChild(botDiv);
 
   try {
     controller = new AbortController();
 
-    // 🔥 agora usa /chat/:id
     const response = await fetch(`${API_URL}/chat/${currentChatId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("token"),
+        "Authorization": "Bearer " + token
       },
       body: JSON.stringify({ message: userMessage }),
       signal: controller.signal,
@@ -251,8 +268,7 @@ async function sendMessage() {
 
     let i = 0;
     intervaloId = setInterval(() => {
-      const sliced = data.reply.slice(0, i);
-      botDiv.innerHTML = `<b>🤖</b> ${marked.parse(sliced)}`;
+      botDiv.innerHTML = marked.parse(data.reply.slice(0, i));
       if (i >= data.reply.length) {
         clearInterval(intervaloId);
         botOcupado = false;
@@ -264,10 +280,17 @@ async function sendMessage() {
     if (err.name === "AbortError") {
       botDiv.textContent = "⏹ Resposta interrompida.";
     } else {
-      botDiv.textContent = "Erro na IA.";
+      botDiv.textContent = "⚠️ Erro ao obter resposta.";
+      console.error("Erro na IA:", err);
     }
     botOcupado = false;
   }
+}
+
+function interromperResposta() {
+  clearInterval(intervaloId);
+  if (controller) controller.abort();
+  botOcupado = false;
 }
 
 // ================= LOGOUT =================
