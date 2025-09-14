@@ -1,23 +1,30 @@
+// server/server.js
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
+const duckduckgo = require("duckduckgo-search"); // ✅ busca web
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const Chat = require("../models/Chat.js"); // modelo do Mongo
+const mongoose = require("mongoose");
+const User = require("../models/User.js");
+const Chat = require("../models/Chat.js");
 
-// ==================== APP ====================
+require("dotenv").config();
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const SECRET = "segredo123";
+const SECRET = process.env.SECRET || "segredo123";
 
 // ==================== MONGODB ====================
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
+})
+.then(() => console.log("✅ MongoDB conectado"))
+.catch(err => console.error("❌ Erro no MongoDB:", err));
 
 // ==================== AUTENTICAÇÃO ====================
 function authMiddleware(req, res, next) {
@@ -26,74 +33,81 @@ function authMiddleware(req, res, next) {
 
   try {
     const decoded = jwt.verify(token, SECRET);
-    req.user = decoded;
+    req.userId = decoded.id;
     next();
-  } catch {
+  } catch (err) {
     return res.status(401).json({ error: "Token inválido" });
   }
 }
 
-app.post("/auth/login", (req, res) => {
-  const { username } = req.body;
-  if (!username) return res.status(400).json({ error: "Username obrigatório" });
+// Registro de usuário
+app.post("/auth/register", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password)
+      return res.status(400).json({ error: "Username e senha obrigatórios" });
 
-  const token = jwt.sign({ username }, SECRET, { expiresIn: "1h" });
-  return res.json({ token });
+    const existingUser = await User.findOne({ username });
+    if (existingUser)
+      return res.status(400).json({ error: "Usuário já existe" });
+
+    const hashed = await bcrypt.hash(password, 10);
+    const newUser = new User({ username, password: hashed });
+    await newUser.save();
+
+    res.json({ message: "✅ Usuário registrado com sucesso!" });
+  } catch (err) {
+    console.error("Erro em /auth/register:", err);
+    res.status(500).json({ error: "Erro ao registrar usuário" });
+  }
+});
+
+// Login
+app.post("/auth/login", async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+  if (!user) return res.status(400).json({ error: "Usuário não encontrado" });
+
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) return res.status(400).json({ error: "Senha inválida" });
+
+  const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "1d" });
+  res.json({ token });
 });
 
 // ==================== GEMINI CONFIG ====================
 const genAI = new GoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY,
+  apiKey: process.env.GEMINI_API_KEY, // precisa estar no Render
 });
 
-// ==================== DUCKDUCKGO FIX ====================
-let searchFn;
-try {
-  const duck = require("duckduckgo-search");
-  // pode exportar de 2 jeitos, testamos
-  if (typeof duck === "function") {
-    searchFn = duck;
-  } else if (typeof duck.search === "function") {
-    searchFn = duck.search;
-  } else {
-    console.error("❌ Nenhuma função válida encontrada no duckduckgo-search");
-  }
-} catch (err) {
-  console.error("❌ Erro ao importar duckduckgo-search:", err);
-}
-
-// ==================== CHAT ENDPOINT ====================
+// ==================== CHAT COM GEMINI + WEB ====================
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   const { message } = req.body;
   let respostaFinal = "";
 
   try {
+    // 1) Buscar na web
     let results = [];
-
-    if (searchFn) {
-      try {
-        results = await searchFn(message, { maxResults: 3 });
-      } catch (e) {
-        console.error("⚠️ Erro ao usar DuckDuckGo:", e);
-      }
+    try {
+      results = await duckduckgo.search(message, { maxResults: 3 });
+    } catch (err) {
+      console.warn("⚠️ Falha na busca web:", err.message);
     }
 
     if (results && results.length > 0) {
-      respostaFinal =
-        `📡 Resultado da web:\n\n` +
-        (results[0].snippet || results[0].title || results[0].url);
+      respostaFinal = `📡 Resultado da web: ${results[0].snippet || results[0].title}`;
     } else {
-      // fallback → Gemini
+      // 2) Gemini fallback
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateContent(message);
       respostaFinal = result.response.text();
     }
 
     // salvar no chat
-    const chat = await Chat.findById(req.params.chatId);
+    const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
     if (chat) {
       chat.messages.push({ role: "user", content: message });
-      chat.messages.push({ role: "assistant", content: respostaFinal });
+      chat.messages.push({ role: "bot", content: respostaFinal });
       await chat.save();
     }
   } catch (err) {
@@ -106,13 +120,13 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
 
 // ==================== CHATDB ENDPOINTS ====================
 app.get("/chatdb/list", authMiddleware, async (req, res) => {
-  const chats = await Chat.find({ userId: req.user.username }).lean();
+  const chats = await Chat.find({ userId: req.userId }).select("_id title");
   res.json(chats);
 });
 
 app.post("/chatdb/new", authMiddleware, async (req, res) => {
   const newChat = new Chat({
-    userId: req.user.username,
+    userId: req.userId,
     messages: [],
     title: req.body.title || "Novo Chat",
   });
@@ -121,28 +135,26 @@ app.post("/chatdb/new", authMiddleware, async (req, res) => {
 });
 
 app.get("/chatdb/:id", authMiddleware, async (req, res) => {
-  const chat = await Chat.findById(req.params.id).lean();
+  const chat = await Chat.findOne({ _id: req.params.id, userId: req.userId });
   res.json(chat?.messages || []);
 });
 
 app.post("/chatdb/:id/save", authMiddleware, async (req, res) => {
   const { role, content } = req.body;
-  const chat = await Chat.findById(req.params.id);
+  const chat = await Chat.findOne({ _id: req.params.id, userId: req.userId });
   if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
 
   chat.messages.push({ role, content });
   await chat.save();
+
   res.json({ success: true });
 });
 
 app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
-  await Chat.findByIdAndDelete(req.params.id);
+  await Chat.findOneAndDelete({ _id: req.params.id, userId: req.userId });
   res.json({ success: true });
 });
 
-// ==================== SERVER ====================
+// ==================== START ====================
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () =>
-  console.log(`🚀 Server rodando na porta ${PORT}`)
-);
-
+app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
