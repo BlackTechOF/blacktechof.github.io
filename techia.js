@@ -1,9 +1,9 @@
 let botOcupado = false;
 let intervaloId;
 let controller;
-let currentChatId = null; // chat atual
+let currentChatId = null;
 
-const API_URL = "https://blacktechof-github-io.onrender.com"; // troque pela sua URL do backend
+const API_URL = "https://blacktechof-github-io.onrender.com"; // sua API do Render
 
 // ================= AUTENTICAÇÃO =================
 async function register() {
@@ -203,30 +203,6 @@ async function loadHistory(chatId) {
   messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-// ================= SALVAR MENSAGEM =================
-async function saveMessage(role, content) {
-  if (!currentChatId) {
-    console.error("❌ Nenhum chat selecionado.");
-    return;
-  }
-
-  console.log("💾 Salvando mensagem em chat:", currentChatId);
-
-  const res = await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + localStorage.getItem("token")
-    },
-    body: JSON.stringify({ role, content })
-  });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    console.error("❌ Erro ao salvar mensagem:", res.status, errText);
-  }
-}
-
 // ================= CHAT MENSAGENS =================
 async function sendMessage() {
   if (botOcupado || !currentChatId) return;
@@ -248,7 +224,6 @@ async function sendMessage() {
   userDiv.textContent = userMessage;
   messagesDiv.appendChild(userDiv);
 
-  await saveMessage("user", userMessage);
   input.value = "";
 
   // placeholder bot
@@ -273,12 +248,11 @@ async function sendMessage() {
     const data = await response.json();
 
     let i = 0;
-    intervaloId = setInterval(async () => {
+    intervaloId = setInterval(() => {
       botDiv.innerHTML = marked.parse(data.reply.slice(0, i));
       if (i >= data.reply.length) {
         clearInterval(intervaloId);
         botOcupado = false;
-        await saveMessage("bot", data.reply);
       }
       i++;
     }, 15);
