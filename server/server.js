@@ -3,9 +3,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const fetch = require("node-fetch");
-const cheerio = require("cheerio");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const fetch = require("node-fetch"); // npm install node-fetch@2
 require("dotenv").config();
 
 const app = express();
@@ -14,18 +13,6 @@ app.use(cors());
 
 // =================== IA GEMINI ===================
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-async function buscaWeb(query) {
-  const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`;
-  const res = await fetch(url);
-  const data = await res.json();
-
-  if (data.AbstractText) return data.AbstractText;
-  if (data.RelatedTopics && data.RelatedTopics.length > 0) {
-    return data.RelatedTopics[0].Text;
-  }
-  return "❌ Não encontrei nada na web.";
-}
 
 // =================== MONGODB ===================
 mongoose.connect(process.env.MONGO_URI, {
@@ -59,6 +46,7 @@ const Chat = mongoose.model("Chat", ChatSchema);
 // =================== AUTENTICAÇÃO ===================
 const SECRET = process.env.SECRET || "segredo_forte";
 
+// cadastro
 app.post("/auth/register", async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -71,6 +59,7 @@ app.post("/auth/register", async (req, res) => {
   }
 });
 
+// login
 app.post("/auth/login", async (req, res) => {
   const { username, password } = req.body;
   const user = await User.findOne({ username });
@@ -83,6 +72,7 @@ app.post("/auth/login", async (req, res) => {
   res.json({ token });
 });
 
+// middleware de autenticação
 function authMiddleware(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(401).json({ error: "Token necessário" });
@@ -96,41 +86,25 @@ function authMiddleware(req, res, next) {
   }
 }
 
-// =================== FUNÇÃO DE BUSCA NA WEB ===================
-async function searchDuckDuckGo(query) {
+// =================== BUSCA NA WEB ===================
+async function buscaWeb(query) {
+  const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_redirect=1&no_html=1`;
   try {
-    const url = `https://duckduckgo.com/html/?q=${encodeURIComponent(query)}`;
-    const response = await fetch(url);
-    const html = await response.text();
-    const $ = cheerio.load(html);
+    const res = await fetch(url);
+    const data = await res.json();
 
-    // pega até 2 links principais
-    let results = [];
-    $("a.result__a").each((i, el) => {
-      if (i < 2) results.push($(el).attr("href"));
-    });
-
-    let texts = [];
-    for (let link of results) {
-      try {
-        const page = await fetch(link);
-        const pageHtml = await page.text();
-        const $$ = cheerio.load(pageHtml);
-        let text = $$("body").text();
-        texts.push(text.substring(0, 1000)); // pega só um pedaço p/ não pesar
-      } catch (err) {
-        console.error("❌ Erro ao abrir link:", err);
-      }
+    if (data.AbstractText) return data.AbstractText;
+    if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+      return data.RelatedTopics[0].Text;
     }
-
-    return texts.join("\n\n");
+    return "❌ Não encontrei nada na web.";
   } catch (err) {
-    console.error("❌ Erro na busca DuckDuckGo:", err);
-    return "";
+    console.error("Erro busca web:", err);
+    return "⚠️ Erro ao buscar na web.";
   }
 }
 
-// =================== CHAT COM MEMÓRIA E WEB ===================
+// =================== CHAT GEMINI + WEB ===================
 app.post("/chat/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
@@ -139,39 +113,43 @@ app.post("/chat/:id", authMiddleware, async (req, res) => {
     const chat = await Chat.findOne({ _id: id, userId: req.userId });
     if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
 
-    // salva mensagem do usuário
+    // salva msg user
     chat.messages.push({ role: "user", content: message });
     await chat.save();
 
-    // histórico
+    // monta histórico
     const history = chat.messages.map(m => `${m.role.toUpperCase()}: ${m.content}`).join("\n");
 
-    // tenta responder só com a IA
-    const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
-    let prompt = `
-Você é um assistente em português.  
-Data atual: ${new Date().toLocaleDateString("pt-BR")}  
+    let text;
+    try {
+      // tenta IA
+      const model = genAI.getGenerativeModel({ model: "models/gemini-2.5-flash" });
+      const prompt = `
+Você é um assistente útil.  
+Responda sempre em Markdown.  
 
 Histórico da conversa:
 ${history}
 
-Responda à última mensagem do usuário. Se não souber, diga claramente.
-    `;
+Responda à última mensagem do usuário.  
+Se não tiver certeza ou a informação for sobre eventos recentes, apenas diga "não sei".
+      `;
 
-    let result = await model.generateContent(prompt);
-    let text = result.response.text();
-
-    // se a resposta da IA parecer inconclusiva → busca na web
-    if (text.includes("não sei") || text.includes("não tenho informações") || text.length < 30) {
-      const webData = await searchDuckDuckGo(message);
-      if (webData) {
-        prompt += `\n\nInformações da web:\n${webData}\n\nUse isso para responder de forma atualizada.`;
-        result = await model.generateContent(prompt);
-        text = result.response.text();
-      }
+      const result = await model.generateContent(prompt);
+      text = result.response.text();
+    } catch (err) {
+      console.error("Erro no Gemini:", err);
+      text = "não sei";
     }
 
-    // salva resposta do bot
+    // se IA não souber → tenta web
+    if (!text || text.toLowerCase().includes("não sei") || text.includes("ainda não aconteceu")) {
+      console.log("🌐 Buscando na web:", message);
+      const webInfo = await buscaWeb(message);
+      text = `🔎 Resultado da web: ${webInfo}`;
+    }
+
+    // salva msg bot
     chat.messages.push({ role: "bot", content: text });
     await chat.save();
 
@@ -182,7 +160,8 @@ Responda à última mensagem do usuário. Se não souber, diga claramente.
   }
 });
 
-// =================== CHATDB ===================
+// =================== CHATDB (Mongo) ===================
+// criar novo chat
 app.post("/chatdb/new", authMiddleware, async (req, res) => {
   const { title } = req.body;
   const chat = new Chat({ userId: req.userId, title: title || "Novo Chat", messages: [] });
@@ -190,17 +169,20 @@ app.post("/chatdb/new", authMiddleware, async (req, res) => {
   res.json(chat);
 });
 
+// listar chats
 app.get("/chatdb/list", authMiddleware, async (req, res) => {
   const chats = await Chat.find({ userId: req.userId }).select("_id title");
   res.json(chats);
 });
 
+// obter histórico
 app.get("/chatdb/:id", authMiddleware, async (req, res) => {
   const chat = await Chat.findOne({ _id: req.params.id, userId: req.userId });
   if (!chat) return res.json([]);
   res.json(chat.messages);
 });
 
+// deletar chat
 app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
   try {
     const chat = await Chat.findOneAndDelete({ _id: req.params.id, userId: req.userId });
@@ -216,4 +198,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
-
