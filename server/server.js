@@ -66,8 +66,46 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   return res.json({ reply: respostaFinal });
 });
 
+// ==================== CHATDB (MongoDB) ====================
+app.get("/chatdb/list", authMiddleware, async (req, res) => {
+  const chats = await Chat.find({ userId: req.user.username }).lean();
+  res.json(chats);
+});
+
+app.post("/chatdb/new", authMiddleware, async (req, res) => {
+  const newChat = new Chat({
+    userId: req.user.username,
+    messages: [],
+    title: req.body.title || "Novo Chat"
+  });
+  await newChat.save();
+  res.json(newChat);
+});
+
+app.get("/chatdb/:id", authMiddleware, async (req, res) => {
+  const chat = await Chat.findById(req.params.id).lean();
+  res.json(chat?.messages || []);
+});
+
+app.post("/chatdb/:id/save", authMiddleware, async (req, res) => {
+  const { role, content } = req.body;
+  const chat = await Chat.findById(req.params.id);
+  if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+
+  chat.messages.push({ role, content });
+  await chat.save();
+  res.json({ success: true });
+});
+
+app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
+  await Chat.findByIdAndDelete(req.params.id);
+  res.json({ success: true });
+});
+
+
 // ==================== SERVER ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server rodando na porta ${PORT}`));
+
 
 
