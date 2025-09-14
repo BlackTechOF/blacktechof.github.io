@@ -4,7 +4,8 @@ import fetch from "node-fetch";
 import { MongoClient, ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { search } from "duckduckgo-search"; // 🔎 DuckDuckGo search
+const search = require("duckduckgo-search");
+ // 🔎 DuckDuckGo search
 
 const app = express();
 app.use(cors());
@@ -197,4 +198,5 @@ app.listen(PORT, async () => {
   }
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
+
 
