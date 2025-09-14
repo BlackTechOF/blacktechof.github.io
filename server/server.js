@@ -43,7 +43,7 @@ app.post("/auth/login", (req, res) => {
 
 // ==================== GEMINI CONFIG ====================
 const genAI = new GoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY || "SUA_CHAVE_AQUI",
+  apiKey: process.env.GEMINI_API_KEY,
 });
 
 // ==================== DUCKDUCKGO FIX ====================
@@ -145,3 +145,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
   console.log(`🚀 Server rodando na porta ${PORT}`)
 );
+
