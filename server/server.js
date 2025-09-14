@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 
 // ================= CONFIG =================
 const JWT_SECRET = "seu_segredo";
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -90,7 +90,7 @@ app.post("/chat/:id", authMiddleware, async (req, res) => {
     // 🔹 2. Se IA não responder bem → busca na web
     if (!reply || reply.trim() === "" || reply.includes("não sei")) {
       try {
-        const results = await duckduckgo.search(message);
+        const results = await duckduckgo(query);
         if (results && results.length > 0) {
           // pega o melhor resumo
           reply = results[0].snippet || results[0].title || "Não encontrei nada relevante.";
@@ -152,3 +152,4 @@ app.delete("/chatdb/:id", authMiddleware, async (req, res) => {
 // ================= SERVER =================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
+
