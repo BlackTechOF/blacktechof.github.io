@@ -1,9 +1,9 @@
 let botOcupado = false;
 let intervaloId;
 let controller;
-let currentChatId = null;
+let currentChatId = null; // chat atual
 
-const API_URL = "https://blacktechof-github-io.onrender.com"; // seu backend
+const API_URL = "https://blacktechof-github-io.onrender.com"; // troque pela sua URL do backend
 
 // ================= AUTENTICAÇÃO =================
 async function register() {
@@ -13,7 +13,7 @@ async function register() {
   const res = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ username, password })
   });
 
   const data = await res.json();
@@ -27,7 +27,7 @@ async function login() {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ username, password })
   });
 
   const data = await res.json();
@@ -45,13 +45,13 @@ async function login() {
   }
 }
 
-// 🔑 auto login
+// 🔑 auto login se já tem token
 window.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (token) {
     try {
       const res = await fetch(`${API_URL}/chatdb/list`, {
-        headers: { Authorization: "Bearer " + token },
+        headers: { "Authorization": "Bearer " + token }
       });
 
       if (res.ok) {
@@ -60,6 +60,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         await loadChats();
         await ensureChatExists();
       } else {
+        console.warn("⚠️ Token inválido ou expirado. Fazendo logout...");
         logout();
       }
     } catch (err) {
@@ -68,6 +69,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // listeners
   const input = document.getElementById("userInput");
   if (input) {
     input.addEventListener("keypress", (e) => {
@@ -92,7 +94,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 // ================= CHATS =================
 async function ensureChatExists() {
   const res = await fetch(`${API_URL}/chatdb/list`, {
-    headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
   });
   const chats = await res.json();
 
@@ -101,9 +103,9 @@ async function ensureChatExists() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("token"),
+        "Authorization": "Bearer " + localStorage.getItem("token")
       },
-      body: JSON.stringify({ title: "Novo Chat" }),
+      body: JSON.stringify({ title: "Novo Chat" })
     });
     const chat = await newC.json();
     currentChatId = chat._id;
@@ -118,9 +120,9 @@ async function newChat() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("token"),
+      "Authorization": "Bearer " + localStorage.getItem("token")
     },
-    body: JSON.stringify({ title: "Novo Chat" }),
+    body: JSON.stringify({ title: "Novo Chat" })
   });
 
   const chat = await res.json();
@@ -131,7 +133,7 @@ async function newChat() {
 
 async function loadChats() {
   const res = await fetch(`${API_URL}/chatdb/list`, {
-    headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
   });
 
   const chats = await res.json();
@@ -140,17 +142,20 @@ async function loadChats() {
 
   chatList.innerHTML = "";
 
-  chats.forEach((c) => {
+  chats.forEach(c => {
     const li = document.createElement("li");
 
+    // título
     const span = document.createElement("span");
     span.textContent = c.title;
     span.style.cursor = "pointer";
     span.onclick = () => {
       currentChatId = c._id;
+      console.log("📌 Chat selecionado:", currentChatId);
       loadHistory(currentChatId);
     };
 
+    // botão deletar
     const delBtn = document.createElement("button");
     delBtn.textContent = "🗑️";
     delBtn.onclick = async (e) => {
@@ -158,9 +163,7 @@ async function loadChats() {
       if (confirm("Excluir este chat?")) {
         await fetch(`${API_URL}/chatdb/${c._id}`, {
           method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
+          headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
         });
         loadChats();
 
@@ -181,7 +184,7 @@ async function loadHistory(chatId) {
   if (!chatId) return;
 
   const res = await fetch(`${API_URL}/chatdb/${chatId}`, {
-    headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
   });
 
   const history = await res.json();
@@ -190,10 +193,10 @@ async function loadHistory(chatId) {
 
   messagesDiv.innerHTML = "";
 
-  history.forEach((msg) => {
+  history.forEach(msg => {
     const div = document.createElement("div");
     div.className = `message ${msg.role}`;
-    div.innerHTML = msg.content;
+    div.innerHTML = marked.parse(msg.content);
     messagesDiv.appendChild(div);
   });
 
@@ -202,16 +205,26 @@ async function loadHistory(chatId) {
 
 // ================= SALVAR MENSAGEM =================
 async function saveMessage(role, content) {
-  if (!currentChatId) return;
+  if (!currentChatId) {
+    console.error("❌ Nenhum chat selecionado.");
+    return;
+  }
 
-  await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
+  console.log("💾 Salvando mensagem em chat:", currentChatId);
+
+  const res = await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("token"),
+      "Authorization": "Bearer " + localStorage.getItem("token")
     },
-    body: JSON.stringify({ role, content }),
+    body: JSON.stringify({ role, content })
   });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    console.error("❌ Erro ao salvar mensagem:", res.status, errText);
+  }
 }
 
 // ================= CHAT MENSAGENS =================
@@ -229,6 +242,7 @@ async function sendMessage() {
     return;
   }
 
+  // mostra msg user
   const userDiv = document.createElement("div");
   userDiv.className = "message user";
   userDiv.textContent = userMessage;
@@ -237,6 +251,7 @@ async function sendMessage() {
   await saveMessage("user", userMessage);
   input.value = "";
 
+  // placeholder bot
   const botDiv = document.createElement("div");
   botDiv.className = "message bot bot_ativo";
   botDiv.textContent = "⏳ Pesquisando...";
@@ -249,7 +264,7 @@ async function sendMessage() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
+        "Authorization": "Bearer " + token
       },
       body: JSON.stringify({ message: userMessage }),
       signal: controller.signal,
@@ -257,19 +272,23 @@ async function sendMessage() {
 
     const data = await response.json();
 
+    // ✅ Mostra a resposta (IA ou Web)
+    let reply = data.reply || "⚠️ Não recebi resposta.";
+
     let i = 0;
     intervaloId = setInterval(async () => {
-      botDiv.innerHTML = data.reply.slice(0, i);
-      if (i >= data.reply.length) {
+      botDiv.innerHTML = marked.parse(reply.slice(0, i));
+      if (i >= reply.length) {
         clearInterval(intervaloId);
         botOcupado = false;
-        await saveMessage("bot", data.reply);
+        await saveMessage("bot", reply);
       }
       i++;
     }, 15);
+
   } catch (err) {
-    botDiv.textContent = "⚠️ Erro na IA.";
-    console.error("Erro na IA:", err);
+    botDiv.textContent = "⚠️ Erro ao buscar resposta.";
+    console.error("Erro na IA/Web:", err);
     botOcupado = false;
   }
 }
@@ -278,14 +297,8 @@ async function sendMessage() {
 function logout() {
   localStorage.removeItem("token");
   currentChatId = null;
-
-  const chatC = document.getElementById("chat-container");
-  const authC = document.getElementById("auth-container");
-
-  if (chatC && authC) {
-    chatC.style.display = "none";
-    authC.style.display = "block";
-  }
+  document.getElementById("chat-container").style.display = "none";
+  document.getElementById("auth-container").style.display = "block";
 }
 
 window.addEventListener("DOMContentLoaded", () => {
