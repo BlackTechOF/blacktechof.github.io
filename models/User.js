@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
-  password: { type: String, required: true }, // armazenado com hash bcrypt
+  password: { type: String, required: true }, // senha vai ser hash com bcrypt
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", UserSchema);
