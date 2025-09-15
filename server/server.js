@@ -1,15 +1,14 @@
-// server.js
+// server.js - versão pronta para Render
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { getJson } = require("serpapi"); // ✅ SerpAPI
+const { getJson } = require("serpapi"); // SerpAPI
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const mongoose = require("mongoose");
-const User = require("../models/User.js");
-const Chat = require("../models/Chat.js");
-
+const User = require("./models/User.js");
+const Chat = require("./models/Chat.js");
 require("dotenv").config();
 
 const app = express();
@@ -45,24 +44,47 @@ const genAI = new GoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
+// ==================== AUTENTICAÇÃO ROTAS ====================
+app.post("/auth/register", async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) return res.status(400).json({ error: "Preencha usuário e senha" });
+
+  const existing = await User.findOne({ username });
+  if (existing) return res.status(400).json({ error: "Usuário já existe" });
+
+  const hashed = await bcrypt.hash(password, 10);
+  const user = new User({ username, password: hashed });
+  await user.save();
+
+  res.json({ message: "Registrado com sucesso" });
+});
+
+app.post("/auth/login", async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+  if (!user) return res.status(400).json({ error: "Usuário não encontrado" });
+
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) return res.status(400).json({ error: "Senha incorreta" });
+
+  const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "7d" });
+  res.json({ token });
+});
+
 // ==================== CHAT COM SERPAPI + GEMINI ====================
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   const { message } = req.body;
   let respostaFinal = "";
-  let buscouBing = false;
 
   try {
+    // Se a pergunta envolve ano atual, futuro ou 2025 -> forçar busca web
     const anoAtual = new Date().getFullYear();
-    const anoRegex = /\b(20\d{2})\b/g;
-    const anosNaPergunta = [...message.matchAll(anoRegex)].map(m => parseInt(m[1]));
+    const buscaWeb = /\b(2025|202[4-9]|[0-9]{4})\b/.test(message) || /\b(hoje|último|próximo|futuro|ano)\b/i.test(message);
 
-    const precisaBing = anosNaPergunta.some(a => a >= anoAtual) || message.toLowerCase().includes("futuro");
-
-    // ==================== 1) Busca web via SerpAPI se ano futuro ou 2025 ====================
-    if (precisaBing) {
+    if (buscaWeb) {
       try {
         const results = await getJson({
-          engine: "bing",
+          engine: "google",
           q: message,
           api_key: process.env.SERPAPI_KEY,
           hl: "pt-br",
@@ -70,42 +92,22 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
         });
 
         if (results.organic_results && results.organic_results.length > 0) {
-          respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
-          buscouBing = true;
+          const first = results.organic_results[0];
+          respostaFinal = `${first.title} - ${first.snippet || first.snippet_highlighted || ""}`;
         }
       } catch (err) {
-        console.warn("⚠️ Falha na busca Bing:", err.message);
+        console.warn("⚠️ Falha na busca web:", err.message);
       }
     }
 
-    // ==================== 2) Gemini só se não encontrou na web ====================
+    // Se não houve resultado da web -> Gemini
     if (!respostaFinal) {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateContent(message);
       respostaFinal = result.response.text();
     }
 
-    // ==================== 3) Se a resposta do Gemini for vaga, tentar Bing de novo ====================
-    const respostasVagas = ["não sei", "não tenho informação", "não encontrei"];
-    if (!buscouBing && respostasVagas.some(v => respostaFinal.toLowerCase().includes(v))) {
-      try {
-        const results = await getJson({
-          engine: "bing",
-          q: message,
-          api_key: process.env.SERPAPI_KEY,
-          hl: "pt-br",
-          gl: "br"
-        });
-
-        if (results.organic_results && results.organic_results.length > 0) {
-          respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
-        }
-      } catch (err) {
-        console.warn("⚠️ Segunda tentativa Bing falhou:", err.message);
-      }
-    }
-
-    // ==================== 4) Salvar no chat ====================
+    // Salvar no chat
     const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
     if (chat) {
       chat.messages.push({ role: "user", content: message });
@@ -118,10 +120,9 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
     respostaFinal = "⚠️ Erro ao buscar informações.";
   }
 
-  return res.json({ reply: respostaFinal });
+  res.json({ reply: respostaFinal });
 });
 
+// ==================== PORTA DINÂMICA PARA RENDER ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
-
-
