@@ -71,6 +71,43 @@ app.post("/auth/login", async (req, res) => {
   res.json({ token });
 });
 
+// Listar chats do usuário
+app.get("/chatdb/list", authMiddleware, async (req, res) => {
+  const chats = await Chat.find({ userId: req.userId });
+  res.json(chats);
+});
+
+// Criar novo chat
+app.post("/chatdb/new", authMiddleware, async (req, res) => {
+  const { title } = req.body;
+  const chat = new Chat({ title: title || "Novo Chat", userId: req.userId, messages: [] });
+  await chat.save();
+  res.json(chat);
+});
+
+// Buscar mensagens de um chat
+app.get("/chatdb/:chatId", authMiddleware, async (req, res) => {
+  const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
+  if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+  res.json(chat.messages);
+});
+
+// Salvar mensagem no chat
+app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
+  const { role, content } = req.body;
+  const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
+  if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+  chat.messages.push({ role, content });
+  await chat.save();
+  res.json({ ok: true });
+});
+
+// Deletar chat
+app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
+  await Chat.deleteOne({ _id: req.params.chatId, userId: req.userId });
+  res.json({ ok: true });
+});
+
 // ==================== CHAT COM SERPAPI + GEMINI ====================
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   const { message } = req.body;
@@ -126,4 +163,5 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
 // ==================== PORTA DINÂMICA PARA RENDER ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
