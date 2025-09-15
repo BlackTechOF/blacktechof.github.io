@@ -41,7 +41,7 @@ function authMiddleware(req, res, next) {
 
 // ==================== GEMINI CONFIG ====================
 const genAI = new GoogleGenerativeAI({
-  apiKey: process.env.GEMINI_API_KEY,
+  apiKey: process.env.GEMINI_API_KEY
 });
 
 // ==================== AUTENTICAÇÃO ROTAS ====================
@@ -163,5 +163,6 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
 // ==================== PORTA DINÂMICA PARA RENDER ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
