@@ -23,8 +23,8 @@ mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => console.log("✅ MongoDB conectado"))
-.catch(err => console.error("❌ Erro no MongoDB:", err));
+  .then(() => console.log("✅ MongoDB conectado"))
+  .catch(err => console.error("❌ Erro no MongoDB:", err));
 
 // ==================== AUTENTICAÇÃO ====================
 function authMiddleware(req, res, next) {
@@ -79,27 +79,32 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   try {
     // 1) Tentar buscar na web (SerpAPI)
     try {
-      const results = await getJson({
-        engine: "google",
-        q: message,
-        api_key: process.env.SERPAPI_KEY,
-        hl: "pt-br",
-        gl: "br"
-      });
-
-      if (results.organic_results && results.organic_results.length > 0) {
-        respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
-      }
-    } catch (err) {
-      console.warn("⚠️ Falha na busca web:", err.message);
-    }
-
-    // 2) Se não encontrou nada, usar Gemini
-    if (!respostaFinal) {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateText({ prompt: message, temperature: 0.7 });
       respostaFinal = result.candidates?.[0]?.output || "⚠️ Não consegui gerar resposta.";
+    } catch (err) {
+      console.warn("⚠️ Falha ao gerar resposta Gemini:", err.message)
     }
+
+
+    // 2) Se não encontrou nada, usar Gemini
+    if (!respostaFinal) {
+      try {
+        const results = await getJson({
+          engine: "google",
+          q: message,
+          api_key: process.env.SERPAPI_KEY,
+          hl: "pt-br",
+          gl: "br"
+        });
+        if (results.organic_results && results.organic_results.length > 0) {
+          respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
+        }
+      } catch (err) {
+        console.warn("⚠️ Falha na busca web:", err.message);
+      }
+    }
+
 
     // 3) Salvar no chat
     const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
