@@ -139,7 +139,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
 
     // Se não houve resultado da web -> Gemini
     if (!respostaFinal) {
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
       const result = await model.generateContent(message);
       respostaFinal = result.response.text();
     }
@@ -163,6 +163,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
 // ==================== PORTA DINÂMICA PARA RENDER ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
 
