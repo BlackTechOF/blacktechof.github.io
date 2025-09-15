@@ -80,7 +80,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
     // 1) Tentar buscar na web (SerpAPI)
     try {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      const result = await model.generateText({ prompt: message, temperature: 0.7 });
+      const result = await model.generateContent({ prompt: message, temperature: 0.7 });
       respostaFinal = result.candidates?.[0]?.output || "⚠️ Não consegui gerar resposta.";
     } catch (err) {
       console.warn("⚠️ Falha ao gerar resposta Gemini:", err.message)
@@ -156,3 +156,4 @@ app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
