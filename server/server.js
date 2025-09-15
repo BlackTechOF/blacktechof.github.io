@@ -7,8 +7,8 @@ const bcrypt = require("bcryptjs");
 const { getJson } = require("serpapi"); // SerpAPI
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const mongoose = require("mongoose");
-const User = require("./models/User.js");
-const Chat = require("./models/Chat.js");
+const User = require("../models/User.js");
+const Chat = require("../models/Chat.js");
 require("dotenv").config();
 
 const app = express();
@@ -126,3 +126,4 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
 // ==================== PORTA DINÂMICA PARA RENDER ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
