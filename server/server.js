@@ -49,39 +49,70 @@ const genAI = new GoogleGenerativeAI({
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   const { message } = req.body;
   let respostaFinal = "";
+  let buscouBing = false;
 
   try {
-    // 1) Buscar na web (SerpAPI - Google Search)
-    try {
-      const results = await getJson({
-        engine: "google",
-        q: message,
-        api_key: process.env.SERPAPI_KEY,
-        hl: "pt-br",
-        gl: "br"
-      });
+    const anoAtual = new Date().getFullYear();
+    const anoRegex = /\b(20\d{2})\b/g;
+    const anosNaPergunta = [...message.matchAll(anoRegex)].map(m => parseInt(m[1]));
 
-      if (results.organic_results && results.organic_results.length > 0) {
-        respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
+    const precisaBing = anosNaPergunta.some(a => a >= anoAtual) || message.toLowerCase().includes("futuro");
+
+    // ==================== 1) Busca web via SerpAPI se ano futuro ou 2025 ====================
+    if (precisaBing) {
+      try {
+        const results = await getJson({
+          engine: "bing",
+          q: message,
+          api_key: process.env.SERPAPI_KEY,
+          hl: "pt-br",
+          gl: "br"
+        });
+
+        if (results.organic_results && results.organic_results.length > 0) {
+          respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
+          buscouBing = true;
+        }
+      } catch (err) {
+        console.warn("⚠️ Falha na busca Bing:", err.message);
       }
-    } catch (err) {
-      console.warn("⚠️ Falha na busca web:", err.message);
     }
 
-    // 2) Se não teve resposta da web, usar Gemini
+    // ==================== 2) Gemini só se não encontrou na web ====================
     if (!respostaFinal) {
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateContent(message);
       respostaFinal = result.response.text();
     }
 
-    // salvar no chat
+    // ==================== 3) Se a resposta do Gemini for vaga, tentar Bing de novo ====================
+    const respostasVagas = ["não sei", "não tenho informação", "não encontrei"];
+    if (!buscouBing && respostasVagas.some(v => respostaFinal.toLowerCase().includes(v))) {
+      try {
+        const results = await getJson({
+          engine: "bing",
+          q: message,
+          api_key: process.env.SERPAPI_KEY,
+          hl: "pt-br",
+          gl: "br"
+        });
+
+        if (results.organic_results && results.organic_results.length > 0) {
+          respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
+        }
+      } catch (err) {
+        console.warn("⚠️ Segunda tentativa Bing falhou:", err.message);
+      }
+    }
+
+    // ==================== 4) Salvar no chat ====================
     const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
     if (chat) {
       chat.messages.push({ role: "user", content: message });
       chat.messages.push({ role: "bot", content: respostaFinal });
       await chat.save();
     }
+
   } catch (err) {
     console.error("❌ Erro ao processar:", err);
     respostaFinal = "⚠️ Erro ao buscar informações.";
