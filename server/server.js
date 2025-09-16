@@ -121,10 +121,9 @@ try {
 // 🔎 1) Detectar se é pergunta sobre futuro (ano >= 2025 ou contém "futuro")
 const regexAno = /\b(20[2-9][0-9])\b/; // pega 2020-2099
 const matchAno = message.match(regexAno);
-     const perguntaFuturo =
-  (matchAno && parseInt(matchAno[0]) >= 2025) ||  // contém ano >= 2025
-  /futuro/i.test(message) ||                      // contém "futuro"
-  /(que dia é hoje|hoje|atualmente)/i.test(message);
+const perguntaFuturo = palavrasChaveWeb.some(palavra => 
+  message.toLowerCase().includes(palavra)
+) || /futuro/i.test(message) || /\b(202[5-9]|20[3-9][0-9])\b/.test(message);
 if (perguntaFuturo) {
 console.log("🌐 Pergunta futura detectada → usando SerpAPI");
 try {
@@ -216,6 +215,7 @@ res.json({ ok: true });
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
 
