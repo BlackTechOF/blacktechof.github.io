@@ -104,14 +104,76 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   const { message } = req.body;
   let respostaFinal = "";
 
+  
+ const palavrasChaveWeb = [
+  // tempo/atualmente
+  "hoje",
+  "agora",
+  "atualmente",
+  "momento atual",
+  "no momento",
+  "últimas notícias",
+  "últimos acontecimentos",
+  "recentemente",
+  "última hora",
+  "novidades",
+  
+  // datas
+  "qual dia",
+  "que dia",
+  "dia da semana",
+  "data atual",
+  "em que dia estamos",
+  "que dia é hoje",
+  "qual é a data",
+  "dia de hoje",
+  
+  // anos
+  "qual ano",
+  "que ano",
+  "ano atual",
+  "em que ano estamos",
+  "ano de hoje",
+  
+  // horas/tempo
+  "hora atual",
+  "que horas são",
+  "horário agora",
+  "hora de hoje",
+  "tempo agora",
+  "clima atualmente",
+  "temperatura agora",
+  "condições atuais",
+  "previsão do tempo",
+  
+  // eventos futuros/proximos
+  "próximo",
+  "futuro",
+  "próximos eventos",
+  "agenda",
+  "feriado",
+  "programação",
+  
+  // termos gerais de consulta
+  "informação atual",
+  "dados recentes",
+  "estatísticas atuais",
+  "atualizações",
+  "notícias recentes",
+  "novidades do dia",
+  "o que está acontecendo",
+  "acontecimentos recentes",
+  "novidades atuais"
+];
+
   try {
     // 🔎 1) Detectar se é pergunta sobre futuro (ano >= 2025 ou contém "futuro")
     const regexAno = /\b(20[2-9][0-9])\b/; // pega 2020-2099
     const matchAno = message.match(regexAno);
-     const perguntaFuturo =
-  (matchAno && parseInt(matchAno[0]) >= 2025) ||  // contém ano >= 2025
-  /futuro/i.test(message) ||                      // contém "futuro"
-  /(que dia é hoje|hoje|atualmente)/i.test(message);
+     const perguntaFuturo = palavrasChaveWeb.some(palavra => 
+  message.toLowerCase().includes(palavra)
+) || /\b(202[5-9]|20[3-9][0-9])\b/.test(message) // anos >= 2025
+  || /futuro/i.test(message);
     if (perguntaFuturo) {
       console.log("🌐 Pergunta futura detectada → usando SerpAPI");
       try {
@@ -203,6 +265,7 @@ app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
 
