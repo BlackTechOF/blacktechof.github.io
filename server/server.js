@@ -80,16 +80,18 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
         // 1) Tentar buscar na web (SerpAPI)
         try {
             const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-            const result = await model.generateContent({ prompt: message, temperature: 0.7 });
+            const result = await model.generateContent({
+                contents: [{ role: "user", parts: [{ text: message }] }],
+            });
 
-            if (result && result.candidates && result.candidates.length > 0 && result.candidates[0].output) {
-                respostaFinal = result.candidates[0].output;
+            if (result && result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                respostaFinal = result.candidates[0].content.parts[0].text;
             } else {
                 respostaFinal = "⚠️ Não consegui gerar resposta.";
-                console.warn("Estrutura de resposta Gemini inesperada:", result); // Adicione esta linha
+                console.warn("Estrutura de resposta Gemini inesperada:", result);
             }
         } catch (err) {
-            console.warn("⚠️ Falha ao gerar resposta Gemini:", err);  // Imprime o erro completo
+            console.warn("⚠️ Falha ao gerar resposta Gemini:", err);
             respostaFinal = "⚠️ Não consegui gerar resposta.";
         }
 
