@@ -105,11 +105,13 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   let respostaFinal = "";
 
   try {
-    // 1) Tentar gerar com Gemini
-    respostaFinal = await gerarRespostaGemini(message);
+    // 🔎 1) Detectar se é pergunta sobre futuro (ano >= 2025 ou contém "futuro")
+    const regexAno = /\b(20[2-9][0-9])\b/; // pega 2020-2099
+    const matchAno = message.match(regexAno);
+    const perguntaFuturo = matchAno && parseInt(matchAno[1]) >= 2025 || /futuro/i.test(message);
 
-    // 2) Se falhar, tentar web search
-    if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
+    if (perguntaFuturo) {
+      console.log("🌐 Pergunta futura detectada → usando SerpAPI");
       try {
         const results = await getJson({
           engine: "google",
@@ -120,9 +122,33 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
         });
         if (results.organic_results && results.organic_results.length > 0) {
           respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
+        } else {
+          respostaFinal = "⚠️ Não encontrei nada na web.";
         }
       } catch (err) {
         console.warn("⚠️ Falha na busca web:", err.message);
+        respostaFinal = "⚠️ Erro ao buscar na web.";
+      }
+    } else {
+      // 🤖 2) Caso normal → tenta Gemini primeiro
+      respostaFinal = await gerarRespostaGemini(message);
+
+      // fallback se Gemini falhar
+      if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
+        try {
+          const results = await getJson({
+            engine: "google",
+            q: message,
+            api_key: process.env.SERPAPI_KEY,
+            hl: "pt-br",
+            gl: "br"
+          });
+          if (results.organic_results && results.organic_results.length > 0) {
+            respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
+          }
+        } catch (err) {
+          console.warn("⚠️ Falha na busca web:", err.message);
+        }
       }
     }
 
@@ -141,7 +167,6 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
 
   return res.json({ reply: respostaFinal });
 });
-
 // ==================== CHAT DB ====================
 app.get("/chatdb/list", authMiddleware, async (req, res) => {
   const chats = await Chat.find({ userId: req.userId });
@@ -176,3 +201,4 @@ app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
