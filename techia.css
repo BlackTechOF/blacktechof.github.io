@@ -13,6 +13,7 @@ main {
   width: 100%;
 }
 
+
 .menu {
   display: flex;
   align-items: center;
@@ -59,28 +60,31 @@ main {
   border-radius: 50%;
 }
 
+.principal {
+  width: 100%;
+}
 /* Chat ocupa o resto */
 .chat-container {
   flex: 1; /* ocupa o espaço que sobra */
   display: flex;
   flex-direction: column;
-  padding: 20px;
   margin-top: 30%;
   width: 100%;
+  align-items: center;
+  overflow-y: auto;
+  height: 73%;
 }
 
 /* Ajuste para a área de mensagens */
 .messages {
   z-index: 99;
   flex: 1;
-  padding: 10px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   /* Remover limites que encolhem a área */
-  max-height: 93%;
-  margin-top: -10%;
+  max-height: 80%;
 }
 
 
@@ -199,8 +203,6 @@ main {
   border: solid black;
   font-size: 16px;
   padding: 6px 10px;
-  align-self: flex-end;
-  align-items: center;
 }
 
 
@@ -346,9 +348,9 @@ pre code {
   display: flex;
   align-items: center;
   gap: 10px;
-  align-self: flex-end;     /* sempre cola à direita */
-  justify-content: flex-end;
+  align-self: flex-end; 
   text-align: right;        /* texto acompanha o alinhamento */
+  margin-right: 3%;
 }
 
 
