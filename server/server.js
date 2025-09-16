@@ -45,6 +45,9 @@ const genAI = new GoogleGenerativeAI({
     apiKey: process.env.GEMINI_API_KEY,
 });
 
+console.log("🔑 GEMINI_API_KEY:", process.env.GEMINI_API_KEY ? "OK" : "VAZIA");
+
+
 // ==================== ROTAS DE AUTENTICAÇÃO ====================
 app.post("/auth/register", async (req, res) => {
     const { username, password } = req.body;
@@ -165,3 +168,4 @@ app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
