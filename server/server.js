@@ -108,8 +108,10 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
     // 🔎 1) Detectar se é pergunta sobre futuro (ano >= 2025 ou contém "futuro")
     const regexAno = /\b(20[2-9][0-9])\b/; // pega 2020-2099
     const matchAno = message.match(regexAno);
-    const perguntaFuturo = matchAno && parseInt(matchAno[1]) >= 2025 || 'atualmente', 'estamos em que ano', 'que dia é hoje' || /futuro/i.test(message);
-
+     const perguntaFuturo =
+  (matchAno && parseInt(matchAno[0]) >= 2025) ||  // contém ano >= 2025
+  /futuro/i.test(message) ||                      // contém "futuro"
+  /(que dia é hoje|hoje|atualmente)/i.test(message);
     if (perguntaFuturo) {
       console.log("🌐 Pergunta futura detectada → usando SerpAPI");
       try {
@@ -201,5 +203,6 @@ app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
