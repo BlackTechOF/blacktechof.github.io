@@ -241,15 +241,25 @@ async function sendMessage() {
   controller = new AbortController();
 
   try {
-    const response = await fetch(`${API_URL}/chat/${currentChatId}`, {
+    const res = await fetch(`${API_URL}/chat/${currentChatId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-      body: JSON.stringify({ message: userMessage }),
-      signal: controller.signal
+      body: JSON.stringify({ message })
     });
+    const data = await safeParseResponse(res);
+    if (!res.ok) {
+      showLocalError(data.error || "Erro do servidor.");
+      return;
+    }
 
-    const data = await safeParseResponse(response);
-    const replyText = (typeof data === "object" && data.reply) ? data.reply : String(data);
+    const { reply, title } = data; // ✅ Captura o novo título
+    
+    // ... (código para exibir a resposta da IA) ...
+    
+    // ✨ Atualiza a lista de chats após a primeira mensagem
+    if (title && title !== "Novo Chat") {
+      await loadChats(); 
+    }
 
     // animação melhorada p/ textos longos
     let i = 0;
