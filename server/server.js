@@ -20,96 +20,91 @@ const SECRET = process.env.SECRET || "segredo123";
 
 // ==================== MONGODB ====================
 mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+useNewUrlParser: true,
+useUnifiedTopology: true,
 })
 .then(() => console.log("✅ MongoDB conectado"))
 .catch(err => console.error("❌ Erro no MongoDB:", err));
 
 // ==================== AUTENTICAÇÃO ====================
 function authMiddleware(req, res, next) {
-  const token = req.headers["authorization"]?.split(" ")[1];
-  if (!token) return res.status(401).json({ error: "Token ausente" });
+const token = req.headers["authorization"]?.split(" ")[1];
+if (!token) return res.status(401).json({ error: "Token ausente" });
 
-  try {
-    const decoded = jwt.verify(token, SECRET);
-    req.userId = decoded.id;
-    next();
-  } catch (err) {
-    return res.status(401).json({ error: "Token inválido" });
-  }
+try {
+const decoded = jwt.verify(token, SECRET);
+req.userId = decoded.id;
+next();
+} catch (err) {
+return res.status(401).json({ error: "Token inválido" });
+}
 }
 
 // ==================== GEMINI REST ====================
 async function gerarRespostaGemini(mensagem) {
-  const modelos = ["gemini-2.5-flash", "gemini-1.5-flash"];
-  for (let modelo of modelos) {
-    try {
-      console.log("🔄 Tentando modelo:", modelo);
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${process.env.GEMINI_API_KEY}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ role: "user", parts: [{ text: mensagem }] }]
-          })
-        }
-      );
+const modelos = ["gemini-2.5-flash", "gemini-1.5-flash"];
+for (let modelo of modelos) {
+try {
+console.log("🔄 Tentando modelo:", modelo);
+const response = await fetch(
+`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${process.env.GEMINI_API_KEY}`,
+{
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({
+contents: [{ role: "user", parts: [{ text: mensagem }] }]
+})
+}
+);
 
-      if (!response.ok) {
-        const erro = await response.text();
-        console.warn(`⚠️ Erro no modelo ${modelo}:`, erro);
-        continue; // tenta próximo modelo
-      }
+if (!response.ok) {
+const erro = await response.text();
+console.warn(`⚠️ Erro no modelo ${modelo}:`, erro);
+continue; // tenta próximo modelo
+}
 
-      const data = await response.json();
-      const texto = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (texto) return texto;
-    } catch (err) {
-      console.error(`❌ Falha ao chamar ${modelo}:`, err);
-    }
-  }
-  return "⚠️ Não consegui gerar resposta.";
+const data = await response.json();
+const texto = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+if (texto) return texto;
+} catch (err) {
+console.error(`❌ Falha ao chamar ${modelo}:`, err);
+}
+}
+return "⚠️ Não consegui gerar resposta.";
 }
 
 // ==================== ROTAS DE AUTENTICAÇÃO ====================
 app.post("/auth/register", async (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) return res.status(400).json({ error: "Usuário ou senha ausente" });
+const { username, password } = req.body;
+if (!username || !password) return res.status(400).json({ error: "Usuário ou senha ausente" });
 
-  const existing = await User.findOne({ username });
-  if (existing) return res.status(400).json({ error: "Usuário já existe" });
+const existing = await User.findOne({ username });
+if (existing) return res.status(400).json({ error: "Usuário já existe" });
 
-  const hash = await bcrypt.hash(password, 10);
-  const user = new User({ username, password: hash });
-  await user.save();
-  res.json({ message: "Usuário registrado com sucesso" });
+const hash = await bcrypt.hash(password, 10);
+const user = new User({ username, password: hash });
+await user.save();
+res.json({ message: "Usuário registrado com sucesso" });
 });
 
 app.post("/auth/login", async (req, res) => {
-  const { username, password } = req.body;
-  const user = await User.findOne({ username });
-  if (!user) return res.status(400).json({ error: "Usuário não encontrado" });
+const { username, password } = req.body;
+const user = await User.findOne({ username });
+if (!user) return res.status(400).json({ error: "Usuário não encontrado" });
 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) return res.status(400).json({ error: "Senha incorreta" });
+const match = await bcrypt.compare(password, user.password);
+if (!match) return res.status(400).json({ error: "Senha incorreta" });
 
-  const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "7d" });
-  res.json({ token });
+const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "7d" });
+res.json({ token });
 });
 
 // ==================== CHAT ====================
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
-  const { message } = req.body;
-  let respostaFinal = "";
-app.post("/chat/:chatId", authMiddleware, async (req, res) => {
-  const { message } = req.body;
-  let respostaFinal = "";
+const { message } = req.body;
+let respostaFinal = "";
 
-  try {
-    // =================== DETECÇÃO DE PERGUNTAS ===================
-    const palavrasChaveWeb = [
+const palavrasChaveWeb = [
       "hoje", "agora", "atualmente", "momento atual", "no momento",
       "últimas notícias", "últimos acontecimentos", "recentemente", "última hora", "novidades",
       "qual dia", "que dia", "dia da semana", "data atual", "em que dia estamos", "que dia é hoje",
@@ -122,122 +117,109 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
       "novidades do dia", "o que está acontecendo", "acontecimentos recentes", "novidades atuais"
     ];
 
-    const isAnoAtual = /(que ano|qual ano|ano atual|em que ano estamos)/i.test(message);
-    const perguntaFuturo = isAnoAtual 
-      || palavrasChaveWeb.some(palavra => message.toLowerCase().includes(palavra)) 
-      || /futuro/i.test(message)
-      || /\b(202[5-9]|20[3-9][0-9])\b/.test(message); // anos >= 2025
-
-    // =================== RESPOSTA LOCAL PARA DATA/ANO/HORA ===================
-    if (isAnoAtual) {
-      const anoAtual = new Date().getFullYear();
-      respostaFinal = `🗓️ Estamos no ano de ${anoAtual}.`;
-    } 
-    else if (/(hoje|que dia|data atual|dia de hoje|qual dia)/i.test(message)) {
-      const hoje = new Date();
-      respostaFinal = `📅 Hoje é ${hoje.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}.`;
-    } 
-    else if (/(hora atual|que horas|horário agora)/i.test(message)) {
-      const agora = new Date();
-      respostaFinal = `⏰ Agora são ${agora.toLocaleTimeString("pt-BR")}.`;
-    } 
-    // =================== PERGUNTAS FUTURO/ATUALIDADE → SERPAPI ===================
-    else if (perguntaFuturo) {
-      console.log("🌐 Pergunta detectada para busca na web");
-      try {
-        const results = await getJson({
-          engine: "google",
-          q: message,
-          api_key: process.env.SERPAPI_KEY,
-          hl: "pt-br",
-          gl: "br"
-        });
-        if (results.organic_results && results.organic_results.length > 0) {
-          respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
-        } else {
-          respostaFinal = "⚠️ Não encontrei nada na web.";
-        }
-      } catch (err) {
-        console.warn("⚠️ Falha na busca web:", err.message);
-        respostaFinal = "⚠️ Erro ao buscar na web.";
-      }
-    } 
-    // =================== CASO NORMAL → GEMINI ===================
-    else {
-      respostaFinal = await gerarRespostaGemini(message);
-
-      // fallback se Gemini falhar
-      if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
-        try {
-          const results = await getJson({
-            engine: "google",
-            q: message,
-            api_key: process.env.SERPAPI_KEY,
-            hl: "pt-br",
-            gl: "br"
-          });
-          if (results.organic_results && results.organic_results.length > 0) {
-            respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
-          }
-        } catch (err) {
-          console.warn("⚠️ Falha na busca web:", err.message);
-        }
-      }
-    }
-
-    // =================== SALVAR CHAT ===================
-    const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
-    if (chat) {
-      chat.messages.push({ role: "user", content: message });
-      chat.messages.push({ role: "bot", content: respostaFinal });
-      await chat.save();
-    }
-
-  } catch (err) {
-    console.error("❌ Erro ao processar:", err);
-    respostaFinal = "⚠️ Erro ao buscar informações.";
-  }
-
-  return res.json({ reply: respostaFinal });
+try {
+// 🔎 1) Detectar se é pergunta sobre futuro (ano >= 2025 ou contém "futuro")
+const regexAno = /\b(20[2-9][0-9])\b/; // pega 2020-2099
+const matchAno = message.match(regexAno);
+     const perguntaFuturo =
+  (matchAno && parseInt(matchAno[0]) >= 2025) ||  // contém ano >= 2025
+  /futuro/i.test(message) ||                      // contém "futuro"
+  /(que dia é hoje|hoje|atualmente)/i.test(message);
+     const perguntaFuturo = palavrasChaveWeb.some(palavra => 
+  message.toLowerCase().includes(palavra)
+) || /\b(202[5-9]|20[3-9][0-9])\b/.test(message) // anos >= 2025
+  || /futuro/i.test(message);
+if (perguntaFuturo) {
+console.log("🌐 Pergunta futura detectada → usando SerpAPI");
+try {
+const results = await getJson({
+engine: "google",
+q: message,
+api_key: process.env.SERPAPI_KEY,
+hl: "pt-br",
+gl: "br"
 });
+if (results.organic_results && results.organic_results.length > 0) {
+respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
+} else {
+respostaFinal = "⚠️ Não encontrei nada na web.";
+}
+} catch (err) {
+console.warn("⚠️ Falha na busca web:", err.message);
+respostaFinal = "⚠️ Erro ao buscar na web.";
+}
+} else {
+// 🤖 2) Caso normal → tenta Gemini primeiro
+respostaFinal = await gerarRespostaGemini(message);
 
+// fallback se Gemini falhar
+if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
+try {
+const results = await getJson({
+engine: "google",
+q: message,
+api_key: process.env.SERPAPI_KEY,
+hl: "pt-br",
+gl: "br"
+});
+if (results.organic_results && results.organic_results.length > 0) {
+respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
+}
+} catch (err) {
+console.warn("⚠️ Falha na busca web:", err.message);
+}
+}
+}
+
+// 3) Salvar no chat
+const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
+if (chat) {
+chat.messages.push({ role: "user", content: message });
+chat.messages.push({ role: "bot", content: respostaFinal });
+await chat.save();
+}
+
+} catch (err) {
+console.error("❌ Erro ao processar:", err);
+respostaFinal = "⚠️ Erro ao buscar informações.";
+}
+
+return res.json({ reply: respostaFinal });
 });
 // ==================== CHAT DB ====================
 app.get("/chatdb/list", authMiddleware, async (req, res) => {
-  const chats = await Chat.find({ userId: req.userId });
-  res.json(chats);
+const chats = await Chat.find({ userId: req.userId });
+res.json(chats);
 });
 
 app.post("/chatdb/new", authMiddleware, async (req, res) => {
-  const chat = new Chat({ userId: req.userId, title: req.body.title || "Novo Chat", messages: [] });
-  await chat.save();
-  res.json(chat);
+const chat = new Chat({ userId: req.userId, title: req.body.title || "Novo Chat", messages: [] });
+await chat.save();
+res.json(chat);
 });
 
 app.get("/chatdb/:chatId", authMiddleware, async (req, res) => {
-  const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
-  if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
-  res.json(chat.messages);
+const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
+if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+res.json(chat.messages);
 });
 
 app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
-  const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
-  if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
-  chat.messages.push({ role: req.body.role, content: req.body.content });
-  await chat.save();
-  res.json({ ok: true });
+const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
+if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+chat.messages.push({ role: req.body.role, content: req.body.content });
+await chat.save();
+res.json({ ok: true });
 });
 
 app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
-  await Chat.deleteOne({ _id: req.params.chatId, userId: req.userId });
-  res.json({ ok: true });
+await Chat.deleteOne({ _id: req.params.chatId, userId: req.userId });
+res.json({ ok: true });
 });
 
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
-
-
 
 
 
