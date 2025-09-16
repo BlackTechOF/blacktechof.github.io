@@ -125,10 +125,6 @@ const matchAno = message.match(regexAno);
   (matchAno && parseInt(matchAno[0]) >= 2025) ||  // contém ano >= 2025
   /futuro/i.test(message) ||                      // contém "futuro"
   /(que dia é hoje|hoje|atualmente)/i.test(message);
-     const perguntaFuturo = palavrasChaveWeb.some(palavra => 
-  message.toLowerCase().includes(palavra)
-) || /\b(202[5-9]|20[3-9][0-9])\b/.test(message) // anos >= 2025
-  || /futuro/i.test(message);
 if (perguntaFuturo) {
 console.log("🌐 Pergunta futura detectada → usando SerpAPI");
 try {
@@ -220,6 +216,7 @@ res.json({ ok: true });
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
 
