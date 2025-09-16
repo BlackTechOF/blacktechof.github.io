@@ -103,79 +103,47 @@ app.post("/auth/login", async (req, res) => {
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   const { message } = req.body;
   let respostaFinal = "";
-
-  
- const palavrasChaveWeb = [
-  // tempo/atualmente
-  "hoje",
-  "agora",
-  "atualmente",
-  "momento atual",
-  "no momento",
-  "últimas notícias",
-  "últimos acontecimentos",
-  "recentemente",
-  "última hora",
-  "novidades",
-  
-  // datas
-  "qual dia",
-  "que dia",
-  "dia da semana",
-  "data atual",
-  "em que dia estamos",
-  "que dia é hoje",
-  "qual é a data",
-  "dia de hoje",
-  
-  // anos
-  "qual ano",
-  "que ano",
-  "ano atual",
-  "em que ano estamos",
-  "ano de hoje",
-  
-  // horas/tempo
-  "hora atual",
-  "que horas são",
-  "horário agora",
-  "hora de hoje",
-  "tempo agora",
-  "clima atualmente",
-  "temperatura agora",
-  "condições atuais",
-  "previsão do tempo",
-  
-  // eventos futuros/proximos
-  "próximo",
-  "futuro",
-  "próximos eventos",
-  "agenda",
-  "feriado",
-  "programação",
-  
-  // termos gerais de consulta
-  "informação atual",
-  "dados recentes",
-  "estatísticas atuais",
-  "atualizações",
-  "notícias recentes",
-  "novidades do dia",
-  "o que está acontecendo",
-  "acontecimentos recentes",
-  "novidades atuais"
-];
+app.post("/chat/:chatId", authMiddleware, async (req, res) => {
+  const { message } = req.body;
+  let respostaFinal = "";
 
   try {
-    // 🔎 1) Detectar se é pergunta sobre futuro (ano >= 2025 ou contém "futuro")
-    const regexAno = /\b(20[2-9][0-9])\b/; // pega 2020-2099
-    const matchAno = message.match(regexAno);
-     const perguntaFuturo = palavrasChaveWeb.some(palavra => 
-  message.toLowerCase().includes(palavra)
-) || /\b(202[5-9]|20[3-9][0-9])\b/.test(message) // anos >= 2025
-  || /futuro/i.test(message);
-    if (perguntaFuturo) {
-      console.log("🌐 Pergunta futura detectada → usando SerpAPI");
+    // =================== DETECÇÃO DE PERGUNTAS ===================
+    const palavrasChaveWeb = [
+      "hoje", "agora", "atualmente", "momento atual", "no momento",
+      "últimas notícias", "últimos acontecimentos", "recentemente", "última hora", "novidades",
+      "qual dia", "que dia", "dia da semana", "data atual", "em que dia estamos", "que dia é hoje",
+      "qual é a data", "dia de hoje",
+      "qual ano", "que ano", "ano atual", "em que ano estamos", "ano de hoje",
+      "hora atual", "que horas são", "horário agora", "hora de hoje",
+      "tempo agora", "clima atualmente", "temperatura agora", "condições atuais", "previsão do tempo",
+      "próximo", "futuro", "próximos eventos", "agenda", "feriado", "programação",
+      "informação atual", "dados recentes", "estatísticas atuais", "atualizações", "notícias recentes",
+      "novidades do dia", "o que está acontecendo", "acontecimentos recentes", "novidades atuais"
+    ];
+
+    const isAnoAtual = /(que ano|qual ano|ano atual|em que ano estamos)/i.test(message);
+    const perguntaFuturo = isAnoAtual 
+      || palavrasChaveWeb.some(palavra => message.toLowerCase().includes(palavra)) 
+      || /futuro/i.test(message)
+      || /\b(202[5-9]|20[3-9][0-9])\b/.test(message); // anos >= 2025
+
+    // =================== RESPOSTA LOCAL PARA DATA/ANO/HORA ===================
+    if (isAnoAtual) {
+      const anoAtual = new Date().getFullYear();
+      respostaFinal = `🗓️ Estamos no ano de ${anoAtual}.`;
+    } 
+    else if (/(hoje|que dia|data atual|dia de hoje|qual dia)/i.test(message)) {
+      const hoje = new Date();
+      respostaFinal = `📅 Hoje é ${hoje.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}.`;
+    } 
+    else if (/(hora atual|que horas|horário agora)/i.test(message)) {
+      const agora = new Date();
+      respostaFinal = `⏰ Agora são ${agora.toLocaleTimeString("pt-BR")}.`;
+    } 
+    // =================== PERGUNTAS FUTURO/ATUALIDADE → SERPAPI ===================
+    else if (perguntaFuturo) {
+      console.log("🌐 Pergunta detectada para busca na web");
       try {
         const results = await getJson({
           engine: "google",
@@ -193,8 +161,9 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
         console.warn("⚠️ Falha na busca web:", err.message);
         respostaFinal = "⚠️ Erro ao buscar na web.";
       }
-    } else {
-      // 🤖 2) Caso normal → tenta Gemini primeiro
+    } 
+    // =================== CASO NORMAL → GEMINI ===================
+    else {
       respostaFinal = await gerarRespostaGemini(message);
 
       // fallback se Gemini falhar
@@ -216,7 +185,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
       }
     }
 
-    // 3) Salvar no chat
+    // =================== SALVAR CHAT ===================
     const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
     if (chat) {
       chat.messages.push({ role: "user", content: message });
@@ -230,6 +199,8 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   }
 
   return res.json({ reply: respostaFinal });
+});
+
 });
 // ==================== CHAT DB ====================
 app.get("/chatdb/list", authMiddleware, async (req, res) => {
@@ -265,6 +236,7 @@ app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
 
