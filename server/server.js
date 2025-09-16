@@ -41,38 +41,118 @@ return res.status(401).json({ error: "Token inválido" });
 }
 
 // ==================== GEMINI REST ====================
-async function gerarRespostaGemini(mensagem) {
-const modelos = ["gemini-2.5-flash", "gemini-1.5-flash"];
-for (let modelo of modelos) {
-try {
-console.log("🔄 Tentando modelo:", modelo);
-const response = await fetch(
-`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${process.env.GEMINI_API_KEY}`,
-{
-method: "POST",
-headers: { "Content-Type": "application/json" },
-body: JSON.stringify({
-contents: [{ role: "user", parts: [{ text: mensagem }] }]
-})
-}
-);
+async function gerarRespostaGeminiComHistorico(mensagens) {
+  const modelos = ["gemini-1.5-flash", "gemini-1.5-pro"]; // Prefira modelos mais robustos
+  const historicoFormatado = mensagens.map(msg => ({
+    role: msg.role === 'bot' ? 'model' : 'user', // Mapear para o formato da API
+    parts: [{ text: msg.content }]
+  }));
 
-if (!response.ok) {
-const erro = await response.text();
-console.warn(`⚠️ Erro no modelo ${modelo}:`, erro);
-continue; // tenta próximo modelo
+  for (let modelo of modelos) {
+    try {
+      console.log("🔄 Tentando modelo:", modelo);
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: historicoFormatado // Envia o histórico completo
+          })
+        }
+      );
+
+      if (!response.ok) {
+        const erro = await response.text();
+        console.warn(`⚠️ Erro no modelo ${modelo}:`, erro);
+        continue;
+      }
+
+      const data = await response.json();
+      const texto = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (texto) return texto;
+    } catch (err) {
+      console.error(`❌ Falha ao chamar ${modelo}:`, err);
+    }
+  }
+  return "⚠️ Não consegui gerar resposta.";
 }
 
-const data = await response.json();
-const texto = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-if (texto) return texto;
-} catch (err) {
-console.error(`❌ Falha ao chamar ${modelo}:`, err);
-}
-}
-return "⚠️ Não consegui gerar resposta.";
-}
+// ==================== ROTAS DE CHAT (Modificado) ====================
+app.post("/chat/:chatId", authMiddleware, async (req, res) => {
+  const { message } = req.body;
+  let respostaFinal = "";
 
+  const palavrasChaveWeb = [
+    // ... suas palavras-chave ...
+  ];
+
+  try {
+    const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
+    if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+
+    // 🔎 1) Detectar se é pergunta sobre futuro
+    // ... (sua lógica existente) ...
+    const perguntaFuturo = palavrasChaveWeb.some(palavra =>
+      message.toLowerCase().includes(palavra)
+    ) || /futuro/i.test(message) || /\b(202[5-9]|20[3-9][0-9])\b/.test(message);
+
+    // Adiciona a nova mensagem do usuário ao histórico antes de chamar a IA
+    chat.messages.push({ role: "user", content: message });
+
+    if (perguntaFuturo) {
+      console.log("🌐 Pergunta futura detectada → usando SerpAPI");
+      try {
+        const results = await getJson({
+          engine: "google",
+          q: message,
+          api_key: process.env.SERPAPI_KEY,
+          hl: "pt-br",
+          gl: "br"
+        });
+        if (results.organic_results && results.organic_results.length > 0) {
+          respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
+        } else {
+          respostaFinal = "⚠️ Não encontrei nada na web.";
+        }
+      } catch (err) {
+        console.warn("⚠️ Falha na busca web:", err.message);
+        respostaFinal = "⚠️ Erro ao buscar na web.";
+      }
+    } else {
+      // 🤖 2) Caso normal → tenta Gemini com histórico
+      respostaFinal = await gerarRespostaGeminiComHistorico(chat.messages); // Passa o histórico completo
+
+      // fallback se Gemini falhar
+      if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
+        try {
+          const results = await getJson({
+            engine: "google",
+            q: message,
+            api_key: process.env.SERPAPI_KEY,
+            hl: "pt-br",
+            gl: "br"
+          });
+          if (results.organic_results && results.organic_results.length > 0) {
+            respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
+          }
+        } catch (err) {
+          console.warn("⚠️ Falha na busca web:", err.message);
+        }
+      }
+    }
+
+    // 3) Salvar a resposta da IA no chat
+    chat.messages.push({ role: "bot", content: respostaFinal });
+    await chat.save();
+
+    return res.json({ reply: respostaFinal });
+  } catch (err) {
+    console.error("❌ Erro ao processar:", err);
+    respostaFinal = "⚠️ Erro ao buscar informações.";
+    return res.status(500).json({ reply: respostaFinal }); // Envia resposta de erro com status 500
+  }
+});
 // ==================== ROTAS DE AUTENTICAÇÃO ====================
 app.post("/auth/register", async (req, res) => {
 const { username, password } = req.body;
@@ -215,6 +295,7 @@ res.json({ ok: true });
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
 
