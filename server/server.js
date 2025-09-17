@@ -4,9 +4,7 @@ const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
-const {
-    getJson
-} = require("serpapi");
+const { getJson } = require("serpapi");
 const fetch = require("node-fetch");
 const User = require("../models/User.js");
 const Chat = require("../models/Chat.js");
@@ -134,7 +132,7 @@ async function gerarRespostaGeminiComHistorico(mensagens) {
 
 async function gerarTituloChat(mensagem) {
     const modelos = ["gemini-2.5-flash", "gemini-1.5-flash"];
-    const prompt = `Crie um título curto (máx 1 frase de 3 palavras) para este chat de acordo com as primeiras conversas (apenas crie a frase sem dizer mais nada, apenas a frase).
+    const prompt = `Crie um título curto (máx 5 palavras) para este chat.
   Mensagem: "${mensagem}"`;
 
     for (let modelo of modelos) {
@@ -230,7 +228,7 @@ app.post("/auth/register", async (req, res) => {
     });
     await user.save();
     res.json({
-        message: "Usuário registrado com sucesso"
+        message: "Usuário registrado com sucesso (Faça Login Para Prosseguir)"
     });
 });
 
@@ -379,46 +377,8 @@ app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
         _id: req.params.chatId,
         userId: req.userId
     });
-    if (!chat) return res.status(404).json({
-        error: "Chat não encontrado"
-    });
-    chat.messages.push({
-        role: req.body.role,
-        content: req.body.content
-    });
-    await chat.save();
-    res.json({
-        ok: true
-    });
+    if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+  chat.messages.push({ role: req.body.role, content: req.body.content });
+  await chat.save();
+  res.json({ ok: true });
 });
-
-// Rota DELETE para excluir um chat
-app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
-    try {
-        const chat = await Chat.findOneAndDelete({
-            _id: req.params.chatId,
-            userId: req.userId
-        });
-
-        if (!chat) {
-            return res.status(404).json({
-                error: "Chat não encontrado"
-            });
-        }
-
-        res.json({
-            message: "Chat excluído com sucesso"
-        });
-    } catch (err) {
-        console.error("Erro ao excluir chat:", err);
-        res.status(500).json({
-            error: "Erro ao excluir chat"
-        });
-    }
-});
-
-
-// ==================== SERVIDOR ====================
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
-
