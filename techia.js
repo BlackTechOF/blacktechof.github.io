@@ -373,6 +373,8 @@ window.techia = {
     loadHistory,
     logout,
     register,
-    login
+    login,
+    interromperResposta,
 };  
+}
 
