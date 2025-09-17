@@ -52,7 +52,7 @@ async function register() {
         });
         const data = await safeParseResponse(res);
         if (!res.ok) return alert(data.error || "Erro ao registrar");
-        alert(data.message || "Registrado com sucesso");
+        alert(data.message || "Registrado com sucesso (Faça Login Para Proseguir)");
     } catch (err) {
         console.error("Erro no register:", err);
         alert("Erro ao registrar.");
