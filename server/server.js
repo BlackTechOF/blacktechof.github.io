@@ -382,3 +382,7 @@ app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
   await chat.save();
   res.json({ ok: true });
 });
+
+// ==================== SERVIDOR ====================
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
