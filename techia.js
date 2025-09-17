@@ -244,7 +244,7 @@ async function sendMessage() {
     const res = await fetch(`${API_URL}/chat/${currentChatId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-      body: JSON.stringify({ message })
+      body: JSON.stringify({ message: userMessage }) // ✅ corrigido
     });
     const data = await safeParseResponse(res);
     if (!res.ok) {
@@ -252,10 +252,9 @@ async function sendMessage() {
       return;
     }
 
-    const { reply, title } = data; // ✅ Captura o novo título
-    
-    // ... (código para exibir a resposta da IA) ...
-    
+    const { reply, title } = data; // ✅ resposta e título
+    const replyText = reply || "⚠️ Sem resposta da IA."; // ✅ corrigido
+
     // ✨ Atualiza a lista de chats após a primeira mensagem
     if (title && title !== "Novo Chat") {
       await loadChats(); 
