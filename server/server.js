@@ -51,10 +51,19 @@ function authMiddleware(req, res, next) {
 // ==================== GEMINI REST ====================
 async function gerarRespostaGeminiComHistorico(mensagens) {
   const modelos = ["gemini-1.5-flash", "gemini-1.5-pro"]; // Prefira modelos mais robustos
-  const historicoFormatado = mensagens.map(msg => ({
-    role: msg.role === 'bot' ? 'model' : 'user', // Mapear para o formato da API
+  const historicoFormatado = [
+  {
+    role: "user",
+    parts: [
+      { text: "⚠️ Importante: Responda sempre em português do Brasil, de forma natural, sem usar inglês." }
+    ]
+  },
+  ...mensagens.map(msg => ({
+    role: msg.role === 'bot' ? 'model' : 'user',
     parts: [{ text: msg.content }]
-  }));
+  }))
+];
+
 
   for (let modelo of modelos) {
     try {
@@ -275,3 +284,4 @@ app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
