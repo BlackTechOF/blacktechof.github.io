@@ -304,3 +304,4 @@ function logout() {
 
 /* ---------- Expor funções ---------- */
 window.techia = { sendMessage, newChat, loadChats, loadHistory, logout };
+
