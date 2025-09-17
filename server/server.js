@@ -132,7 +132,7 @@ async function gerarRespostaGeminiComHistorico(mensagens) {
 
 async function gerarTituloChat(mensagem) {
     const modelos = ["gemini-2.5-flash", "gemini-1.5-flash"];
-    const prompt = `Crie um título curto (máx 5 palavras) para este chat.
+    const prompt = `Crie um título curto (máx 5 palavras) para este chat(apenas uma frase de 3 palavras de acordo com as primeiras conversas, diga apenas a frase e mais nada).
   Mensagem: "${mensagem}"`;
 
     for (let modelo of modelos) {
@@ -385,4 +385,5 @@ app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
