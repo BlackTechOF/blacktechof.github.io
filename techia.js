@@ -371,5 +371,8 @@ window.techia = {
     newChat,
     loadChats,
     loadHistory,
-    logout
+    logout,
+    register,
+    login
 };  
+
