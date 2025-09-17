@@ -1,12 +1,11 @@
-// server.js
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
-const { getJson } = require("serpapi"); // ✅ SerpAPI
-const fetch = require("node-fetch"); // 🔥 REST Gemini
+const { getJson } = require("serpapi");
+const fetch = require("node-fetch");
 const User = require("../models/User.js");
 const Chat = require("../models/Chat.js");
 
@@ -18,7 +17,30 @@ app.use(bodyParser.json());
 
 const SECRET = process.env.SECRET || "segredo123";
 
-// ==================== MONGODB (CORRIGIDO) ====================
+// ==================== GERENCIADOR DE CHAVES ====================
+let geminiKeys = process.env.GEMINI_KEYS.split(",");
+let serpapiKeys = process.env.SERPAPI_KEYS.split(",");
+
+let geminiIndex = 0;
+let serpapiIndex = 0;
+
+function getGeminiKey() {
+  return geminiKeys[geminiIndex % geminiKeys.length];
+}
+function rotateGeminiKey() {
+  geminiIndex++;
+  return getGeminiKey();
+}
+
+function getSerpApiKey() {
+  return serpapiKeys[serpapiIndex % serpapiKeys.length];
+}
+function rotateSerpApiKey() {
+  serpapiIndex++;
+  return getSerpApiKey();
+}
+
+// ==================== MONGODB ====================
 async function connectToDB() {
   try {
     await mongoose.connect(process.env.MONGO_URI, {
@@ -28,10 +50,9 @@ async function connectToDB() {
     console.log("✅ MongoDB conectado");
   } catch (err) {
     console.error("❌ Erro no MongoDB:", err);
-    process.exit(1); // Encerra o aplicativo se a conexão falhar
+    process.exit(1);
   }
 }
-
 connectToDB();
 
 // ==================== AUTENTICAÇÃO ====================
@@ -50,46 +71,50 @@ function authMiddleware(req, res, next) {
 
 // ==================== GEMINI REST ====================
 async function gerarRespostaGeminiComHistorico(mensagens) {
-  const modelos = ["gemini-1.5-flash", "gemini-1.5-pro"]; // Prefira modelos mais robustos
+  const modelos = ["gemini-2.5-flash", "gemini-1.5-flash"];
   const historicoFormatado = [
-  {
-    role: "user",
-    parts: [
-      { text: "⚠️ Importante: Responda sempre em português do Brasil, de forma natural, sem usar inglês." }
-    ]
-  },
-  ...mensagens.map(msg => ({
-    role: msg.role === 'bot' ? 'model' : 'user',
-    parts: [{ text: msg.content }]
-  }))
-];
-
+    {
+      role: "user",
+      parts: [
+        { text: "⚠️ Importante: Responda sempre em português do Brasil, de forma natural." }
+      ]
+    },
+    ...mensagens.map(msg => ({
+      role: msg.role === "bot" ? "model" : "user",
+      parts: [{ text: msg.content }]
+    }))
+  ];
 
   for (let modelo of modelos) {
-    try {
-      console.log("🔄 Tentando modelo:", modelo);
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${process.env.GEMINI_API_KEY}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: historicoFormatado // Envia o histórico completo
-          })
+    let tentativas = 0;
+    while (tentativas < geminiKeys.length) {
+      const key = getGeminiKey();
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${key}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contents: historicoFormatado })
+          }
+        );
+
+        if (!response.ok) {
+          const erro = await response.text();
+          console.warn(`⚠️ Erro no modelo ${modelo} com chave ${key}:`, erro);
+          rotateGeminiKey();
+          tentativas++;
+          continue;
         }
-      );
 
-      if (!response.ok) {
-        const erro = await response.text();
-        console.warn(`⚠️ Erro no modelo ${modelo}:`, erro);
-        continue;
+        const data = await response.json();
+        const texto = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (texto) return texto;
+      } catch (err) {
+        console.error(`❌ Falha ao chamar ${modelo}:`, err.message);
+        rotateGeminiKey();
+        tentativas++;
       }
-
-      const data = await response.json();
-      const texto = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (texto) return texto;
-    } catch (err) {
-      console.error(`❌ Falha ao chamar ${modelo}:`, err);
     }
   }
   return "⚠️ Não consegui gerar resposta.";
@@ -97,40 +122,71 @@ async function gerarRespostaGeminiComHistorico(mensagens) {
 
 async function gerarTituloChat(mensagem) {
   const modelos = ["gemini-2.5-flash", "gemini-1.5-flash"];
-  const prompt = `Crie um título curto e descritivo (máximo 5 palavras) para o seguinte chat, com base apenas na primeira mensagem. Responda apenas com o título.
-  Mensagem: "${mensagem}"
-  Título: `;
+  const prompt = `Crie um título curto (máx 5 palavras) para este chat.
+  Mensagem: "${mensagem}"`;
 
   for (let modelo of modelos) {
-    try {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${process.env.GEMINI_API_KEY}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ role: "user", parts: [{ text: prompt }] }]
-          })
+    let tentativas = 0;
+    while (tentativas < geminiKeys.length) {
+      const key = getGeminiKey();
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${key}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ role: "user", parts: [{ text: prompt }] }]
+            })
+          }
+        );
+
+        if (!response.ok) {
+          const erro = await response.text();
+          console.warn(`⚠️ Erro ao gerar título com chave ${key}:`, erro);
+          rotateGeminiKey();
+          tentativas++;
+          continue;
         }
-      );
 
-      if (!response.ok) {
-        const erro = await response.text();
-        console.warn(`⚠️ Erro ao gerar título com o modelo ${modelo}:`, erro);
-        continue;
+        const data = await response.json();
+        const titulo = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim().replace(/^"|"$/g, "");
+        if (titulo) return titulo;
+      } catch (err) {
+        console.error(`❌ Falha ao chamar ${modelo} para título:`, err.message);
+        rotateGeminiKey();
+        tentativas++;
       }
-
-      const data = await response.json();
-      const titulo = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim().replace(/^"|"$/g, '');
-      if (titulo) return titulo;
-    } catch (err) {
-      console.error(`❌ Falha ao chamar ${modelo} para gerar título:`, err);
     }
   }
   return "Novo Chat";
 }
 
+// ==================== SERPAPI ====================
+async function buscarNaWeb(query) {
+  let tentativas = 0;
+  while (tentativas < serpapiKeys.length) {
+    const key = getSerpApiKey();
+    try {
+      const results = await getJson({
+        engine: "google",
+        q: query,
+        api_key: key,
+        hl: "pt-br",
+        gl: "br"
+      });
 
+      if (results.organic_results && results.organic_results.length > 0) {
+        return results.organic_results[0];
+      }
+    } catch (err) {
+      console.warn(`⚠️ Falha SerpAPI com chave ${key}:`, err.message);
+      rotateSerpApiKey();
+      tentativas++;
+    }
+  }
+  return null;
+}
 
 // ==================== ROTAS DE AUTENTICAÇÃO ====================
 app.post("/auth/register", async (req, res) => {
@@ -158,95 +214,57 @@ app.post("/auth/login", async (req, res) => {
   res.json({ token });
 });
 
-// ==================== CHAT (CORRIGIDO) ====================
+// ==================== CHAT ====================
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   const { message } = req.body;
   let respostaFinal = "";
 
   const palavrasChaveWeb = [
-    "hoje", "agora", "atualmente", "momento atual", "no momento",
-    "últimas notícias", "últimos acontecimentos", "recentemente", "última hora", "novidades",
-    "qual dia", "que dia", "dia da semana", "data atual", "em que dia estamos", "que dia é hoje",
-    "qual é a data", "dia de hoje",
-    "qual ano", "que ano", "ano atual", "em que ano estamos", "ano de hoje",
-    "hora atual", "que horas são", "horário agora", "hora de hoje",
-    "tempo agora", "clima atualmente", "temperatura agora", "condições atuais", "previsão do tempo",
-    "próximo", "futuro", "próximos eventos", "agenda", "feriado", "programação",
-    "informação atual", "dados recentes", "estatísticas atuais", "atualizações", "notícias recentes",
-    "novidades do dia", "o que está acontecendo", "acontecimentos recentes", "novidades atuais"
+    "hoje","agora","atualmente","momento atual","no momento",
+    "últimas notícias","última hora","qual dia","que dia","data atual",
+    "ano atual","hora atual","clima atualmente","previsão do tempo",
+    "futuro","próximo","notícias recentes"
   ];
 
   try {
     const chat = await Chat.findOne({ _id: req.params.chatId, userId: req.userId });
     if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
 
-    // ✨ Novo passo: Checar e atualizar o título do chat, se for o primeiro
     if (chat.title === "Novo Chat" && chat.messages.length === 0) {
       const novoTitulo = await gerarTituloChat(message);
-      if (novoTitulo) {
-        chat.title = novoTitulo;
-      }
+      if (novoTitulo) chat.title = novoTitulo;
     }
 
-    // Adiciona a nova mensagem do usuário ao histórico antes de chamar a IA
     chat.messages.push({ role: "user", content: message });
 
-    // 🔎 1) Detectar se é pergunta sobre futuro
-    const perguntaFuturo = palavrasChaveWeb.some(palavra =>
-      message.toLowerCase().includes(palavra)
+    const perguntaFuturo = palavrasChaveWeb.some(p =>
+      message.toLowerCase().includes(p)
     ) || /futuro/i.test(message) || /\b(202[5-9]|20[3-9][0-9])\b/.test(message);
 
     if (perguntaFuturo) {
-      console.log("🌐 Pergunta futura detectada → usando SerpAPI");
-      try {
-        const results = await getJson({
-          engine: "google",
-          q: message,
-          api_key: process.env.SERPAPI_KEY,
-          hl: "pt-br",
-          gl: "br"
-        });
-        if (results.organic_results && results.organic_results.length > 0) {
-          respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
-        } else {
-          respostaFinal = "⚠️ Não encontrei nada na web.";
-        }
-      } catch (err) {
-        console.warn("⚠️ Falha na busca web:", err.message);
-        respostaFinal = "⚠️ Erro ao buscar na web.";
-      }
+      console.log("🌐 Pergunta detectada → SerpAPI");
+      const result = await buscarNaWeb(message);
+      respostaFinal = result
+        ? `🌐 Da web: ${result.title} - ${result.snippet}`
+        : "⚠️ Não encontrei nada na web.";
     } else {
-      // 🤖 2) Caso normal → tenta Gemini com histórico
       respostaFinal = await gerarRespostaGeminiComHistorico(chat.messages);
 
-      // fallback se Gemini falhar
       if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
-        try {
-          const results = await getJson({
-            engine: "google",
-            q: message,
-            api_key: process.env.SERPAPI_KEY,
-            hl: "pt-br",
-            gl: "br"
-          });
-          if (results.organic_results && results.organic_results.length > 0) {
-            respostaFinal = `🌐 Da web: ${results.organic_results[0].title} - ${results.organic_results[0].snippet}`;
-          }
-        } catch (err) {
-          console.warn("⚠️ Falha na busca web:", err.message);
+        const result = await buscarNaWeb(message);
+        if (result) {
+          respostaFinal = `🌐 Da web: ${result.title} - ${result.snippet}`;
         }
       }
     }
 
-    // 3) Salvar a resposta da IA no chat
     chat.messages.push({ role: "bot", content: respostaFinal });
     await chat.save();
 
-    return res.json({ reply: respostaFinal, title: chat.title }); // Retorne a resposta aqui
+    return res.json({ reply: respostaFinal, title: chat.title });
   } catch (err) {
     console.error("❌ Erro ao processar:", err);
-    respostaFinal = "⚠️ Erro ao buscar informações.";
-    return res.status(500).json({ reply: respostaFinal, title: "Erro no Chat" });
+    return res.status(500).json({ reply: "⚠️ Erro ao buscar informações.", title: "Erro no Chat" });
   }
 });
 
@@ -284,5 +302,3 @@ app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
-
-
