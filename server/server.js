@@ -96,7 +96,7 @@ async function gerarRespostaGeminiComHistorico(mensagens) {
 }
 
 async function gerarTituloChat(mensagem) {
-  const modelos = ["gemini-1.5-flash", "gemini-1.5-pro"];
+  const modelos = ["gemini-2.5-flash", "gemini-1.5-flash"];
   const prompt = `Crie um título curto e descritivo (máximo 5 palavras) para o seguinte chat, com base apenas na primeira mensagem. Responda apenas com o título.
   Mensagem: "${mensagem}"
   Título: `;
@@ -284,4 +284,5 @@ app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
