@@ -18,13 +18,21 @@ app.use(bodyParser.json());
 
 const SECRET = process.env.SECRET || "segredo123";
 
-// ==================== MONGODB ====================
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-  .then(() => console.log("✅ MongoDB conectado"))
-  .catch(err => console.error("❌ Erro no MongoDB:", err));
+// ==================== MONGODB (CORRIGIDO) ====================
+async function connectToDB() {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("✅ MongoDB conectado");
+  } catch (err) {
+    console.error("❌ Erro no MongoDB:", err);
+    process.exit(1); // Encerra o aplicativo se a conexão falhar
+  }
+}
+
+connectToDB();
 
 // ==================== AUTENTICAÇÃO ====================
 function authMiddleware(req, res, next) {
@@ -104,13 +112,13 @@ async function gerarTituloChat(mensagem) {
       }
 
       const data = await response.json();
-      const titulo = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim().replace(/^"|"$/g, ''); // Remover aspas, se houver
+      const titulo = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim().replace(/^"|"$/g, '');
       if (titulo) return titulo;
     } catch (err) {
       console.error(`❌ Falha ao chamar ${modelo} para gerar título:`, err);
     }
   }
-  return "Novo Chat"; // Fallback em caso de falha
+  return "Novo Chat";
 }
 
 
@@ -141,7 +149,7 @@ app.post("/auth/login", async (req, res) => {
   res.json({ token });
 });
 
-// ==================== CHAT ====================
+// ==================== CHAT (CORRIGIDO) ====================
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
   const { message } = req.body;
   let respostaFinal = "";
@@ -175,7 +183,6 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
     chat.messages.push({ role: "user", content: message });
 
     // 🔎 1) Detectar se é pergunta sobre futuro
-    // ... (sua lógica existente) ...
     const perguntaFuturo = palavrasChaveWeb.some(palavra =>
       message.toLowerCase().includes(palavra)
     ) || /futuro/i.test(message) || /\b(202[5-9]|20[3-9][0-9])\b/.test(message);
@@ -226,11 +233,11 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
     chat.messages.push({ role: "bot", content: respostaFinal });
     await chat.save();
 
-    return res.json({ reply: respostaFinal, title: chat.title }); // Retorne também o novo título
+    return res.json({ reply: respostaFinal, title: chat.title }); // Retorne a resposta aqui
   } catch (err) {
     console.error("❌ Erro ao processar:", err);
     respostaFinal = "⚠️ Erro ao buscar informações.";
-    return res.status(500).json({ reply: respostaFinal });
+    return res.status(500).json({ reply: respostaFinal, title: "Erro no Chat" });
   }
 });
 
