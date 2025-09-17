@@ -76,7 +76,7 @@ async function gerarRespostaGeminiComHistorico(mensagens) {
     {
       role: "user",
       parts: [
-        { text: "⚠️ Importante: Responda sempre em português do Brasil, de forma natural." }
+        { text: "⚠️ Importante: Responda sempre em português do Brasil, de forma natural, e nao comente nada sobre isso, ah nao ser que o usuario pergunte." }
       ]
     },
     ...mensagens.map(msg => ({
@@ -302,3 +302,4 @@ app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
 // ==================== SERVIDOR ====================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
