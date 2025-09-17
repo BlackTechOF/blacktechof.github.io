@@ -91,6 +91,14 @@ async function login() {
     }
 }
 
+/* ---------- Logout ---------- */
+function logout() {
+    localStorage.removeItem("token");
+    currentChatId = null;
+    document.getElementById("chat-container").style.display = "none";
+    document.getElementById("auth-container").style.display = "block";
+}
+
 /* ---------- Auto-login ---------- */
 window.addEventListener("DOMContentLoaded", async () => {
     const input = document.getElementById("userInput");
@@ -357,14 +365,6 @@ function interromperResposta() {
     if (lastBotDiv) lastBotDiv.textContent = "⏹ Resposta interrompida.";
 }
 
-/* ---------- Logout ---------- */
-function logout() {
-    localStorage.removeItem("token");
-    currentChatId = null;
-    document.getElementById("chat-container").style.display = "none";
-    document.getElementById("auth-container").style.display = "block";
-}
-
 /* ---------- Expor funções ---------- */
 window.techia = {
     sendMessage,
@@ -377,4 +377,3 @@ window.techia = {
     interromperResposta,
 };  
 }
-
