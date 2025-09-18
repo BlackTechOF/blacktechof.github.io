@@ -38,7 +38,8 @@ main {
 .menu-right {
   flex: 1;
   display: flex;
-  justify-content: flex-end; /* 🔥 empurra o darkmode pro fim */
+  margin-right: 7%;
+  gap: 10px;
 }
 
 
@@ -325,9 +326,6 @@ pre code {
 }
 
 #logoutBtn {
-  position: relative;
-  left: 45%;
-  margin-left: auto; /* 🔥 empurra pro canto direito */
   background: white;
   border: solid black;
   cursor: pointer;
@@ -441,10 +439,19 @@ pre code {
   border-radius: 10px;
 }
 
+#toggleSidebar {
+  margin-left: auto; /* 🔥 empurra pro canto direito */
+  cursor: pointer;
+  border: transparent;
+  background: transparent;
+  color: black;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
 /* botão darkmode no final */
 #darkModeToggle {
-  position: relative;
-  right: 15%; /* 🔥 empurra pro canto direito */
   background: white;
   border: solid black;
   cursor: pointer;
