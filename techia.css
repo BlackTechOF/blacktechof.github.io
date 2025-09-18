@@ -38,8 +38,8 @@ main {
 .menu-right {
   flex: 1;
   display: flex;
-  margin-right: 7%;
-  gap: 10px;
+  margin-right: 3%;
+  gap: 7px;
 }
 
 
