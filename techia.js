@@ -247,7 +247,7 @@ async function loadChats() {
 
 async function deleteAllChats() {
     try {
-        const res = await fetch(`${API_URL}/chatdb/:userId`, { // <-- Rota alterada
+        const res = await fetch(`${API_URL}/chatdb/all`, { // <-- Rota alterada
             method: "DELETE",
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("token")
@@ -403,4 +403,3 @@ window.techia = {
     interromperResposta,
 };  
 }
-
