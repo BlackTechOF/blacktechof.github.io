@@ -386,18 +386,28 @@ app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
   }
 });
 
-app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
+app.delete("/chatdb/all", authMiddleware, async (req, res) => {
     try {
- await Chat.findAllAndDelete({
-    id: req.params.chatId,
-    userId: req.userId
- }); 
-  if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
-    return res.json({ ok: true });
-  } catch (err) {
-    console.error("Erro ao deletar chat:", err);
-    return res.status(500).json({ error: "Erro ao deletar chat" });
-  }
+        const result = await Chat.deleteMany({
+            userId: req.userId
+        });
+
+        if (result.deletedCount > 0) {
+            console.log(`✅ ${result.deletedCount} chats deletados.`);
+            res.json({
+                message: `${result.deletedCount} chats deletados.`
+            });
+        } else {
+            res.status(404).json({
+                message: "Nenhum chat encontrado para este usuário."
+            });
+        }
+    } catch (err) {
+        console.error("❌ Erro ao deletar todos os chats:", err);
+        res.status(500).json({
+            error: "Erro ao deletar todos os chats"
+        });
+    }
 });
 
 app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
