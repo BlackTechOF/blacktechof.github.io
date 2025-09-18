@@ -246,14 +246,13 @@ async function loadChats() {
 }
 
 async function deleteAllChats() {
-    const res = await fetch(`${API_URL}/chatdb/:chatId`, {
-        method: "DELETE",
-        headers: {
+     await fetch(`${API_URL}/chatdb/chatId`, {
+                method: "DELETE",
+                headers: {
                     "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-    })
+                }})
     loadChats()
-}
+            }
 
 async function loadHistory(chatId) {
     const res = await fetch(`${API_URL}/chatdb/${chatId}`, {
