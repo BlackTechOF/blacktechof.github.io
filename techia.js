@@ -246,13 +246,26 @@ async function loadChats() {
 }
 
 async function deleteAllChats() {
-     await fetch(`${API_URL}/chatdb/chatId`, {
-                method: "DELETE",
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }})
-    loadChats()
+    try {
+        const res = await fetch(`${API_URL}/chatdb/all`, { // <-- Rota alterada
+            method: "DELETE",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
             }
+        });
+
+        if (res.ok) {
+            console.log("Todos os chats deletados com sucesso!");
+            await loadChats(); // Recarrega a lista de chats após a deleção.
+        } else {
+            console.error("Erro ao deletar chats:", res.statusText);
+            alert("Erro ao deletar chats.");
+        }
+    } catch (error) {
+        console.error("Erro ao deletar chats:", error);
+        alert("Erro ao deletar chats.");
+    }
+}
 
 async function loadHistory(chatId) {
     const res = await fetch(`${API_URL}/chatdb/${chatId}`, {
