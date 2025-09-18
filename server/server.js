@@ -386,6 +386,10 @@ app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
   }
 });
 
+app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
+ await Chat.deleteAll()
+})
+
 app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
     const chat = await Chat.findOne({
         _id: req.params.chatId,
