@@ -1,392 +1,417 @@
-/* techia.js - versão final com SerpAPI + Gemini e respostas longas */
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const mongoose = require("mongoose");
+const { getJson } = require("serpapi");
+const fetch = require("node-fetch");
+const User = require("../models/User.js");
+const Chat = require("../models/Chat.js");
 
-let botOcupado = false;
-let intervaloId = null;
-let controller = null;
-let currentChatId = null;
-let lastBotDiv = null;
-const h2DoChat = document.getElementById('h2DoChat');
-const API_URL = "https://blacktechof-github-io.onrender.com"; // <-- backend
+require("dotenv").config();
 
-/* ---------- Helpers ---------- */
-async function safeParseResponse(res) {
-    const ct = res.headers.get("content-type") || "";
-    const text = await res.text();
-    if (ct.includes("application/json")) {
-        try {
-            return JSON.parse(text);
-        } catch {
-            return text;
-        }
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+
+const SECRET = process.env.SECRET || "segredo123";
+
+// ==================== GERENCIADOR DE CHAVES ====================
+let geminiKeys = process.env.GEMINI_KEYS.split(",");
+let serpapiKeys = process.env.SERPAPI_KEYS.split(",");
+
+let geminiIndex = 0;
+let serpapiIndex = 0;
+
+function getGeminiKey() {
+    return geminiKeys[geminiIndex % geminiKeys.length];
+}
+
+function rotateGeminiKey() {
+    geminiIndex++;
+    return getGeminiKey();
+}
+
+function getSerpApiKey() {
+    return serpapiKeys[serpapiIndex % serpapiKeys.length];
+}
+
+function rotateSerpApiKey() {
+    serpapiIndex++;
+    return getSerpApiKey();
+}
+
+// ==================== MONGODB ====================
+async function connectToDB() {
+    try {
+        await mongoose.connect(process.env.MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log("✅ MongoDB conectado");
+    } catch (err) {
+        console.error("❌ Erro no MongoDB:", err);
+        process.exit(1);
     }
-    return text;
 }
+connectToDB();
 
-function showLocalError(message) {
-    console.warn(message);
-    const messagesDiv = document.getElementById("messages");
-    if (!messagesDiv) return;
-    const errDiv = document.createElement("div");
-    errDiv.className = "message bot";
-    errDiv.textContent = "⚠️ " + message;
-    messagesDiv.appendChild(errDiv);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-}
-
-/* ---------- Auth ---------- */
-async function register() {
-    const username = document.getElementById("username")?.value;
-    const password = document.getElementById("password")?.value;
-    if (!username || !password) return alert("Preencha usuário e senha.");
+// ==================== AUTENTICAÇÃO ====================
+function authMiddleware(req, res, next) {
+    const token = req.headers["authorization"]?.split(" ")[1];
+    if (!token) return res.status(401).json({
+        error: "Token ausente"
+    });
 
     try {
-        const res = await fetch(`${API_URL}/auth/register`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username,
-                password
-            })
-        });
-        const data = await safeParseResponse(res);
-        if (!res.ok) return alert(data.error || "Erro ao registrar");
-        alert(data.message || "Registrado com sucesso (Faça Login Para Proseguir)");
+        const decoded = jwt.verify(token, SECRET);
+        req.userId = decoded.id;
+        next();
     } catch (err) {
-        console.error("Erro no register:", err);
-        alert("Erro ao registrar.");
+        return res.status(401).json({
+            error: "Token inválido"
+        });
     }
 }
 
-async function login() {
-    const username = document.getElementById("username")?.value;
-    const password = document.getElementById("password")?.value;
-    if (!username || !password) return alert("Preencha usuário e senha.");
+// ==================== GEMINI REST ====================
+async function gerarRespostaGeminiComHistorico(mensagens) {
+    const modelos = ["gemini-2.5-flash", "gemini-1.5-flash"];
+    const historicoFormatado = [{
+            role: "user",
+            parts: [{
+                text: "⚠️ Importante: Responda sempre em português do Brasil, de forma natural, e nao comente nada sobre isso, ah nao ser que o usuario pergunte."
+            }]
+        },
+        ...mensagens.map(msg => ({
+            role: msg.role === "bot" ? "model" : "user",
+            parts: [{
+                text: msg.content
+            }]
+        }))
+    ];
 
-    try {
-        const res = await fetch(`${API_URL}/auth/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username,
-                password
-            })
-        });
-        const data = await safeParseResponse(res);
-        if (!res.ok) return alert(data.error || "Erro ao logar");
+    for (let modelo of modelos) {
+        let tentativas = 0;
+        while (tentativas < geminiKeys.length) {
+            const key = getGeminiKey();
+            try {
+                const response = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${key}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            contents: historicoFormatado
+                        })
+                    }
+                );
 
-        if (data.token) {
-            localStorage.setItem("token", data.token);
-            document.getElementById("auth-container").style.display = "none";
-            document.getElementById("chat-container").style.display = "block";
-            await loadChats();
-            await ensureChatExists();
-        }
-    } catch (err) {
-        console.error("Erro no login:", err);
-        alert("Erro ao conectar no servidor.");
-    }
-}
-
-/* ---------- Logout ---------- */
-function logout() {
-    localStorage.removeItem("token");
-    currentChatId = null;
-    document.getElementById("chat-container").style.display = "none";
-    document.getElementById("auth-container").style.display = "block";
-}
-
-/* ---------- Auto-login ---------- */
-window.addEventListener("DOMContentLoaded", async () => {
-    const input = document.getElementById("userInput");
-    if (input) input.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") sendMessage();
-    });
-
-    const sendBtn = document.getElementById("inputs");
-    if (sendBtn) sendBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        sendMessage();
-    });
-
-    const interruptBtn = document.getElementById("interrupt-btn");
-    if (interruptBtn) interruptBtn.addEventListener("click", interromperResposta);
-
-    const newChatBtn = document.getElementById("new-chat-btn");
-    if (newChatBtn) newChatBtn.addEventListener("click", newChat);
-
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) logoutBtn.addEventListener("click", logout);
-
-    const sidebar = document.querySelector(".sidebar");
-    const toggleBtn = document.getElementById("toggleSidebar");
-    const fecharSideBar = document.getElementById("fecharSideBar");
-    const main = document.querySelector(".principal");
-    if (toggleBtn) toggleBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("active");
-        main.classList.toggle("blurred", sidebar.classList.contains("active"));
-    });
-    if (fecharSideBar) fecharSideBar.addEventListener("click", () => {
-        sidebar.classList.remove("active");
-        main.classList.remove("blurred");
-    });
-
-    const token = localStorage.getItem("token");
-    if (token) {
-        try {
-            const res = await fetch(`${API_URL}/chatdb/list`, {
-                headers: {
-                    "Authorization": "Bearer " + token
+                if (!response.ok) {
+                    const erro = await response.text();
+                    console.warn(`⚠️ Erro no modelo ${modelo} com chave ${key}:`, erro);
+                    rotateGeminiKey();
+                    tentativas++;
+                    continue;
                 }
-            });
-            if (res.ok) {
-                document.getElementById("auth-container").style.display = "none";
-                document.getElementById("chat-container").style.display = "block";
-                await loadChats();
-                await ensureChatExists();
-            } else {
-                localStorage.removeItem("token");
+
+                const data = await response.json();
+                const texto = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (texto) return texto;
+            } catch (err) {
+                console.error(`❌ Falha ao chamar ${modelo}:`, err.message);
+                rotateGeminiKey();
+                tentativas++;
             }
-        } catch {
-            localStorage.removeItem("token");
         }
+    }
+    return "⚠️ Não consegui gerar resposta.";
+}
+
+async function gerarTituloChat(mensagem) {
+    const modelos = ["gemini-2.5-flash", "gemini-1.5-flash"];
+    const prompt = `Crie um título curto (máx 5 palavras) para este chat(apenas uma frase de 3 palavras de acordo com as primeiras conversas, diga apenas a frase e mais nada).
+  Mensagem: "${mensagem}"`;
+
+    for (let modelo of modelos) {
+        let tentativas = 0;
+        while (tentativas < geminiKeys.length) {
+            const key = getGeminiKey();
+            try {
+                const response = await fetch(
+                    `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${key}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            contents: [{
+                                role: "user",
+                                parts: [{
+                                    text: prompt
+                                }]
+                            }]
+                        })
+                    }
+                );
+
+                if (!response.ok) {
+                    const erro = await response.text();
+                    console.warn(`⚠️ Erro ao gerar título com chave ${key}:`, erro);
+                    rotateGeminiKey();
+                    tentativas++;
+                    continue;
+                }
+
+                const data = await response.json();
+                const titulo = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim().replace(/^"|"$/g, "");
+                if (titulo) return titulo;
+            } catch (err) {
+                console.error(`❌ Falha ao chamar ${modelo} para título:`, err.message);
+                rotateGeminiKey();
+                tentativas++;
+            }
+        }
+    }
+    return "Novo Chat";
+}
+
+// ==================== SERPAPI ====================
+async function buscarNaWeb(query) {
+    let tentativas = 0;
+    while (tentativas < serpapiKeys.length) {
+        const key = getSerpApiKey();
+        try {
+            const results = await getJson({
+                engine: "google",
+                q: query,
+                api_key: key,
+                hl: "pt-br",
+                gl: "br"
+            });
+
+            if (results.organic_results && results.organic_results.length > 0) {
+                return results.organic_results[0];
+            }
+        } catch (err) {
+            console.warn(`⚠️ Falha SerpAPI com chave ${key}:`, err.message);
+            rotateSerpApiKey();
+            tentativas++;
+        }
+    }
+    return null;
+}
+
+// ==================== ROTAS DE AUTENTICAÇÃO ====================
+app.post("/auth/register", async (req, res) => {
+    const {
+        username,
+        password
+    } = req.body;
+    if (!username || !password) return res.status(400).json({
+        error: "Usuário ou senha ausente"
+    });
+
+    const existing = await User.findOne({
+        username
+    });
+    if (existing) return res.status(400).json({
+        error: "Usuário já existe"
+    });
+
+    const hash = await bcrypt.hash(password, 10);
+    const user = new User({
+        username,
+        password: hash
+    });
+    await user.save();
+    res.json({
+        message: "Usuário registrado com sucesso (Faça Login Para Prosseguir)"
+    });
+});
+
+app.post("/auth/login", async (req, res) => {
+    const {
+        username,
+        password
+    } = req.body;
+    const user = await User.findOne({
+        username
+    });
+    if (!user) return res.status(400).json({
+        error: "Usuário não encontrado"
+    });
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(400).json({
+        error: "Senha incorreta"
+    });
+
+    const token = jwt.sign({
+        id: user._id
+    }, SECRET, {
+        expiresIn: "7d"
+    });
+    res.json({
+        token
+    });
+});
+
+// ==================== CHAT ====================
+app.post("/chat/:chatId", authMiddleware, async (req, res) => {
+    const {
+        message
+    } = req.body;
+    let respostaFinal = "";
+
+    const palavrasChaveWeb = [
+        "hoje", "agora", "atualmente", "momento atual", "no momento",
+        "últimas notícias", "última hora", "qual dia", "que dia", "data atual",
+        "ano atual", "hora atual", "clima atualmente", "previsão do tempo",
+        "futuro", "próximo", "notícias recentes"
+    ];
+
+    try {
+        const chat = await Chat.findOne({
+            _id: req.params.chatId,
+            userId: req.userId
+        });
+        if (!chat) return res.status(404).json({
+            error: "Chat não encontrado"
+        });
+
+        // Lógica para atualizar o título do chat (CORRIGIDO)
+        if (chat.title === "Novo Chat") {
+            console.log("Entrou na lógica de título");
+            console.log("Título antes da chamada:", chat.title);
+            const novoTitulo = await gerarTituloChat(message);
+            console.log("Novo título gerado:", novoTitulo);
+            if (novoTitulo) {
+                console.log("Título ANTES de salvar:", chat.title);
+                chat.title = novoTitulo;
+                await chat.save(); // Salva a alteração no banco de dados!
+                console.log("Título DEPOIS de salvar:", chat.title);
+            } else {
+                console.warn("Falha ao gerar novo título, mantendo 'Novo Chat'.");
+            }
+        }
+
+        chat.messages.push({
+            role: "user",
+            content: message
+        });
+
+        const perguntaFuturo = palavrasChaveWeb.some(p =>
+            message.toLowerCase().includes(p)
+        ) || /futuro/i.test(message) || /\b(202[5-9]|20[3-9][0-9])\b/.test(message);
+
+        if (perguntaFuturo) {
+            console.log("🌐 Pergunta detectada → SerpAPI");
+            const result = await buscarNaWeb(message);
+            respostaFinal = result ?
+                `🌐 Da web: ${result.title} - ${result.snippet}` :
+                "⚠️ Não encontrei nada na web.";
+        } else {
+            respostaFinal = await gerarRespostaGeminiComHistorico(chat.messages);
+
+            if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
+                const result = await buscarNaWeb(message);
+                if (result) {
+                    respostaFinal = `🌐 Da web: ${result.title} - ${result.snippet}`;
+                }
+            }
+        }
+
+        chat.messages.push({
+            role: "bot",
+            content: respostaFinal
+        });
+        await chat.save();
+
+        return res.json({
+            reply: respostaFinal,
+            title: chat.title
+        }); // Garante que o título atualizado seja retornado
+    } catch (err) {
+        console.error("❌ Erro ao processar:", err);
+        return res.status(500).json({
+            reply: "⚠️ Erro ao buscar informações.",
+            title: "Erro no Chat"
+        });
     }
 });
 
-/* ---------- CHATS ---------- */
-async function ensureChatExists() {
-    const res = await fetch(`${API_URL}/chatdb/list`, {
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        }
+// ==================== CHAT DB ====================
+app.get("/chatdb/list", authMiddleware, async (req, res) => {
+    const chats = await Chat.find({
+        userId: req.userId
     });
-    const chats = await safeParseResponse(res);
-    if (!Array.isArray(chats) || chats.length === 0) {
-        const newC = await fetch(`${API_URL}/chatdb/new`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: JSON.stringify({
-                title: "Novo Chat"
-            })
-        });
-        const chat = await safeParseResponse(newC);
-        currentChatId = chat._id;
-        await loadChats();
-    } else {
-        currentChatId = chats[0]._id;
-        await loadHistory(currentChatId);
-    }
-}
+    res.json(chats);
+});
 
-async function newChat() {
-    const res = await fetch(`${API_URL}/chatdb/new`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        },
-        body: JSON.stringify({
-            title: "Novo Chat"
-        })
+app.post("/chatdb/new", authMiddleware, async (req, res) => {
+    const chat = new Chat({
+        userId: req.userId,
+        title: req.body.title || "Novo Chat",
+        messages: []
     });
-    const chat = await safeParseResponse(res);
-    currentChatId = chat._id;
-    await loadChats();
-    await loadHistory(currentChatId);
-    h2DoChat.style.display = ''
-}
+    await chat.save();
+    res.json(chat);
+});
 
-async function loadChats() {
-    const res = await fetch(`${API_URL}/chatdb/list`, {
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        }
+app.get("/chatdb/:chatId", authMiddleware, async (req, res) => {
+    const chat = await Chat.findOne({
+        _id: req.params.chatId,
+        userId: req.userId
     });
-    const chats = await safeParseResponse(res);
-    const chatList = document.getElementById("chat-list");
-    chatList.innerHTML = "";
-    (chats || []).forEach(c => {
-        const li = document.createElement("li");
-        const span = document.createElement("span");
-        span.textContent = c.title;
-        span.style.cursor = "pointer";
-        span.onclick = () => {
-            currentChatId = c._id;
-            loadHistory(currentChatId);
-        };
-        const delBtn = document.createElement("button");
-        delBtn.innerHTML = `<svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M6 7V18C6 19.1046 6.89543 20 8 20H16C17.1046 20 18 19.1046 18 18V7M6 7H5M6 7H8M18 7H19M18 7H16M10 11V16M14 11V16M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M8 7H16" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>;`
-        delBtn.onclick = async (e) => {
-            e.stopPropagation();
-            if (!confirm("Excluir este chat?")) return;
-            await fetch(`${API_URL}/chatdb/${c._id}`, {
-                method: "DELETE",
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-            if (currentChatId === c._id) {
-                currentChatId = null;
-                document.getElementById("messages").innerHTML = "";
-            }
-            await loadChats();
-        };
-        li.appendChild(span);
-        li.appendChild(delBtn);
-        chatList.appendChild(li);
+    if (!chat) return res.status(404).json({
+        error: "Chat não encontrado"
     });
-}
+    res.json(chat.messages);
+});
 
-async function deleteAllChats() {
-     await fetch(`${API_URL}/chatdb/${c._id}`, {
-                method: "DELETE",
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }})
-    loadChats()
-            }
-
-async function loadHistory(chatId) {
-    const res = await fetch(`${API_URL}/chatdb/${chatId}`, {
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        }
+app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
+  try {
+    const chat = await Chat.findOneAndDelete({
+      _id: req.params.chatId,
+      userId: req.userId
     });
-    const history = await safeParseResponse(res);
-    const messagesDiv = document.getElementById("messages");
-    messagesDiv.innerHTML = "";
-    (history || []).forEach(msg => {
-        const div = document.createElement("div");
-        div.className = `message ${msg.role}`;
-        div.innerHTML = (typeof marked !== "undefined") ? marked.parse(msg.content) : msg.content;
-        messagesDiv.appendChild(div);
-    });
-    if (typeof hljs !== "undefined") hljs.highlightAll();
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-}
+    if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error("Erro ao deletar chat:", err);
+    return res.status(500).json({ error: "Erro ao deletar chat" });
+  }
+});
 
-/* ---------- SALVAR MENSAGEM ---------- */
-async function saveMessage(role, content) {
-    if (!currentChatId) return false;
-    const res = await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        },
-        body: JSON.stringify({
-            role,
-            content
-        })
-    });
-    return res.ok;
-}
-
-/* ---------- ENVIAR MENSAGEM ---------- */
-async function sendMessage() {
-    if (botOcupado || !currentChatId) return;
-    h2DoChat.style.display = 'none'
-    const input = document.getElementById("userInput");
-    const messagesDiv = document.getElementById("messages");
-    const token = localStorage.getItem("token");
-    const userMessage = input.value.trim();
-    if (!userMessage) return;
-    input.value = "";
-
-    const userDiv = document.createElement("div");
-    userDiv.className = "message user";
-    userDiv.innerHTML = (typeof marked !== "undefined") ? marked.parse(userMessage) : userMessage;
-    messagesDiv.appendChild(userDiv);
-
-    await saveMessage("user", userMessage);
-
-    const botDiv = document.createElement("div");
-    botDiv.className = "message bot bot_ativo";
-    botDiv.textContent = "⏳ Pensando...";
-    messagesDiv.appendChild(botDiv);
-    lastBotDiv = botDiv;
-
-    botOcupado = true;
-    controller = new AbortController();
-
+app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
     try {
-        const res = await fetch(`${API_URL}/chat/${currentChatId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
-            },
-            body: JSON.stringify({
-                message: userMessage
-            })
-        });
-        const data = await safeParseResponse(res);
-        if (!res.ok) {
-            showLocalError(data.error || "Erro do servidor.");
-            return;
-        }
+ await Chat.findAllAndDelete({
+    id: req.params.chatId,
+    userId: req.userId
+ }); 
+  if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error("Erro ao deletar chat:", err);
+    return res.status(500).json({ error: "Erro ao deletar chat" });
+  }
+});
 
-        const {
-            reply,
-            title
-        } = data; // ✅ resposta e título
-        const replyText = reply || "⚠️ Sem resposta da IA.";
+app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
+    const chat = await Chat.findOne({
+        _id: req.params.chatId,
+        userId: req.userId
+    });
+    if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+  chat.messages.push({ role: req.body.role, content: req.body.content });
+  await chat.save();
+  res.json({ ok: true });
+});
 
-        // Aqui está a alteração:  Recarrega a lista de chats APÓS receber a resposta (e o título)
-        await loadChats();
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
 
-        // animação melhorada p/ textos longos
-        let i = 0;
-        const total = replyText.length;
-        clearInterval(intervaloId);
-        intervaloId = setInterval(() => {
-            const slice = replyText.slice(0, i);
-            botDiv.innerHTML = (typeof marked !== "undefined") ?
-                `<div class="bot-icon">🤖</div><div class="bot-content">${marked.parse(slice)}</div>` :
-                slice;
 
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            if (i >= total) {
-                clearInterval(intervaloId);
-                botOcupado = false;
-                saveMessage("bot", replyText);
-                if (typeof hljs !== "undefined") hljs.highlightAll();
-            }
-            i += 3; // 3 chars por tick
-        }, 15);
-
-    } catch (err) {
-        botDiv.textContent = "⚠️ Erro na IA.";
-        botOcupado = false;
-    }
-
-    
-
-/* ---------- Interromper resposta ---------- */
-function interromperResposta() {
-    if (intervaloId) clearInterval(intervaloId);
-    if (controller) controller.abort();
-    botOcupado = false;
-    if (lastBotDiv) lastBotDiv.textContent = "⏹ Resposta interrompida.";
-}
-
-/* ---------- Expor funções ---------- */
-window.techia = {
-    sendMessage,
-    newChat,
-    loadChats,
-    loadHistory,
-    logout,
-    register,
-    login,
-    interromperResposta,
-};  
-}
