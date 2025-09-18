@@ -5,7 +5,7 @@ let intervaloId = null;
 let controller = null;
 let currentChatId = null;
 let lastBotDiv = null;
-
+const h2DoChat = document.getElementById('h2DoChat');
 const API_URL = "https://blacktechof-github-io.onrender.com"; // <-- backend
 
 /* ---------- Helpers ---------- */
@@ -199,6 +199,7 @@ async function newChat() {
     currentChatId = chat._id;
     await loadChats();
     await loadHistory(currentChatId);
+    h2DoChat.style.display = ''
 }
 
 async function loadChats() {
@@ -220,7 +221,9 @@ async function loadChats() {
             loadHistory(currentChatId);
         };
         const delBtn = document.createElement("button");
-        delBtn.innerHTML = "🗑️";
+        delBtn.innerHTML = `<svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M6 7V18C6 19.1046 6.89543 20 8 20H16C17.1046 20 18 19.1046 18 18V7M6 7H5M6 7H8M18 7H19M18 7H16M10 11V16M14 11V16M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M8 7H16" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>;`
         delBtn.onclick = async (e) => {
             e.stopPropagation();
             if (!confirm("Excluir este chat?")) return;
@@ -240,6 +243,16 @@ async function loadChats() {
         li.appendChild(delBtn);
         chatList.appendChild(li);
     });
+}
+
+async function deleteAllChats() {
+    const res = await fetch(`${API_URL}/chatdb/:chatId`, {
+        method: "DELETE",
+        headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+    })
+    loadChats()
 }
 
 async function loadHistory(chatId) {
@@ -281,6 +294,7 @@ async function saveMessage(role, content) {
 /* ---------- ENVIAR MENSAGEM ---------- */
 async function sendMessage() {
     if (botOcupado || !currentChatId) return;
+    h2DoChat.style.display = 'none'
     const input = document.getElementById("userInput");
     const messagesDiv = document.getElementById("messages");
     const token = localStorage.getItem("token");
