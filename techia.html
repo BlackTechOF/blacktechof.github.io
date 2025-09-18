@@ -1,381 +1,182 @@
-/* techia.js - versão final com SerpAPI + Gemini e respostas longas */
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TechIA Chat</title>
+  <link rel="stylesheet" href="techia.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/default.min.css">
+</head>
+<body>
+  <!-- ==================== LOGIN/CADASTRO ==================== -->
+  <div id="auth-container" class="auth-box">
+    <h2><svg viewBox="0 0 300.000000 300.000000" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="icon">
+       <g transform="translate(0.000000,300.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+<path d="M0 1500 l0 -1500 743 1 c408 1 733 4 722 6 -11 3 -285 158 -610 345
+-395 228 -602 353 -627 379 l-38 38 0 735 0 736 28 29 c15 16 194 125 397 242
+204 117 471 271 594 342 123 71 236 133 250 137 14 5 -308 9 -716 9 l-743 1 0
+-1500z"/>
+<path d="M1540 2991 c14 -5 261 -144 550 -311 289 -167 560 -323 603 -348 122
+-68 118 -54 115 -387 l-3 -280 -109 -62 c-85 -49 -113 -60 -127 -53 -16 9 -18
+32 -21 268 l-3 259 -26 34 c-19 24 -101 76 -270 173 -134 77 -348 200 -475
+273 -198 113 -238 133 -274 133 -46 0 -20 14 -715 -388 -223 -129 -295 -175
+-312 -201 l-23 -35 2 -570 c3 -664 -8 -601 125 -678 43 -24 258 -149 479 -276
+358 -208 405 -232 445 -232 38 0 74 17 274 133 127 73 341 198 478 276 169 98
+254 153 270 175 21 29 22 43 25 218 l4 188 101 60 c65 38 111 59 127 58 l25
+-3 3 -300 c1 -165 0 -314 -3 -331 -7 -41 -43 -77 -125 -123 -36 -21 -303 -175
+-595 -343 -291 -168 -539 -308 -550 -311 -11 -2 314 -5 723 -6 l742 -1 0 1500
+0 1500 -742 -1 c-409 0 -732 -4 -718 -8z m155 -607 c171 -98 179 -105 171
+-131 -7 -21 -195 -133 -225 -133 -11 0 -42 12 -68 26 -66 35 -99 29 -224 -42
+-124 -70 -153 -93 -144 -116 11 -27 233 -150 282 -156 50 -5 64 1 376 182 119
+69 224 126 233 126 22 0 213 -108 241 -136 l23 -23 0 -480 0 -480 -22 -24
+c-13 -14 -90 -63 -173 -110 -82 -46 -253 -144 -380 -217 -184 -107 -239 -134
+-277 -138 -46 -4 -55 0 -425 213 -208 120 -393 228 -410 242 l-33 24 0 359 c0
+340 1 360 19 369 14 8 40 -2 127 -52 l109 -62 5 -232 c3 -135 9 -236 15 -242
+6 -5 129 -78 275 -163 235 -136 270 -153 310 -153 40 0 76 18 320 160 l275
+160 3 343 c1 188 -1 342 -4 342 -3 0 -128 -71 -278 -157 -240 -138 -276 -157
+-316 -157 -40 0 -82 21 -407 210 -393 226 -404 235 -372 293 10 18 123 89 374
+234 324 187 364 207 405 207 39 0 67 -12 195 -86z"/>
+</g>
+        </svg> TechIA</h2>
+    <h2>Fazer Login em TechID</h2>
+    <input type="text" id="username" placeholder="Usuário" />
+    <input type="password" id="password" placeholder="Senha" />
+    <div class="auth-buttons">
+      <button onclick="register()">Cadastrar</button>
+      <button onclick="login()">Entrar</button>
+    </div>
+  </div>
 
-let botOcupado = false;
-let intervaloId = null;
-let controller = null;
-let currentChatId = null;
-let lastBotDiv = null;
-const h2DoChat = document.getElementById('h2DoChat');
-const API_URL = "https://blacktechof-github-io.onrender.com"; // <-- backend
+  <!-- ==================== CHAT ==================== -->
+  <div id="chat-container" style="display:none">
+    <!-- MENU -->
+    <div class="menu">
+      <div class="menu-left">
+        <h2><svg viewBox="0 0 300.000000 300.000000" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="icon">
+       <g transform="translate(0.000000,300.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+<path d="M0 1500 l0 -1500 743 1 c408 1 733 4 722 6 -11 3 -285 158 -610 345
+-395 228 -602 353 -627 379 l-38 38 0 735 0 736 28 29 c15 16 194 125 397 242
+204 117 471 271 594 342 123 71 236 133 250 137 14 5 -308 9 -716 9 l-743 1 0
+-1500z"/>
+<path d="M1540 2991 c14 -5 261 -144 550 -311 289 -167 560 -323 603 -348 122
+-68 118 -54 115 -387 l-3 -280 -109 -62 c-85 -49 -113 -60 -127 -53 -16 9 -18
+32 -21 268 l-3 259 -26 34 c-19 24 -101 76 -270 173 -134 77 -348 200 -475
+273 -198 113 -238 133 -274 133 -46 0 -20 14 -715 -388 -223 -129 -295 -175
+-312 -201 l-23 -35 2 -570 c3 -664 -8 -601 125 -678 43 -24 258 -149 479 -276
+358 -208 405 -232 445 -232 38 0 74 17 274 133 127 73 341 198 478 276 169 98
+254 153 270 175 21 29 22 43 25 218 l4 188 101 60 c65 38 111 59 127 58 l25
+-3 3 -300 c1 -165 0 -314 -3 -331 -7 -41 -43 -77 -125 -123 -36 -21 -303 -175
+-595 -343 -291 -168 -539 -308 -550 -311 -11 -2 314 -5 723 -6 l742 -1 0 1500
+0 1500 -742 -1 c-409 0 -732 -4 -718 -8z m155 -607 c171 -98 179 -105 171
+-131 -7 -21 -195 -133 -225 -133 -11 0 -42 12 -68 26 -66 35 -99 29 -224 -42
+-124 -70 -153 -93 -144 -116 11 -27 233 -150 282 -156 50 -5 64 1 376 182 119
+69 224 126 233 126 22 0 213 -108 241 -136 l23 -23 0 -480 0 -480 -22 -24
+c-13 -14 -90 -63 -173 -110 -82 -46 -253 -144 -380 -217 -184 -107 -239 -134
+-277 -138 -46 -4 -55 0 -425 213 -208 120 -393 228 -410 242 l-33 24 0 359 c0
+340 1 360 19 369 14 8 40 -2 127 -52 l109 -62 5 -232 c3 -135 9 -236 15 -242
+6 -5 129 -78 275 -163 235 -136 270 -153 310 -153 40 0 76 18 320 160 l275
+160 3 343 c1 188 -1 342 -4 342 -3 0 -128 -71 -278 -157 -240 -138 -276 -157
+-316 -157 -40 0 -82 21 -407 210 -393 226 -404 235 -372 293 10 18 123 89 374
+234 324 187 364 207 405 207 39 0 67 -12 195 -86z"/>
+</g>
+        </svg> TechIA</h2>
+      </div>
+      <div class="menu-center">
+        </button>
+      </div>
+      <div class="menu-right">
+        <button id="logoutBtn">
+         <svg width="25px" height="30px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon">
+  <path d="M868 732h-70.3c-4.8 0-9.3 2.1-12.3 5.8-7 8.5-14.5 16.7-22.4 24.5a353.84 353.84 0 0 1-112.7 75.9A352.8 352.8 0 0 1 512.4 866c-47.9 0-94.3-9.4-137.9-27.8a353.84 353.84 0 0 1-112.7-75.9 353.28 353.28 0 0 1-76-112.5C167.3 606.2 158 559.9 158 512s9.4-94.2 27.8-137.8c17.8-42.1 43.4-80 76-112.5s70.5-58.1 112.7-75.9c43.6-18.4 90-27.8 137.9-27.8 47.9 0 94.3 9.3 137.9 27.8 42.2 17.8 80.1 43.4 112.7 75.9 7.9 7.9 15.3 16.1 22.4 24.5 3 3.7 7.6 5.8 12.3 5.8H868c6.3 0 10.2-7 6.7-12.3C798 160.5 663.8 81.6 511.3 82 271.7 82.6 79.6 277.1 82 516.4 84.4 751.9 276.2 942 512.4 942c152.1 0 285.7-78.8 362.3-197.7 3.4-5.3-.4-12.3-6.7-12.3zm88.9-226.3L815 393.7c-5.3-4.2-13-.4-13 6.3v76H488c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h314v76c0 6.7 7.8 10.5 13 6.3l141.9-112a8 8 0 0 0 0-12.6z"/>
+</svg>
+        <button id="darkModeToggle">
+          <svg width="45px" height="90px" viewBox="0 0 23 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_429_11017)">
+<path d="M20.9955 11.7115L22.2448 11.6721C22.2326 11.2847 22.0414 10.9249 21.7272 10.698C21.413 10.4711 21.0113 10.4029 20.6397 10.5132L20.9955 11.7115ZM12.2885 3.00454L13.4868 3.36028C13.5971 2.98873 13.5289 2.58703 13.302 2.2728C13.0751 1.95857 12.7153 1.76736 12.3279 1.75516L12.2885 3.00454ZM20.6397 10.5132C20.1216 10.667 19.5716 10.75 19 10.75V13.25C19.815 13.25 20.6046 13.1314 21.3512 12.9098L20.6397 10.5132ZM19 10.75C15.8244 10.75 13.25 8.17564 13.25 5H10.75C10.75 9.55635 14.4437 13.25 19 13.25V10.75ZM13.25 5C13.25 4.42841 13.333 3.87841 13.4868 3.36028L11.0902 2.64879C10.8686 3.39542 10.75 4.18496 10.75 5H13.25ZM12 4.25C12.0834 4.25 12.1665 4.25131 12.2492 4.25392L12.3279 1.75516C12.219 1.75173 12.1097 1.75 12 1.75V4.25ZM4.25 12C4.25 7.71979 7.71979 4.25 12 4.25V1.75C6.33908 1.75 1.75 6.33908 1.75 12H4.25ZM12 19.75C7.71979 19.75 4.25 16.2802 4.25 12H1.75C1.75 17.6609 6.33908 22.25 12 22.25V19.75ZM19.75 12C19.75 16.2802 16.2802 19.75 12 19.75V22.25C17.6609 22.25 22.25 17.6609 22.25 12H19.75ZM19.7461 11.7508C19.7487 11.8335 19.75 11.9166 19.75 12H22.25C22.25 11.8903 22.2483 11.781 22.2448 11.6721L19.7461 11.7508Z" fill="#292929"/>
+</g></svg>
+        </button>
+        <button id="toggleSidebar">
+          <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 18L20 18" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+<path d="M4 12L20 12" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+<path d="M4 6L20 6" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+</svg>
+        </button>
+      </div>
+    </div>
 
-/* ---------- Helpers ---------- */
-async function safeParseResponse(res) {
-    const ct = res.headers.get("content-type") || "";
-    const text = await res.text();
-    if (ct.includes("application/json")) {
-        try {
-            return JSON.parse(text);
-        } catch {
-            return text;
-        }
-    }
-    return text;
-}
+    <!-- LAYOUT PRINCIPAL -->
+    <main>
 
-function showLocalError(message) {
-    console.warn(message);
-    const messagesDiv = document.getElementById("messages");
-    if (!messagesDiv) return;
-    const errDiv = document.createElement("div");
-    errDiv.className = "message bot";
-    errDiv.textContent = "⚠️ " + message;
-    messagesDiv.appendChild(errDiv);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-}
+      <div class="sidebar">
+        <h2><svg viewBox="0 0 300.000000 300.000000" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="icon">
+       <g transform="translate(0.000000,300.000000) scale(0.100000,-0.100000)"
+fill="#000000" stroke="none">
+<path d="M0 1500 l0 -1500 743 1 c408 1 733 4 722 6 -11 3 -285 158 -610 345
+-395 228 -602 353 -627 379 l-38 38 0 735 0 736 28 29 c15 16 194 125 397 242
+204 117 471 271 594 342 123 71 236 133 250 137 14 5 -308 9 -716 9 l-743 1 0
+-1500z"/>
+<path d="M1540 2991 c14 -5 261 -144 550 -311 289 -167 560 -323 603 -348 122
+-68 118 -54 115 -387 l-3 -280 -109 -62 c-85 -49 -113 -60 -127 -53 -16 9 -18
+32 -21 268 l-3 259 -26 34 c-19 24 -101 76 -270 173 -134 77 -348 200 -475
+273 -198 113 -238 133 -274 133 -46 0 -20 14 -715 -388 -223 -129 -295 -175
+-312 -201 l-23 -35 2 -570 c3 -664 -8 -601 125 -678 43 -24 258 -149 479 -276
+358 -208 405 -232 445 -232 38 0 74 17 274 133 127 73 341 198 478 276 169 98
+254 153 270 175 21 29 22 43 25 218 l4 188 101 60 c65 38 111 59 127 58 l25
+-3 3 -300 c1 -165 0 -314 -3 -331 -7 -41 -43 -77 -125 -123 -36 -21 -303 -175
+-595 -343 -291 -168 -539 -308 -550 -311 -11 -2 314 -5 723 -6 l742 -1 0 1500
+0 1500 -742 -1 c-409 0 -732 -4 -718 -8z m155 -607 c171 -98 179 -105 171
+-131 -7 -21 -195 -133 -225 -133 -11 0 -42 12 -68 26 -66 35 -99 29 -224 -42
+-124 -70 -153 -93 -144 -116 11 -27 233 -150 282 -156 50 -5 64 1 376 182 119
+69 224 126 233 126 22 0 213 -108 241 -136 l23 -23 0 -480 0 -480 -22 -24
+c-13 -14 -90 -63 -173 -110 -82 -46 -253 -144 -380 -217 -184 -107 -239 -134
+-277 -138 -46 -4 -55 0 -425 213 -208 120 -393 228 -410 242 l-33 24 0 359 c0
+340 1 360 19 369 14 8 40 -2 127 -52 l109 -62 5 -232 c3 -135 9 -236 15 -242
+6 -5 129 -78 275 -163 235 -136 270 -153 310 -153 40 0 76 18 320 160 l275
+160 3 343 c1 188 -1 342 -4 342 -3 0 -128 -71 -278 -157 -240 -138 -276 -157
+-316 -157 -40 0 -82 21 -407 210 -393 226 -404 235 -372 293 10 18 123 89 374
+234 324 187 364 207 405 207 39 0 67 -12 195 -86z"/>
+</g>
+        </svg> TechIA
+      <button id="fecharSideBar">☰</button></h2>
 
-/* ---------- Auth ---------- */
-async function register() {
-    const username = document.getElementById("username")?.value;
-    const password = document.getElementById("password")?.value;
-    if (!username || !password) return alert("Preencha usuário e senha.");
+        <button id="new-chat-btn">+ Novo Chat</button>
+        <ul id="chat-list"></ul>
+      </div>
 
-    try {
-        const res = await fetch(`${API_URL}/auth/register`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username,
-                password
-            })
+      <div class="principal">
+      <!-- ÁREA DO CHAT -->
+      <div class="chat-container">
+        <h2 id="h2DoChat">Olá, Como Posso Ajudar?</h2>
+        <div id="messages" class="messages"></div>
+
+        <div class="input-area">
+          <input type="text" id="userInput" placeholder="Digite sua mensagem..." />
+          <button id="inputs">Enviar</button>
+          <button id="parar" onclick="interromperResposta()">
+            <svg fill="#000000" width="30px" height="30px" viewBox="0 0 24 24" id="stop" data-name="Flat Color" xmlns="http://www.w3.org/2000/svg" class="icon flat-color"><rect id="primary" x="2" y="2" width="20" height="20" rx="2" style="fill: rgb(255, 255, 255);"></rect></svg>
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+  <!-- ==================== SCRIPTS ==================== -->
+  <script src="techia.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const darkToggle = document.getElementById("darkModeToggle");
+      if (darkToggle) {
+        darkToggle.addEventListener("click", () => {
+          document.body.classList.toggle("dark");
         });
-        const data = await safeParseResponse(res);
-        if (!res.ok) return alert(data.error || "Erro ao registrar");
-        alert(data.message || "Registrado com sucesso (Faça Login Para Proseguir)");
-    } catch (err) {
-        console.error("Erro no register:", err);
-        alert("Erro ao registrar.");
-    }
-}
-
-async function login() {
-    const username = document.getElementById("username")?.value;
-    const password = document.getElementById("password")?.value;
-    if (!username || !password) return alert("Preencha usuário e senha.");
-
-    try {
-        const res = await fetch(`${API_URL}/auth/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username,
-                password
-            })
-        });
-        const data = await safeParseResponse(res);
-        if (!res.ok) return alert(data.error || "Erro ao logar");
-
-        if (data.token) {
-            localStorage.setItem("token", data.token);
-            document.getElementById("auth-container").style.display = "none";
-            document.getElementById("chat-container").style.display = "block";
-            await loadChats();
-            await ensureChatExists();
-        }
-    } catch (err) {
-        console.error("Erro no login:", err);
-        alert("Erro ao conectar no servidor.");
-    }
-}
-
-/* ---------- Logout ---------- */
-function logout() {
-    localStorage.removeItem("token");
-    currentChatId = null;
-    document.getElementById("chat-container").style.display = "none";
-    document.getElementById("auth-container").style.display = "block";
-}
-
-/* ---------- Auto-login ---------- */
-window.addEventListener("DOMContentLoaded", async () => {
-    const input = document.getElementById("userInput");
-    if (input) input.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") sendMessage();
+      }
     });
-
-    const sendBtn = document.getElementById("inputs");
-    if (sendBtn) sendBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        sendMessage();
-    });
-
-    const interruptBtn = document.getElementById("interrupt-btn");
-    if (interruptBtn) interruptBtn.addEventListener("click", interromperResposta);
-
-    const newChatBtn = document.getElementById("new-chat-btn");
-    if (newChatBtn) newChatBtn.addEventListener("click", newChat);
-
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) logoutBtn.addEventListener("click", logout);
-
-    const sidebar = document.querySelector(".sidebar");
-    const toggleBtn = document.getElementById("toggleSidebar");
-    const fecharSideBar = document.getElementById("fecharSideBar");
-    const main = document.querySelector(".principal");
-    if (toggleBtn) toggleBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("active");
-        main.classList.toggle("blurred", sidebar.classList.contains("active"));
-    });
-    if (fecharSideBar) fecharSideBar.addEventListener("click", () => {
-        sidebar.classList.remove("active");
-        main.classList.remove("blurred");
-    });
-
-    const token = localStorage.getItem("token");
-    if (token) {
-        try {
-            const res = await fetch(`${API_URL}/chatdb/list`, {
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
-            });
-            if (res.ok) {
-                document.getElementById("auth-container").style.display = "none";
-                document.getElementById("chat-container").style.display = "block";
-                await loadChats();
-                await ensureChatExists();
-            } else {
-                localStorage.removeItem("token");
-            }
-        } catch {
-            localStorage.removeItem("token");
-        }
-    }
-});
-
-/* ---------- CHATS ---------- */
-async function ensureChatExists() {
-    const res = await fetch(`${API_URL}/chatdb/list`, {
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        }
-    });
-    const chats = await safeParseResponse(res);
-    if (!Array.isArray(chats) || chats.length === 0) {
-        const newC = await fetch(`${API_URL}/chatdb/new`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: JSON.stringify({
-                title: "Novo Chat"
-            })
-        });
-        const chat = await safeParseResponse(newC);
-        currentChatId = chat._id;
-        await loadChats();
-    } else {
-        currentChatId = chats[0]._id;
-        await loadHistory(currentChatId);
-    }
-}
-
-async function newChat() {
-    const res = await fetch(`${API_URL}/chatdb/new`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        },
-        body: JSON.stringify({
-            title: "Novo Chat"
-        })
-    });
-    const chat = await safeParseResponse(res);
-    currentChatId = chat._id;
-    await loadChats();
-    await loadHistory(currentChatId);
-    h2DoChat.style.display = ''
-}
-
-async function loadChats() {
-    const res = await fetch(`${API_URL}/chatdb/list`, {
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        }
-    });
-    const chats = await safeParseResponse(res);
-    const chatList = document.getElementById("chat-list");
-    chatList.innerHTML = "";
-    (chats || []).forEach(c => {
-        const li = document.createElement("li");
-        const span = document.createElement("span");
-        span.textContent = c.title;
-        span.style.cursor = "pointer";
-        span.onclick = () => {
-            currentChatId = c._id;
-            loadHistory(currentChatId);
-        };
-        const delBtn = document.createElement("button");
-        delBtn.innerHTML = "🗑️";
-        delBtn.onclick = async (e) => {
-            e.stopPropagation();
-            if (!confirm("Excluir este chat?")) return;
-            await fetch(`${API_URL}/chatdb/${c._id}`, {
-                method: "DELETE",
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            });
-            if (currentChatId === c._id) {
-                currentChatId = null;
-                document.getElementById("messages").innerHTML = "";
-            }
-            await loadChats();
-        };
-        li.appendChild(span);
-        li.appendChild(delBtn);
-        chatList.appendChild(li);
-    });
-}
-
-async function loadHistory(chatId) {
-    const res = await fetch(`${API_URL}/chatdb/${chatId}`, {
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        }
-    });
-    const history = await safeParseResponse(res);
-    const messagesDiv = document.getElementById("messages");
-    messagesDiv.innerHTML = "";
-    (history || []).forEach(msg => {
-        const div = document.createElement("div");
-        div.className = `message ${msg.role}`;
-        div.innerHTML = (typeof marked !== "undefined") ? marked.parse(msg.content) : msg.content;
-        messagesDiv.appendChild(div);
-    });
-    if (typeof hljs !== "undefined") hljs.highlightAll();
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-}
-
-/* ---------- SALVAR MENSAGEM ---------- */
-async function saveMessage(role, content) {
-    if (!currentChatId) return false;
-    const res = await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        },
-        body: JSON.stringify({
-            role,
-            content
-        })
-    });
-    return res.ok;
-}
-
-/* ---------- ENVIAR MENSAGEM ---------- */
-async function sendMessage() {
-    if (botOcupado || !currentChatId) return;
-    h2DoChat.style.display = 'none'
-    const input = document.getElementById("userInput");
-    const messagesDiv = document.getElementById("messages");
-    const token = localStorage.getItem("token");
-    const userMessage = input.value.trim();
-    if (!userMessage) return;
-    input.value = "";
-
-    const userDiv = document.createElement("div");
-    userDiv.className = "message user";
-    userDiv.innerHTML = (typeof marked !== "undefined") ? marked.parse(userMessage) : userMessage;
-    messagesDiv.appendChild(userDiv);
-
-    await saveMessage("user", userMessage);
-
-    const botDiv = document.createElement("div");
-    botDiv.className = "message bot bot_ativo";
-    botDiv.textContent = "⏳ Pensando...";
-    messagesDiv.appendChild(botDiv);
-    lastBotDiv = botDiv;
-
-    botOcupado = true;
-    controller = new AbortController();
-
-    try {
-        const res = await fetch(`${API_URL}/chat/${currentChatId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
-            },
-            body: JSON.stringify({
-                message: userMessage
-            })
-        });
-        const data = await safeParseResponse(res);
-        if (!res.ok) {
-            showLocalError(data.error || "Erro do servidor.");
-            return;
-        }
-
-        const {
-            reply,
-            title
-        } = data; // ✅ resposta e título
-        const replyText = reply || "⚠️ Sem resposta da IA.";
-
-        // Aqui está a alteração:  Recarrega a lista de chats APÓS receber a resposta (e o título)
-        await loadChats();
-
-        // animação melhorada p/ textos longos
-        let i = 0;
-        const total = replyText.length;
-        clearInterval(intervaloId);
-        intervaloId = setInterval(() => {
-            const slice = replyText.slice(0, i);
-            botDiv.innerHTML = (typeof marked !== "undefined") ?
-                `<div class="bot-icon">🤖</div><div class="bot-content">${marked.parse(slice)}</div>` :
-                slice;
-
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            if (i >= total) {
-                clearInterval(intervaloId);
-                botOcupado = false;
-                saveMessage("bot", replyText);
-                if (typeof hljs !== "undefined") hljs.highlightAll();
-            }
-            i += 3; // 3 chars por tick
-        }, 15);
-
-    } catch (err) {
-        botDiv.textContent = "⚠️ Erro na IA.";
-        botOcupado = false;
-    }
-
-    
-
-/* ---------- Interromper resposta ---------- */
-function interromperResposta() {
-    if (intervaloId) clearInterval(intervaloId);
-    if (controller) controller.abort();
-    botOcupado = false;
-    if (lastBotDiv) lastBotDiv.textContent = "⏹ Resposta interrompida.";
-}
-
-/* ---------- Expor funções ---------- */
-window.techia = {
-    sendMessage,
-    newChat,
-    loadChats,
-    loadHistory,
-    logout,
-    register,
-    login,
-    interromperResposta,
-};  
-}
+  </script>
+</body>
+</html>
