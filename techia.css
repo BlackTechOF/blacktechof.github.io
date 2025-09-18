@@ -131,11 +131,27 @@ main {
 }
 
 .sidebar h2 svg {
- width: 30px;
- height: 30px;
  border-radius: 30px;
 }
 
+.sidebar button {
+  border-radius: 20px;
+  border: solid black;
+}
+
+#deleteAllChats svg {
+  width: 100%;
+  height: auto;
+}
+
+#deleteAllChats:hover {
+  background: red;
+}
+
+#deleteAllChats svg:hover {
+  color: white;
+  fill: #ffffff;
+}
 
 #new-chat-btn {
   align-self: center;
@@ -185,7 +201,6 @@ main {
 
 #chat-list button:hover {
   border-radius: 20px;
-  border: solid black;
 }
 
 .bot {
