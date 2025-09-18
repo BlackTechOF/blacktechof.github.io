@@ -372,21 +372,7 @@ app.get("/chatdb/:chatId", authMiddleware, async (req, res) => {
     res.json(chat.messages);
 });
 
-app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
-  try {
-    const chat = await Chat.findOneAndDelete({
-      _id: req.params.chatId,
-      userId: req.userId
-    });
-    if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
-    return res.json({ ok: true });
-  } catch (err) {
-    console.error("Erro ao deletar chat:", err);
-    return res.status(500).json({ error: "Erro ao deletar chat" });
-  }
-});
-
-app.delete("/chatdb/:userId", authMiddleware, async (req, res) => {
+app.delete("/chatdb/all", authMiddleware, async (req, res) => {
     try {
         const result = await Chat.deleteMany({
             userId: req.userId
@@ -410,6 +396,21 @@ app.delete("/chatdb/:userId", authMiddleware, async (req, res) => {
     }
 });
 
+app.delete("/chatdb/:chatId", authMiddleware, async (req, res) => {
+  try {
+    const chat = await Chat.findOneAndDelete({
+      _id: req.params.chatId,
+      userId: req.userId
+    });
+    if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error("Erro ao deletar chat:", err);
+    return res.status(500).json({ error: "Erro ao deletar chat" });
+  }
+});
+
+
 app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
     const chat = await Chat.findOne({
         _id: req.params.chatId,
@@ -423,6 +424,5 @@ app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
-
 
 
