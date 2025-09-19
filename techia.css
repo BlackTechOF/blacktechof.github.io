@@ -69,11 +69,11 @@ main {
   flex: 1; /* ocupa o espaço que sobra */
   display: flex;
   flex-direction: column;
-  margin-top: 90px;
+  margin-top: 30%;
   width: 100%;
   align-items: center;
   overflow-y: auto;
-  height: 75%;
+  height: 68%;
 }
 
 /* Ajuste para a área de mensagens */
