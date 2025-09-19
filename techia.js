@@ -276,6 +276,13 @@ async function loadHistory(chatId) {
     const history = await safeParseResponse(res);
     const messagesDiv = document.getElementById("messages");
     messagesDiv.innerHTML = "";
+
+     if (history && history.length > 0) {
+        h2DoChat.style.display = "none";  // já tem mensagens → esconde
+    } else {
+        h2DoChat.style.display = "";      // vazio → mostra
+    }
+
     (history || []).forEach(msg => {
         const div = document.createElement("div");
         div.className = `message ${msg.role}`;
@@ -306,7 +313,8 @@ async function saveMessage(role, content) {
 /* ---------- ENVIAR MENSAGEM ---------- */
 async function sendMessage() {
     if (botOcupado || !currentChatId) return;
-    h2DoChat.style.display = 'none'
+    h2DoChat.style.display = 'none';
+
     const input = document.getElementById("userInput");
     const messagesDiv = document.getElementById("messages");
     const token = localStorage.getItem("token");
@@ -314,21 +322,20 @@ async function sendMessage() {
     if (!userMessage) return;
     input.value = "";
 
-    const userDiv = document.createElement("div");
-    userDiv.className = "message user";
-    userDiv.innerHTML = (typeof marked !== "undefined") ? marked.parse(userMessage) : userMessage;
-    messagesDiv.appendChild(userDiv);
+    botOcupado = true;
+    controller = new AbortController();
 
-    await saveMessage("user", userMessage);
+     const userDiv = document.createElement("div");
+userDiv.className = "message user";
+userDiv.innerHTML = (typeof marked !== "undefined") ? marked.parse(userMessage) : userMessage;
+messagesDiv.appendChild(userDiv);
 
+    // Mostra placeholder "pensando..."
     const botDiv = document.createElement("div");
     botDiv.className = "message bot bot_ativo";
     botDiv.textContent = "⏳ Pensando...";
     messagesDiv.appendChild(botDiv);
-    lastBotDiv = botDiv;
-
-    botOcupado = true;
-    controller = new AbortController();
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
     try {
         const res = await fetch(`${API_URL}/chat/${currentChatId}`, {
@@ -337,49 +344,28 @@ async function sendMessage() {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             },
-            body: JSON.stringify({
-                message: userMessage
-            })
+            body: JSON.stringify({ message: userMessage })
         });
+
         const data = await safeParseResponse(res);
         if (!res.ok) {
-            showLocalError(data.error || "Erro do servidor.");
+            botDiv.textContent = "⚠️ Erro do servidor.";
+            botOcupado = false;
             return;
         }
 
-        const {
-            reply,
-            title
-        } = data; // ✅ resposta e título
-        const replyText = reply || "⚠️ Sem resposta da IA.";
-
-        // Aqui está a alteração:  Recarrega a lista de chats APÓS receber a resposta (e o título)
+        // recarrega todo o histórico (já com user + bot)
         await loadChats();
+        await loadHistory(currentChatId);
 
-        // animação melhorada p/ textos longos
-        let i = 0;
-        const total = replyText.length;
-        clearInterval(intervaloId);
-        intervaloId = setInterval(() => {
-            const slice = replyText.slice(0, i);
-            botDiv.innerHTML = (typeof marked !== "undefined") ?
-                `<div class="bot-icon">🤖</div><div class="bot-content">${marked.parse(slice)}</div>` :
-                slice;
-
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            if (i >= total) {
-                clearInterval(intervaloId);
-                botOcupado = false;
-                saveMessage("bot", replyText);
-                if (typeof hljs !== "undefined") hljs.highlightAll();
-            }
-            i += 3; // 3 chars por tick
-        }, 15);
+        botOcupado = false;
 
     } catch (err) {
         botDiv.textContent = "⚠️ Erro na IA.";
         botOcupado = false;
     }
+}
+
 
     
 
@@ -402,4 +388,4 @@ window.techia = {
     login,
     interromperResposta,
 };  
-}
+
