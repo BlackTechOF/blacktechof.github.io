@@ -69,11 +69,11 @@ main {
   flex: 1; /* ocupa o espaço que sobra */
   display: flex;
   flex-direction: column;
-  margin-top: 30%;
+  margin-top: 90px;
   width: 100%;
   align-items: center;
   overflow-y: auto;
-  height: 68%;
+  height: 75%;
 }
 
 /* Ajuste para a área de mensagens */
@@ -102,7 +102,7 @@ main {
 
 .sidebar {
   position: fixed;
-  left: -300px; /* começa fora da tela */
+  left: -100%; /* começa fora da tela */
   width: 50%;
   height: 100%;
   background: white;
@@ -126,7 +126,6 @@ main {
 
 .sidebar h2 {
   display: flex;
-  align-self: center;
   gap: 10px;
 }
 
@@ -162,12 +161,10 @@ main {
 }
 
 #fecharSideBar {
-  align-self: self-end;
+margin-top: -15%;
 width: 35px;
  height: 35px;
- position: relative;
- left: 10%;
- bottom: 70%;
+ 
 }
 
 #svgTechIA {
@@ -212,9 +209,11 @@ width: 35px;
   width: 70%;
   font-size: 17px;
   margin-left: 5%;
+  align-self: center;
 }
 
 #chat-list button {
+  align-self: center;
   border: transparent;
   color: white;
   width: 50px;
