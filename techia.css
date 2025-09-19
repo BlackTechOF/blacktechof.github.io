@@ -132,6 +132,7 @@ main {
 
 .sidebar h2 svg {
  border-radius: 30px;
+ 
 }
 
 .sidebar button {
@@ -139,9 +140,16 @@ main {
   border: solid black;
 }
 
+.sideBarTools {
+  display: flex;
+  align-self: center;
+  width: 100%;
+  gap: 10px;
+}
+
 #deleteAllChats svg {
   width: 100%;
-  height: auto;
+  height: 100%;
 }
 
 #deleteAllChats:hover {
@@ -153,11 +161,27 @@ main {
   fill: #ffffff;
 }
 
+#fecharSideBar {
+  align-self: self-end;
+width: 35px;
+ height: 35px;
+ position: relative;
+ left: 10%;
+ bottom: 70%;
+}
+
+#svgTechIA {
+  
+}
+
+#fecharSideBar svg {
+  width: 100%;
+  height: 100%;
+}
+
 #new-chat-btn {
-  align-self: center;
-  width: 80%;
-  margin-top: 5%;
-  height: 5%;
+  width: 100%;
+  height: 100%;
   border: solid black;
   border-radius: 20px;
   background: black;
@@ -173,6 +197,7 @@ main {
   flex-direction: column;
   align-items: center;
   border-radius: 20px;
+  gap: 10px;
 }
 
 #chat-list li {
@@ -184,9 +209,8 @@ main {
 }
 
 #chat-list li span {
-  font-size: 20px;
-  text-align: center;
-  align-self: center;
+  width: 70%;
+  font-size: 17px;
   margin-left: 5%;
 }
 
