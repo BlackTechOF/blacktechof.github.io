@@ -6,6 +6,9 @@ let controller = null;
 let currentChatId = null;
 let lastBotDiv = null;
 const h2DoChat = document.getElementById('h2DoChat');
+const authButtons = document.querySelector('.auth-buttons')
+const loginButton = document.getElementById('loginBtn')
+const cadastroButton = document.getElementById('cadastroBtn')
 const API_URL = "https://blacktechof-github-io.onrender.com"; // <-- backend
 
 /* ---------- Helpers ---------- */
@@ -39,6 +42,12 @@ async function register() {
     const password = document.getElementById("password")?.value;
     if (!username || !password) return alert("Preencha usuário e senha.");
 
+    loginButton.style.display = 'none'
+    cadastroButton.style.display = 'none'
+    const criarH3Cadastro = document.createElement('h3')
+    criarH3Cadastro.textContent = 'Cadastrando Usuário...'
+    authButtons.appendChild(criarH3Cadastro)
+
     try {
         const res = await fetch(`${API_URL}/auth/register`, {
             method: "POST",
@@ -50,6 +59,10 @@ async function register() {
                 password
             })
         });
+
+        loginButton.style.display = ''
+    cadastroButton.style.display = ''
+    criarH3Cadastro.style.display = 'none'
         const data = await safeParseResponse(res);
         if (!res.ok) return alert(data.error || "Erro ao registrar");
         alert(data.message || "Registrado com sucesso (Faça Login Para Proseguir)");
@@ -64,6 +77,12 @@ async function login() {
     const password = document.getElementById("password")?.value;
     if (!username || !password) return alert("Preencha usuário e senha.");
 
+    loginButton.style.display = 'none'
+    cadastroButton.style.display = 'none'
+    const criarH3Login = document.createElement('h3');
+    criarH3Login.textContent = 'Entrando...';
+    authButtons.appendChild(criarH3Login);
+
     try {
         const res = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
@@ -75,6 +94,10 @@ async function login() {
                 password
             })
         });
+
+        loginButton.style.display = ''
+        cadastroButton.style.display = ''
+        criarH3Login.style.display = 'none'
         const data = await safeParseResponse(res);
         if (!res.ok) return alert(data.error || "Erro ao logar");
 
@@ -96,7 +119,7 @@ function logout() {
     localStorage.removeItem("token");
     currentChatId = null;
     document.getElementById("chat-container").style.display = "none";
-    document.getElementById("auth-container").style.display = "block";
+    document.getElementById("auth-container").style.display = "";
 }
 
 /* ---------- Auto-login ---------- */
