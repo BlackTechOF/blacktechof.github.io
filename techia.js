@@ -8,6 +8,8 @@ let lastBotDiv = null;
 const h2DoChat = document.getElementById('h2DoChat');
 const authButtons = document.querySelector('.auth-buttons')
 const loginButton = document.getElementById('loginBtn')
+const btnParar = document.getElementById('parar')
+const sendBtn = document.getElementById("inputs");
 const cadastroButton = document.getElementById('cadastroBtn')
 const API_URL = "https://blacktechof-github-io.onrender.com"; // <-- backend
 
@@ -337,6 +339,8 @@ async function saveMessage(role, content) {
 async function sendMessage() {
     if (botOcupado || !currentChatId) return;
     h2DoChat.style.display = 'none';
+    sendBtn.style.display = 'none'
+    btnParar.style.display = ''
 
     const input = document.getElementById("userInput");
     const messagesDiv = document.getElementById("messages");
@@ -348,15 +352,16 @@ async function sendMessage() {
     botOcupado = true;
     controller = new AbortController();
 
-     const userDiv = document.createElement("div");
-userDiv.className = "message user";
-userDiv.innerHTML = (typeof marked !== "undefined") ? marked.parse(userMessage) : userMessage;
-messagesDiv.appendChild(userDiv);
+    // User message
+    const userDiv = document.createElement("div");
+    userDiv.className = "message user";
+    userDiv.innerHTML = (typeof marked !== "undefined") ? marked.parse(userMessage) : userMessage;
+    messagesDiv.appendChild(userDiv);
 
-    // Mostra placeholder "pensando..."
+    // Placeholder do bot
     const botDiv = document.createElement("div");
     botDiv.className = "message bot bot_ativo";
-    botDiv.textContent = "⏳ Pensando...";
+    botDiv.textContent = "Pensando...";
     messagesDiv.appendChild(botDiv);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
@@ -377,27 +382,42 @@ messagesDiv.appendChild(userDiv);
             return;
         }
 
-        // recarrega todo o histórico (já com user + bot)
-        await loadChats();
-        await loadHistory(currentChatId);
+        // Pega resposta da IA
+        const resposta = data.reply || data.content || "⚠️ Sem resposta";
 
-        botOcupado = false;
+        // Anima digitando 5 chars por vez
+        botDiv.textContent = ""; // limpa "Pensando..."
+        let i = 0;
+        intervaloId = setInterval(() => {
+            if (i < resposta.length) {
+                botDiv.textContent += resposta.slice(i, i + 1);
+                i += 1;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            } else {
+                clearInterval(intervaloId);
+                intervaloId = null;
+                botOcupado = false;
+                btnParar.style.display = 'none'
+                sendBtn.style.display = ''
+            }
+        },1); // velocidade (ms) → ajuste (80 = bem rápido, 150 = mais lento)
 
     } catch (err) {
         botDiv.textContent = "⚠️ Erro na IA.";
         botOcupado = false;
+        btnParar.style.display = 'none'
+        sendBtn.style.display = ''
     }
-}
-
-
-    
+}   
 
 /* ---------- Interromper resposta ---------- */
 function interromperResposta() {
     if (intervaloId) clearInterval(intervaloId);
     if (controller) controller.abort();
+    btnParar.style.display = 'none'
+    sendBtn.style.display = ''
     botOcupado = false;
-    if (lastBotDiv) lastBotDiv.textContent = "⏹ Resposta interrompida.";
+    botDiv.textContent = "⏹ Resposta interrompida.";
 }
 
 /* ---------- Expor funções ---------- */
