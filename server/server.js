@@ -218,8 +218,7 @@ app.post("/auth/register", async (req, res) => {
         username
     });
     if (existing) return res.status(400).json({
-        error: "Usuário já existe",
-        cadastroPage
+        error: "Usuário já existe"
     });
 
     const hash = await bcrypt.hash(password, 10);
