@@ -6,6 +6,23 @@ let currentAbortController = null;
 let currentChatId = null;
 let lastBotDiv = null;
 
+const loadScreen = document.querySelector('.loadingScreen')
+const conteudo = document.querySelector('.conteudo')
+const main = document.querySelector('main')
+const authContainer = document.getElementById("auth-container")
+
+function telaCarregamento() {
+   loadScreen.style.display = ''
+   main.style.filter = 'blur(4px)'
+   authContainer.style.filter = 'blur(3px)'
+}
+
+function esconderCarregamento() {
+   loadScreen.style.display = 'none'
+   main.style.filter = 'none'
+   authContainer.style.filter = 'none'
+}
+
 const h2DoChat = document.getElementById('h2DoChat');
 const authButtons = document.querySelector('.auth-buttons');
 const loginButton = document.getElementById('loginBtn');
@@ -71,6 +88,8 @@ async function register() {
     criarH3Cadastro.textContent = 'Cadastrando Usuário...';
     authButtons.appendChild(criarH3Cadastro);
 
+    telaCarregamento()
+
     try {
         const res = await fetch(`${API_URL}/auth/register`, {
             method: "POST",
@@ -80,15 +99,23 @@ async function register() {
             body: JSON.stringify({ username, password })
         });
 
+        esconderCarregamento()
+
         loginButton.style.display = '';
         loginFun.style.display = '';
         cadastroButton.style.display = '';
         criarH3Cadastro.style.display = 'none';
 
         const data = await safeParseResponse(res);
-        if (!res.ok) return alert(data.error || "Erro ao registrar");
+        if (!res.ok) {
+            cadastroPage();
+            esconderCarregamento();
+            return alert(data.error || "Erro ao registrar");
+        }
+
         alert(data.message || "Registrado com sucesso (Faça Login Para Proseguir)");
     } catch (err) {
+        cadastroPage()
         console.error("Erro no register:", err);
         alert("Erro ao registrar.");
     }
@@ -106,6 +133,8 @@ async function login() {
     criarH3Login.textContent = 'Entrando...';
     authButtons.appendChild(criarH3Login);
 
+    telaCarregamento()
+
     try {
         const res = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
@@ -113,13 +142,19 @@ async function login() {
             body: JSON.stringify({ username, password })
         });
 
+        esconderCarregamento()
+
         loginButton.style.display = '';
         cadastroFun.style.display = '';
         cadastroButton.style.display = '';
         criarH3Login.style.display = 'none';
 
         const data = await safeParseResponse(res);
-        if (!res.ok) return alert(data.error || "Erro ao logar");
+        if (!res.ok) {
+            cadastroPage();
+        esconderCarregamento();
+            return alert(data.error || "Erro ao logar");
+        }
 
         if (data.token) {
             localStorage.setItem("token", data.token);
@@ -129,6 +164,8 @@ async function login() {
             await ensureChatExists();
         }
     } catch (err) {
+        cadastroPage()
+        esconderCarregamento()
         console.error("Erro no login:", err);
         alert("Erro ao conectar no servidor.");
     }
@@ -380,7 +417,7 @@ async function sendMessage() {
     if (btnParar) btnParar.style.display = '';
 
     try {
-        const payloadMessage = (typeof marked !== "undefined") ? marked.parse(userMessage) : userMessage;
+        const payloadMessage = userMessage
 
         const res = await fetch(`${API_URL}/chat/${currentChatId}`, {
             method: "POST",
@@ -412,7 +449,7 @@ async function sendMessage() {
         intervaloId = setInterval(() => {
             if (i < resposta.length) {
                 botDiv.textContent += resposta.slice(i, i + chunk);
-                botDiv.innerHTML = (typeof marked !== "undefined") ? marked.parse(botDiv.textContent) : botDiv.textContent;
+                botDiv.innerHTML = (typeof marked !== "undefined") ? marked.parse(resposta) : resposta;
                 i += chunk;
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
             } else {
