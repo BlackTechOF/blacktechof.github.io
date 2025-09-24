@@ -2,15 +2,19 @@
 
 let botOcupado = false;
 let intervaloId = null;
-let controller = null;
+let currentAbortController = null;
 let currentChatId = null;
 let lastBotDiv = null;
+
 const h2DoChat = document.getElementById('h2DoChat');
-const authButtons = document.querySelector('.auth-buttons')
-const loginButton = document.getElementById('loginBtn')
-const btnParar = document.getElementById('parar')
-const sendBtn = document.getElementById("inputs");
-const cadastroButton = document.getElementById('cadastroBtn')
+const authButtons = document.querySelector('.auth-buttons');
+const loginButton = document.getElementById('loginBtn');
+const btnParar = document.getElementById('parar'); // botão de parar (mostra/esconde)
+const sendBtn = document.getElementById("inputs"); // botão enviar
+const cadastroFun = document.getElementById('cadastroFun');
+const loginFun = document.getElementById('loginFun');
+const cadastroButton = document.getElementById('cadastroBtn');
+const tituloPagLogin = document.getElementById('tituloPagLogin');
 const API_URL = "https://blacktechof-github-io.onrender.com"; // <-- backend
 
 /* ---------- Helpers ---------- */
@@ -38,17 +42,34 @@ function showLocalError(message) {
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
+function cadastroPage() {
+    tituloPagLogin.textContent = 'Cadastrar em TechIA';
+    cadastroFun.style.display = 'none';
+    loginFun.style.display = '';
+    cadastroButton.style.display = '';
+    loginButton.style.display = 'none';
+}
+
+function loginPage() {
+    tituloPagLogin.textContent = 'Fazer Login em TechIA';
+    cadastroFun.style.display = '';
+    loginFun.style.display = 'none';
+    cadastroButton.style.display = 'none';
+    loginButton.style.display = '';
+}
+
 /* ---------- Auth ---------- */
 async function register() {
     const username = document.getElementById("username")?.value;
     const password = document.getElementById("password")?.value;
     if (!username || !password) return alert("Preencha usuário e senha.");
 
-    loginButton.style.display = 'none'
-    cadastroButton.style.display = 'none'
-    const criarH3Cadastro = document.createElement('h3')
-    criarH3Cadastro.textContent = 'Cadastrando Usuário...'
-    authButtons.appendChild(criarH3Cadastro)
+    loginButton.style.display = 'none';
+    cadastroButton.style.display = 'none';
+    loginFun.style.display = 'none';
+    const criarH3Cadastro = document.createElement('h3');
+    criarH3Cadastro.textContent = 'Cadastrando Usuário...';
+    authButtons.appendChild(criarH3Cadastro);
 
     try {
         const res = await fetch(`${API_URL}/auth/register`, {
@@ -56,15 +77,14 @@ async function register() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                username,
-                password
-            })
+            body: JSON.stringify({ username, password })
         });
 
-        loginButton.style.display = ''
-    cadastroButton.style.display = ''
-    criarH3Cadastro.style.display = 'none'
+        loginButton.style.display = '';
+        loginFun.style.display = '';
+        cadastroButton.style.display = '';
+        criarH3Cadastro.style.display = 'none';
+
         const data = await safeParseResponse(res);
         if (!res.ok) return alert(data.error || "Erro ao registrar");
         alert(data.message || "Registrado com sucesso (Faça Login Para Proseguir)");
@@ -79,8 +99,9 @@ async function login() {
     const password = document.getElementById("password")?.value;
     if (!username || !password) return alert("Preencha usuário e senha.");
 
-    loginButton.style.display = 'none'
-    cadastroButton.style.display = 'none'
+    loginButton.style.display = 'none';
+    cadastroButton.style.display = 'none';
+    cadastroFun.style.display = 'none';
     const criarH3Login = document.createElement('h3');
     criarH3Login.textContent = 'Entrando...';
     authButtons.appendChild(criarH3Login);
@@ -88,18 +109,15 @@ async function login() {
     try {
         const res = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                username,
-                password
-            })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password })
         });
 
-        loginButton.style.display = ''
-        cadastroButton.style.display = ''
-        criarH3Login.style.display = 'none'
+        loginButton.style.display = '';
+        cadastroFun.style.display = '';
+        cadastroButton.style.display = '';
+        criarH3Login.style.display = 'none';
+
         const data = await safeParseResponse(res);
         if (!res.ok) return alert(data.error || "Erro ao logar");
 
@@ -122,16 +140,16 @@ function logout() {
     currentChatId = null;
     document.getElementById("chat-container").style.display = "none";
     document.getElementById("auth-container").style.display = "";
+    loginPage();
 }
 
-/* ---------- Auto-login ---------- */
+/* ---------- Auto-login & Event listeners ---------- */
 window.addEventListener("DOMContentLoaded", async () => {
     const input = document.getElementById("userInput");
     if (input) input.addEventListener("keypress", (e) => {
         if (e.key === "Enter") sendMessage();
     });
 
-    const sendBtn = document.getElementById("inputs");
     if (sendBtn) sendBtn.addEventListener("click", (e) => {
         e.preventDefault();
         sendMessage();
@@ -163,9 +181,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (token) {
         try {
             const res = await fetch(`${API_URL}/chatdb/list`, {
-                headers: {
-                    "Authorization": "Bearer " + token
-                }
+                headers: { "Authorization": "Bearer " + token }
             });
             if (res.ok) {
                 document.getElementById("auth-container").style.display = "none";
@@ -184,9 +200,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 /* ---------- CHATS ---------- */
 async function ensureChatExists() {
     const res = await fetch(`${API_URL}/chatdb/list`, {
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        }
+        headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
     });
     const chats = await safeParseResponse(res);
     if (!Array.isArray(chats) || chats.length === 0) {
@@ -196,9 +210,7 @@ async function ensureChatExists() {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + localStorage.getItem("token")
             },
-            body: JSON.stringify({
-                title: "Novo Chat"
-            })
+            body: JSON.stringify({ title: "Novo Chat" })
         });
         const chat = await safeParseResponse(newC);
         currentChatId = chat._id;
@@ -216,22 +228,18 @@ async function newChat() {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + localStorage.getItem("token")
         },
-        body: JSON.stringify({
-            title: "Novo Chat"
-        })
+        body: JSON.stringify({ title: "Novo Chat" })
     });
     const chat = await safeParseResponse(res);
     currentChatId = chat._id;
     await loadChats();
     await loadHistory(currentChatId);
-    h2DoChat.style.display = ''
+    h2DoChat.style.display = '';
 }
 
 async function loadChats() {
     const res = await fetch(`${API_URL}/chatdb/list`, {
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        }
+        headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
     });
     const chats = await safeParseResponse(res);
     const chatList = document.getElementById("chat-list");
@@ -248,15 +256,13 @@ async function loadChats() {
         const delBtn = document.createElement("button");
         delBtn.innerHTML = `<svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6 7V18C6 19.1046 6.89543 20 8 20H16C17.1046 20 18 19.1046 18 18V7M6 7H5M6 7H8M18 7H19M18 7H16M10 11V16M14 11V16M8 7V5C8 3.89543 8.89543 3 10 3H14C15.1046 3 16 3.89543 16 5V7M8 7H16" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>;`
+</svg>`;
         delBtn.onclick = async (e) => {
             e.stopPropagation();
             if (!confirm("Excluir este chat?")) return;
             await fetch(`${API_URL}/chatdb/${c._id}`, {
                 method: "DELETE",
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
+                headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
             });
             if (currentChatId === c._id) {
                 currentChatId = null;
@@ -274,9 +280,7 @@ async function deleteAllChats() {
     try {
         const res = await fetch(`${API_URL}/chatdb/all`, { // <-- Rota alterada
             method: "DELETE",
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            }
+            headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
         });
 
         if (res.ok) {
@@ -294,18 +298,16 @@ async function deleteAllChats() {
 
 async function loadHistory(chatId) {
     const res = await fetch(`${API_URL}/chatdb/${chatId}`, {
-        headers: {
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        }
+        headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
     });
     const history = await safeParseResponse(res);
     const messagesDiv = document.getElementById("messages");
     messagesDiv.innerHTML = "";
 
-     if (history && history.length > 0) {
-        h2DoChat.style.display = "none";  // já tem mensagens → esconde
+    if (history && history.length > 0) {
+        h2DoChat.style.display = 'none';  // já tem mensagens → esconde
     } else {
-        h2DoChat.style.display = "";      // vazio → mostra
+        h2DoChat.style.display = '';      // vazio → mostra
     }
 
     (history || []).forEach(msg => {
@@ -321,103 +323,154 @@ async function loadHistory(chatId) {
 /* ---------- SALVAR MENSAGEM ---------- */
 async function saveMessage(role, content) {
     if (!currentChatId) return false;
-    const res = await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + localStorage.getItem("token")
-        },
-        body: JSON.stringify({
-            role,
-            content
-        })
-    });
-    return res.ok;
+    try {
+        const res = await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            },
+            body: JSON.stringify({ role, content })
+        });
+        return res.ok;
+    } catch (err) {
+        console.warn("Erro ao salvar mensagem:", err);
+        return false;
+    }
 }
 
 /* ---------- ENVIAR MENSAGEM ---------- */
 async function sendMessage() {
+    // Previne envio se já estiver processando ou sem chat selecionado
     if (botOcupado || !currentChatId) return;
-    h2DoChat.style.display = 'none';
-    sendBtn.style.display = 'none'
-    btnParar.style.display = ''
 
     const input = document.getElementById("userInput");
     const messagesDiv = document.getElementById("messages");
     const token = localStorage.getItem("token");
-    const userMessage = input.value.trim();
+    const userMessage = input?.value.trim();
     if (!userMessage) return;
+
+    // limpa input e prepara UI
     input.value = "";
-
     botOcupado = true;
-    controller = new AbortController();
 
-    // User message
+    // cria div do usuário
     const userDiv = document.createElement("div");
     userDiv.className = "message user";
     userDiv.innerHTML = (typeof marked !== "undefined") ? marked.parse(userMessage) : userMessage;
     messagesDiv.appendChild(userDiv);
 
-    // Placeholder do bot
+    // placeholder do bot
     const botDiv = document.createElement("div");
     botDiv.className = "message bot bot_ativo";
-    botDiv.textContent = "Pensando...";
+    botDiv.textContent = 'Pensando...';
     messagesDiv.appendChild(botDiv);
+    lastBotDiv = botDiv;
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
+    // abort controller (cancela requisições anteriores se houver)
+    if (currentAbortController) {
+        try { currentAbortController.abort(); } catch (e) { /* ignore */ }
+    }
+    currentAbortController = new AbortController();
+    const signal = currentAbortController.signal;
+
+    // UI: esconder botão enviar e mostrar botão parar (se existir)
+    if (sendBtn) sendBtn.style.display = 'none';
+    if (btnParar) btnParar.style.display = '';
+
     try {
+        const payloadMessage = (typeof marked !== "undefined") ? marked.parse(userMessage) : userMessage;
+
         const res = await fetch(`${API_URL}/chat/${currentChatId}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             },
-            body: JSON.stringify({ message: userMessage })
+            body: JSON.stringify({ message: payloadMessage }),
+            signal
         });
 
         const data = await safeParseResponse(res);
         if (!res.ok) {
-            botDiv.textContent = "⚠️ Erro do servidor.";
-            botOcupado = false;
-            return;
+            const errMsg = (data && data.error) ? data.error : "Erro na resposta do servidor";
+            throw new Error(errMsg);
         }
 
-        // Pega resposta da IA
-        const resposta = data.reply || data.content || "⚠️ Sem resposta";
+        const resposta = data.reply || data.content || data.answer || data.message || "⚠️ Sem resposta";
 
-        // Anima digitando 5 chars por vez
-        botDiv.textContent = ""; // limpa "Pensando..."
+        // salva mensagens no DB (opcional, tenta mas não bloqueia)
+        try { await saveMessage("user", userMessage); } catch {}
+        try { await saveMessage("bot", resposta); } catch {}
+
+        // anima typing — escreve em blocos pequenos
+        botDiv.textContent = "";
         let i = 0;
+        const chunk = 1; // chars por iteração
+        const speedMs = 12; // intervalo em ms (ajuste se quiser)
         intervaloId = setInterval(() => {
             if (i < resposta.length) {
-                botDiv.textContent += resposta.slice(i, i + 1);
-                i += 1;
+                botDiv.textContent += resposta.slice(i, i + chunk);
+                botDiv.innerHTML = (typeof marked !== "undefined") ? marked.parse(botDiv.textContent) : botDiv.textContent;
+                i += chunk;
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
             } else {
                 clearInterval(intervaloId);
                 intervaloId = null;
                 botOcupado = false;
-                btnParar.style.display = 'none'
-                sendBtn.style.display = ''
+                if (btnParar) btnParar.style.display = 'none';
+                if (sendBtn) sendBtn.style.display = '';
+                if (typeof hljs !== "undefined") hljs.highlightAll();
             }
-        },1); // velocidade (ms) → ajuste (80 = bem rápido, 150 = mais lento)
+        }, speedMs);
 
     } catch (err) {
-        botDiv.textContent = "⚠️ Erro na IA.";
+        // Erro ou abort
+        if (err.name === 'AbortError') {
+            if (lastBotDiv) lastBotDiv.textContent = "✋ Resposta interrompida.";
+        } else {
+            console.error("Erro no sendMessage:", err);
+            if (lastBotDiv) lastBotDiv.textContent = "⚠️ Erro na IA.";
+        }
+
+        // limpa intervalos / flags
+        if (intervaloId) {
+            clearInterval(intervaloId);
+            intervaloId = null;
+        }
         botOcupado = false;
-        btnParar.style.display = 'none'
-        sendBtn.style.display = ''
+        if (btnParar) btnParar.style.display = 'none';
+        if (sendBtn) sendBtn.style.display = '';
+    } finally {
+        // garante que o controller nao fique pendente (não abortamos aqui, apenas limpamos referência)
+        currentAbortController = null;
     }
-}   
+}
 
 /* ---------- Interromper resposta ---------- */
 function interromperResposta() {
-    if (intervaloId) clearInterval(intervaloId);
-    if (controller) controller.abort();
-    btnParar.style.display = 'none'
-    sendBtn.style.display = ''
+    // limpa animação
+    if (intervaloId) {
+        clearInterval(intervaloId);
+        intervaloId = null;
+    }
+
+    // aborta fetch
+    if (currentAbortController) {
+        try {
+            currentAbortController.abort();
+        } catch (e) { /* ignore */ }
+        currentAbortController = null;
+    }
+
+    // atualiza último botDiv
+    if (lastBotDiv) lastBotDiv.textContent = "✋ Resposta interrompida.";
+
+    // atualiza flags e UI
     botOcupado = false;
-    botDiv.textContent = "⏹ Resposta interrompida.";
+    if (btnParar) btnParar.style.display = 'none';
+    if (sendBtn) sendBtn.style.display = '';
 }
 
 /* ---------- Expor funções ---------- */
@@ -430,5 +483,5 @@ window.techia = {
     register,
     login,
     interromperResposta,
-};  
-
+    deleteAllChats
+};
