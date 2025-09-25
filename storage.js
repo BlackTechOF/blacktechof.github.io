@@ -16,3 +16,18 @@ window.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("dark");
   }
 });
+
+const chatContainer = document.getElementById('chat-container');
+const botMsg = document.querySelector('.bot')
+const messages = document.querySelector('.message')
+
+function fontPrefs() {
+  const injetaFontSize = localStorage.getItem('fontSize');
+  if (!injetaFontSize) return;
+
+  document.querySelectorAll('.message.bot, .message.user').forEach(el => {
+    el.style.fontSize = injetaFontSize + 'px' || "16px";
+  });
+}
+
+window.onload = fontPrefs;
