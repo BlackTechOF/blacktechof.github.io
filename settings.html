@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preferencias Do Usuário</title>
+    <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+    <h2>Suas Preferencias</h2>
+    
+    <div class="fonte">
+        <div class="demoFonteDiv">
+    <h3 id="demoFonte"><span>Fonte</span></h3>
+    </div>
+    </div>
+    
+    <h3>Tamanho da fonte
+        <input type="range" id="inputFontSize" min="22" max="60" value="22">
+    </h3>
+
+    <h3>Fonte da letra
+        <select id="selectFont">
+            <option value="nunito">Nunito</option>
+            <option value="Arial">Arial</option>
+
+        </select>
+    </h3>
+
+    <script src="settings.js"></script>
+</body>
+</html>
