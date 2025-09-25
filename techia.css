@@ -293,6 +293,10 @@ width: 35px;
   padding: 0px 10px;
 }
 
+#userInput {
+  width: 100%;
+  resize: none;
+}
 
 input {
   flex: 1;
@@ -464,14 +468,14 @@ pre code {
 }
 
 .message.user {
+  word-break: break-all;
   display: flex;
   align-items: center;
   gap: 10px;
   align-self: flex-end; 
-  text-align: right;        /* texto acompanha o alinhamento */
+  text-align: center;        /* texto acompanha o alinhamento */
   margin-right: 3%;
 }
-
 
 .message.user svg {
   width: 20px;
