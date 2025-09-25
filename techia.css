@@ -277,7 +277,6 @@ width: 35px;
   background: white;
   color: black;
   border: transparent;
-  font-size: 14px;
   font-weight: bold;
   display: flex;
   flex-direction: column;
@@ -288,10 +287,9 @@ width: 35px;
 .user {
   background: transparent;
   color: black;
-  border: solid gray;
+  background: #edebeb;
   font-family: "Nunito";
   border-radius: 10px;
-  font-size: 16px;
   padding: 0px 10px;
 }
 
@@ -611,7 +609,6 @@ body.dark #darkModeToggle {
 
 .message.bot.bot_ativo strong {
   font-weight: bold;
-  font-size: 15px;
 }
 
 .message.bot.bot_ativo li {
