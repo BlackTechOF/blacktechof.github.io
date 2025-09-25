@@ -30,9 +30,15 @@ main {
   flex-direction: column;
   justify-content: center; /* centro vertical */
   align-items: center;     /* centro horizontal */
-  gap: 50px;
+  gap: 60px;
   background: none;
   z-index: 9999;
+}
+
+.loadingScreen h3 {
+  display: flex;
+  position: relative;
+  bottom: 7%;
 }
 
 .loadingScreen img {
@@ -56,10 +62,25 @@ main {
   display: flex;
 }
 
+.menu-left button {
+  width: 100%;
+  height: 50px;
+}
+
+.menu-left button svg {
+  width: 100%;
+  height: 100%;
+}
+
 .menu-center {
   flex: 1;
   display: flex;
   justify-content: center; /* 🔥 centraliza o botão logout */
+}
+
+.menu-center svg {
+  width: 100%;
+  height: 100%;
 }
 
 .menu-right {
@@ -69,6 +90,11 @@ main {
   gap: 7px;
 }
 
+.menu-right svg {
+  width: 100%;
+  height: 100%;
+}
+
 
 .menu h2 {
   display: flex;
@@ -76,12 +102,6 @@ main {
   gap: 8px; /* espaço entre logo e texto */
   font-size: 22px; /* ajuste do tamanho do texto */
   margin-left: 5%;
-}
-
-.menu h2 .icon {
-  display: block;
-  width: 40px; /* ajuste de tamanho do logo */
-  height: 40px;
 }
 
 .menu svg {
@@ -266,31 +286,30 @@ width: 35px;
 }
 
 .user {
-  background: rgb(238, 235, 235);
+  background: transparent;
   color: black;
-  border: solid rgb(238, 235, 235);
+  border: solid gray;
   font-family: "Nunito";
-  font-weight: bolder;
-  border-radius: 20px;
+  border-radius: 10px;
   font-size: 16px;
-  padding: 1px 10px;
+  padding: 0px 10px;
 }
 
 
 input {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: solid black 1px;
   border-radius: 8px;
   outline: none;
   font-size: 16px;
 }
 
 #inputs {
-  padding: 5px;
+  padding: 11px;
   background: black;
-  border: none;
-  width: 15%;
+  align-items: center;
+  width: 48px;
   height: 48px;
   border-radius: 30px;
   color: white;
@@ -299,6 +318,8 @@ input {
 
 #inputs svg {
   fill: white;
+  width: 100%;
+  height: 100%;
 }
 
 #parar {
@@ -321,9 +342,8 @@ input {
 }
 
 #inputs:hover {
-  background: white;
-  color: black;
-  border: solid black;
+  background: #333;
+  color: white;
 }
 
 /* Estilo do botão de interrupção */
@@ -337,6 +357,11 @@ input {
   color: white;
   cursor: pointer;
   text-align: center;
+}
+
+#auth-container path{
+  background: black;
+  border-radius: 90px;
 }
 
 #interrupt-btn:hover {
@@ -364,16 +389,21 @@ img {
   100% { opacity: 0.2; }
 }
 
-.bot_ativo span {
+.authText {
+  display: flex;
+  gap: 4px;
+}
+
+.authText span {
   display: inline-block;
   animation-name: moverDireita;
   animation-duration: 1s;
   animation-iteration-count: infinite;
 }
 
-.bot_ativo span:nth-child(1) { animation-delay: 0s; }
-.bot_ativo span:nth-child(2) { animation-delay: 0.1s; }
-.bot_ativo span:nth-child(3) { animation-delay: 0.3s; }
+.authText span:nth-child(1) { animation-delay: 0s; }
+.authText span:nth-child(2) { animation-delay: 0.3s; }
+.authText span:nth-child(3) { animation-delay: 0.6s; }
 
 /* Para garantir que o código fique dentro da caixa */
 pre code {
@@ -497,19 +527,24 @@ pre code {
   box-sizing: border-box;
 }
 
+.authDiv {
+  height: 100%;
+}
+
 #auth-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  justify-content: flex-end;
+  top: 16%;
   gap: 15px;
-  margin-top: 33.33%;
 }
 
 #auth-container input {
   border: solid black;
   font-size: 16px;
+  display: flex;
 }
 
 #auth-container svg {
@@ -531,13 +566,13 @@ pre code {
 }
 
 #toggleSidebar {
-  margin-left: auto; /* 🔥 empurra pro canto direito */
+  position: relative;
   cursor: pointer;
   border: transparent;
   background: transparent;
   color: black;
-  width: 40px;
-  height: 40px;
+  width: 55px;
+  height: 50px;
   border-radius: 50%;
 }
 
@@ -546,22 +581,26 @@ pre code {
   justify-content: center;
 }
 
-#settings svg {
+
+#darkModeToggleAuth {
+  background: white;
+  border: solid black;
+  cursor: pointer;
+  color: black;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  align-self: center;
+}
+
+#darkModeToggleAuth svg {
   width: 100%;
   height: 100%;
 }
 
-#darkModeToggle svg {
-  width: 20px;
-  height: 20px;
-  pointer-events: none; /* evita bug de clique no ícone */
-}
-
-
 body.dark #darkModeToggle {
   color: white;
 }
-
 
 .message.bot.bot_ativo {
   display: flex;
@@ -600,77 +639,8 @@ body.dark #darkModeToggle {
   color: black;
 }
 
-/* ===== DARK MODE ===== */
-body.dark {
-  background: #121212;
-  color: #f0f0f0;
-}
-
-body.dark .menu {
-  background: #333;
-  color: rgb(209, 203, 203);
-}
-
-body.dark .menu
-
-body.dark #darkModeToggle svg,
-body.dark #logoutBtn svg, 
-body.dark #settings svg,
-body.dark #toggleSideBar svg {
-  fill: #ffffff;
-}
-
-body.dark .chat-container {
-  background: #121212;
-}
-
-body.dark .messages {
-  background: #121212;
-}
-
-body.dark .message.bot {
-  background: #2a2a2a;
-  border-color: #555;
-  color: #fff;
-}
-
-body.dark .message.user {
-  background: #333;
-  border-color: #555;
-  color: #fff;
-}
-
-body.dark input {
-  background: #555;
-  color: black;
-  border: 2px solid #333;
-}
-
-body.dark button {
-  background: #555;
-  color: #fff;
-  border: solid #555;
-}
-
-body.dark button:hover {
-  background: #333;
-  color: #fff;
-}
-
-body.dark .divisoria {
-  height: 1px;
-  color: white;
-  background: white;
-}
-
-body.dark .input-area {
-  background: #333;
-  border: solid black;
-}
-
 .menu h2 .icon {
     display: block;
     width: 40px;
     height: 40px;
-    background: white;
 }
