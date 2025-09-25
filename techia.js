@@ -313,26 +313,6 @@ async function loadChats() {
     });
 }
 
-async function deleteAllChats() {
-    try {
-        const res = await fetch(`${API_URL}/chatdb/all`, { // <-- Rota alterada
-            method: "DELETE",
-            headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
-        });
-
-        if (res.ok) {
-            console.log("Todos os chats deletados com sucesso!");
-            await loadChats(); // Recarrega a lista de chats após a deleção.
-        } else {
-            console.error("Erro ao deletar chats:", res.statusText);
-            alert("Erro ao deletar chats.");
-        }
-    } catch (error) {
-        console.error("Erro ao deletar chats:", error);
-        alert("Erro ao deletar chats.");
-    }
-}
-
 async function loadHistory(chatId) {
     const res = await fetch(`${API_URL}/chatdb/${chatId}`, {
         headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
@@ -355,6 +335,7 @@ async function loadHistory(chatId) {
     });
     if (typeof hljs !== "undefined") hljs.highlightAll();
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    fontPrefs();
 }
 
 /* ---------- SALVAR MENSAGEM ---------- */
@@ -396,12 +377,14 @@ async function sendMessage() {
     userDiv.className = "message user";
     userDiv.innerHTML = (typeof marked !== "undefined") ? marked.parse(userMessage) : userMessage;
     messagesDiv.appendChild(userDiv);
+    fontPrefs();
 
     // placeholder do bot
     const botDiv = document.createElement("div");
     botDiv.className = "message bot bot_ativo";
     botDiv.textContent = 'Pensando...';
     messagesDiv.appendChild(botDiv);
+    fontPrefs();
     lastBotDiv = botDiv;
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
@@ -508,6 +491,27 @@ function interromperResposta() {
     botOcupado = false;
     if (btnParar) btnParar.style.display = 'none';
     if (sendBtn) sendBtn.style.display = '';
+}
+
+async function deleteAllChats() {
+    try {
+        const res = await fetch(`${API_URL}/chatdb/all`, { // <-- Rota alterada
+            method: "DELETE",
+            headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+        });
+
+        if (res.ok) {
+            console.log("Todos os chats deletados com sucesso!");
+            loadHistory();
+            await loadChats(); // Recarrega a lista de chats após a deleção.
+        } else {
+            console.error("Erro ao deletar chats:", res.statusText);
+            alert("Erro ao deletar chats.");
+        }
+    } catch (error) {
+        console.error("Erro ao deletar chats:", error);
+        alert("Erro ao deletar chats.");
+    }
 }
 
 /* ---------- Expor funções ---------- */
