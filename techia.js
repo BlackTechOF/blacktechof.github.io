@@ -14,7 +14,7 @@ const authContainer = document.getElementById("auth-container")
 function telaCarregamento() {
    loadScreen.style.display = ''
    main.style.filter = 'blur(4px)'
-   authContainer.style.filter = 'blur(3px)'
+   authContainer.style.filter = 'blur(3.8px)'
 }
 
 function esconderCarregamento() {
@@ -465,7 +465,7 @@ async function sendMessage() {
     } catch (err) {
         // Erro ou abort
         if (err.name === 'AbortError') {
-            if (lastBotDiv) lastBotDiv.textContent = "✋ Resposta interrompida.";
+            if (lastBotDiv) lastBotDiv.textContent = "Resposta interrompida.";
         } else {
             console.error("Erro no sendMessage:", err);
             if (lastBotDiv) lastBotDiv.textContent = "⚠️ Erro na IA.";
