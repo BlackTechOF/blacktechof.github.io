@@ -28,6 +28,13 @@ function fontPrefs() {
   document.querySelectorAll('.message.bot, .message.user').forEach(el => {
     el.style.fontSize = injetaFontSize + 'px' || "16px";
   });
+
+  const injetaFontFamily = localStorage.getItem('fontFamily');
+  if (!injetaFontFamily) return;
+
+   document.querySelectorAll('.message.bot, .message.user').forEach(el => {
+    el.style.fontFamily = injetaFontFamily ;
+  });
 }
 
 window.onload = fontPrefs;
