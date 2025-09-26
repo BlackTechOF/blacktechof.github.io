@@ -278,6 +278,7 @@ width: 35px;
   color: black;
   border: transparent;
   font-weight: bold;
+  font-size: 16px;
   display: flex;
   flex-direction: column;
   padding: 6px 10px;
@@ -290,6 +291,7 @@ width: 35px;
   background: #edebeb;
   font-family: "Nunito";
   border-radius: 10px;
+  font-size: 16px;
   padding: 0px 10px;
 }
 
@@ -448,7 +450,7 @@ pre code {
   z-index: 99;
 }
 
-.menu-right button {
+.menu-right button { /* Sobre o menu white de icones=img*/
   background: white;
   border: solid black;
   cursor: pointer;
