@@ -35,6 +35,13 @@ function fontPrefs() {
    document.querySelectorAll('.message.bot, .message.user').forEach(el => {
     el.style.fontFamily = injetaFontFamily ;
   });
+
+  const injetaFontColor = localStorage.getItem('fontColor');
+  if (!injetaFontColor) return;
+
+   document.querySelectorAll('.message.bot, .message.user').forEach(el => {
+    el.style.color = injetaFontColor ;
+  });
 }
 
 window.onload = fontPrefs;
