@@ -46,14 +46,22 @@ body.dark #new-chat-btn {
 }
 
 body.dark #fecharSideBar {
-  background: #e5e0e0;
+  background: none;
+  border: none;
 }
 
-body.dark #fecharSideBar svg {
-  fill: #333;
+
+body.dark #logoSideBar1,
+body.dark #logoSideBar2 {
+  fill: #FFFFFF;
 }
 
-body.dark .menu h2 svg g {
+body.dark #pathFecharSideBar1,
+body.dark #pathFecharSideBar2 {
+  fill: #FFFFFF;
+}
+
+body.dark .menu-left svg g {
   fill: #ffffff;
 }
 
@@ -62,8 +70,9 @@ body.dark #inputs {
   border: solid #e5e0e0;
 }
 
-body.dark .sidebar h2 svg g {
-  fill: #ffffff;
+body.dark #pathSideBar1,
+body.dark #pathSideBar2 {
+  fill: #FFFFFF;
 }
 
 body.dark .menu button {
