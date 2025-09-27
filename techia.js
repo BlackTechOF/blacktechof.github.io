@@ -201,13 +201,16 @@ window.addEventListener("DOMContentLoaded", async () => {
     const toggleBtn = document.getElementById("toggleSidebar");
     const fecharSideBar = document.getElementById("fecharSideBar");
     const main = document.querySelector(".principal");
+    const chatContainer = document.getElementById("chat-container");
     if (toggleBtn) toggleBtn.addEventListener("click", () => {
         sidebar.classList.toggle("active");
         main.classList.toggle("blurred", sidebar.classList.contains("active"));
+        main.style.filter = 'blur(4px)'
     });
     if (fecharSideBar) fecharSideBar.addEventListener("click", () => {
         sidebar.classList.remove("active");
         main.classList.remove("blurred");
+        main.style.filter = 'none'
     });
 
     const token = localStorage.getItem("token");
