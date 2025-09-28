@@ -204,7 +204,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     const chatContainer = document.getElementById("chat-container");
     if (toggleBtn) toggleBtn.addEventListener("click", () => {
         sidebar.classList.toggle("active");
-        main.classList.toggle("blurred", sidebar.classList.contains("active"));
         main.style.filter = 'blur(4px)'
     });
     if (fecharSideBar) fecharSideBar.addEventListener("click", () => {
@@ -490,3 +489,4 @@ window.techia = {
     interromperResposta,
     deleteAllChats
 };
+
