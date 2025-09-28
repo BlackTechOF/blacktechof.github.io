@@ -25,13 +25,16 @@
     <h3 id="demoFonte"><span>Fonte</span></h3>
     </div>
     </div>
-     <div class="optFont">
-    <h3>Tamanho da fonte
+     <div class="optionsFont">
+    <h3 id="fontSize">Tamanho da fonte
         <input type="range" id="inputFontSize" min="16" max="32">
+        <button id="resetaTamanhoFonte" onclick="document.getElementById('inputFontSize').value = 16">Resetar</button>
     </h3>
+    
 
     <h3>Fonte da letra
         <select id="selectFont">
+            <option value="">Padrão</option>
             <option value="Nunito" style="font-family: 'Nunito';">Nunito</option>
             <option value="Poppins" style="font-family: 'Poppins';">Poppins</option>
             <option value="Lucida Sans" style="font-family: 'Lucida Sans';">Lucida</option>
@@ -41,11 +44,25 @@
 
     <h3>Cor Da Fonte
     <select id="selectCorFont">
+        <option value="">Padrão</option>
         <option value="#FFFFFF">Branco</option>
         <option value="#000000">Preto</option>
         <option value="gray">Cinza</option>
         <option value="green">Verde Escuro</option>
     </select>
+    </h3>
+
+    <h3 id="fontStyle">Estilo Da Fonte
+        <span>Sombreado<input type="checkbox" id="inputCheckTextShadow"></span>
+
+        <span>Sombreamento<input type="range" id="shadowTextBorrado" min="0" max="4" value="0" disabled></span>
+
+<div class="inputsDefSombraLados">
+        <span>Direita<input type="range" id="shadowTextRight" disabled min="0" max="4" value="0"></span>
+        <span>Baixo<input type="range" id="shadowTextDown" disabled min="0" max="4" value="0"></span>
+        </div>
+
+            <input type="color" id="inputCorTextShadow" disabled>
     </h3>
     
     <button id="confirmFont">Salvar</button>
