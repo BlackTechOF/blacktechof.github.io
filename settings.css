@@ -8,6 +8,33 @@ text-align: center;
 height: 100%;
 }
 
+#fontSize {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.inputsDefSombraLados {
+    display: flex;
+}
+
+.optionsFont h3 {
+    border: solid gray 2px;
+    box-shadow: black 1px 1px 2px;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#fontStyle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
 #confirmFont {
     padding: 5px;
     background: rgb(0, 255, 8);
@@ -38,6 +65,7 @@ height: 100%;
 
 #demoFonte {
    width: 30%;
+   display: block;
 }
 
 #btnVoltar svg {
