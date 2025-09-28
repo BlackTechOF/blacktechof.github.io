@@ -203,9 +203,14 @@ window.addEventListener("DOMContentLoaded", async () => {
     const main = document.querySelector(".principal");
     const chatContainer = document.getElementById("chat-container");
     if (toggleBtn) toggleBtn.addEventListener("click", () => {
-        sidebar.classList.toggle("active");
-        main.style.filter = 'blur(4px)'
-    });
+    sidebar.classList.toggle("active");
+
+    if (sidebar.classList.contains("active")) {
+        main.style.filter = "blur(4px)";
+    } else {
+        main.style.filter = "none";
+    }
+});
     if (fecharSideBar) fecharSideBar.addEventListener("click", () => {
         sidebar.classList.remove("active");
         main.classList.remove("blurred");
@@ -489,4 +494,5 @@ window.techia = {
     interromperResposta,
     deleteAllChats
 };
+
 
