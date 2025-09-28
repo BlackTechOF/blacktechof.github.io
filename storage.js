@@ -1,47 +1,41 @@
-// Toggle Dark Mode
-document.getElementById("darkModeToggle").addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-
-  // opcional: salvar preferência no navegador
-  if (document.body.classList.contains("dark")) {
-    localStorage.setItem("theme", "dark");
-  } else {
-    localStorage.setItem("theme", "light");
-  }
-});
-
-// aplicar preferência salva
-window.addEventListener("DOMContentLoaded", () => {
-  if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark");
-  }
-});
-
-const chatContainer = document.getElementById('chat-container');
-const botMsg = document.querySelector('.bot')
-const messages = document.querySelector('.message')
-
 function fontPrefs() {
   const injetaFontSize = localStorage.getItem('fontSize');
-  if (!injetaFontSize) return;
-
-  document.querySelectorAll('.message.bot, .message.user').forEach(el => {
-    el.style.fontSize = injetaFontSize + 'px' || "16px";
-  });
+  if (injetaFontSize) {
+    document.querySelectorAll('.message.bot, .message.user').forEach(el => {
+      el.style.fontSize = injetaFontSize + 'px';
+    });
+  }
 
   const injetaFontFamily = localStorage.getItem('fontFamily');
-  if (!injetaFontFamily) return;
-
-   document.querySelectorAll('.message.bot, .message.user').forEach(el => {
-    el.style.fontFamily = injetaFontFamily ;
-  });
+  if (injetaFontFamily) {
+    document.querySelectorAll('.message.bot, .message.user').forEach(el => {
+      el.style.fontFamily = injetaFontFamily;
+    });
+  }
 
   const injetaFontColor = localStorage.getItem('fontColor');
-  if (!injetaFontColor) return;
+  if (injetaFontColor) {
+    document.querySelectorAll('.message.bot, .message.user').forEach(el => {
+      el.style.color = injetaFontColor;
+    });
+  }
 
-   document.querySelectorAll('.message.bot, .message.user').forEach(el => {
-    el.style.color = injetaFontColor ;
-  });
+  // sombra
+  const valorSombraText = localStorage.getItem('sombraText') || 0;
+  const valorSombraTextRight = localStorage.getItem('sombraTextDireita') || 0;
+  const valorSombraTextDown = localStorage.getItem('sombraTextBaixo') || 0;
+  const valorSombraTextColor = localStorage.getItem('sombraTextColor') || "#000000";
+
+  const sombraChecked = localStorage.getItem('inputCheck');
+  if (sombraChecked === 'true') {
+    document.querySelectorAll('.message.bot, .message.user').forEach(el => {
+      el.style.textShadow = `${valorSombraTextColor} ${valorSombraTextRight}px ${valorSombraTextDown}px ${valorSombraText}px`;
+    });
+  } else {
+    document.querySelectorAll('.message.bot, .message.user').forEach(el => {
+      el.style.textShadow = `none`;
+    });
+  }
 }
 
-window.onload = fontPrefs;
+window.addEventListener("DOMContentLoaded", fontPrefs);
