@@ -23,6 +23,8 @@ const valorSombraTextRight = localStorage.getItem('sombraTextDireita');
 const valorSombraTextDown = localStorage.getItem('sombraTextBaixo');
 const valorSombraTextColor = localStorage.getItem('sombraTextColor');
 const getCheckShadowText = localStorage.getItem('inputCheck');
+const valorBackgroundText = localStorage.getItem('backgroundText')
+const valorBorderText = localStorage.getItem('borderText')
 
 if (valorFontSize) {
     inputFontSize.value = valorFontSize;
@@ -47,6 +49,18 @@ if (checkTextShadow.checked) {
     inputCorTextShadow.disabled = false;
     inputsShadowText.forEach(input => input.disabled = false);
 
+if (valorBackgroundText === 'true') {
+   backgroundText.checked = true 
+} else {
+    backgroundText.checked = false
+}
+
+if (valorBorderText === 'true') {
+   borderText.checked = true 
+} else {
+    borderText.checked = false
+}
+
     if (valorSombraTextColor) inputCorTextShadow.value = valorSombraTextColor;
     if (valorSombraText) shadowTextBorrado.value = valorSombraText;
     if (valorSombraTextRight) shadowTextDireita.value = valorSombraTextRight;
@@ -62,20 +76,16 @@ if (checkTextShadow.checked) {
 backgroundText.addEventListener('input', function(){
     if (backgroundText.checked === true) {
       userText.style.background = '#edebeb'
-      localStorage.setItem('backgroundText', 'true')
     } else {
         userText.style.background = 'none'
-      localStorage.setItem('backgroundText', 'false')
     }
 }); 
 
 borderText.addEventListener('input', function(){
     if (borderText.checked === true) {
         userText.style.border = 'solid black'
-        localStorage.setItem('borderText', 'true')
     } else {
         userText.style.border = 'none'
-        localStorage.setItem('borderText', 'false')
     }
 })
 
@@ -118,7 +128,7 @@ inputFontSize.addEventListener('input', function () {
 });
 
 btnConfirmFont.addEventListener('click', function () {
-    console.log('Alterações Salvas');
+    alert('Alterações Salvas');
     localStorage.setItem('fontSize', inputFontSize.value);
     localStorage.setItem('fontFamily', selectFont.value);
     localStorage.setItem('fontColor', selectCorFont.value);
@@ -126,4 +136,16 @@ btnConfirmFont.addEventListener('click', function () {
     localStorage.setItem('sombraTextDireita', shadowTextDireita.value);
     localStorage.setItem('sombraTextBaixo', shadowTextBaixo.value);
     localStorage.setItem('sombraTextColor', inputCorTextShadow.value);
+
+    if (borderText.checked === true) {
+        localStorage.setItem('borderText', 'true')
+    } else {
+        localStorage.setItem('borderText', 'false')
+    }
+
+    if (backgroundText.checked === true) {
+       localStorage.setItem('backgroundText', 'true')
+    } else {
+         localStorage.setItem('backgroundText', 'false')
+    }
 });
