@@ -17,9 +17,13 @@ function resetFontColor() {
 }
 
 function resetFontStyles() {
+    const inputCorTextShadow = document.getElementById("inputCorTextShadow");
     const inputsShadowText = document.querySelectorAll('#shadowTextRight, #shadowTextDown, #shadowTextBorrado')
     const inputCheckTextShadow = document.getElementById('inputCheckTextShadow')
     inputCheckTextShadow.checked = false;
     inputsShadowText.forEach(input => input.disabled = true);
     inputsShadowText.forEach(input => input.value = 0);
+    inputCorTextShadow.disabled = true
+    inputCorTextShadow.classList.add('inputDisabled')
+    demoFonte.style.textShadow = 'none'
 }
