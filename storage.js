@@ -38,6 +38,31 @@ function fontPrefs() {
   }
 }
 
+function messageStylesPrefs() {
+  const valorBorderText = localStorage.getItem('borderText');
+const valorBackgroundText = localStorage.getItem('backgroundText');
+
+  if (valorBorderText === 'true') {
+    document.querySelectorAll('.message.bot, .message.user').forEach(el => {
+      el.style.border = 'solid black';
+    });
+  } else {
+    document.querySelectorAll('.message.bot, .message.user').forEach(el => {
+      el.style.border = 'none';
+    });
+  }
+
+  if (valorBackgroundText === 'true') {
+     document.querySelectorAll('.message.bot, .message.user').forEach(el => {
+      el.style.background = '#edebeb';
+    })
+  } else {
+    document.querySelectorAll('.message.bot, .message.user').forEach(el => {
+      el.style.background = 'none';
+  })
+}
+}
+
 const setarTema = localStorage.getItem('theme');
 
 if (setarTema === 'dark') {
@@ -46,4 +71,7 @@ if (setarTema === 'dark') {
   document.body.classList.remove('dark')
 }
 
+window.addEventListener("DOMContentLoaded", messageStylesPrefs);
 window.addEventListener("DOMContentLoaded", fontPrefs);
+
+
