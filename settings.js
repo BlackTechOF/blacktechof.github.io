@@ -11,7 +11,6 @@ const shadowTextBaixo = document.getElementById('shadowTextDown');
 
 const inputsShadowText = document.querySelectorAll('#shadowTextRight, #shadowTextDown, #shadowTextBorrado');
 
-// 🔹 Carregar valores do localStorage
 const valorFontSize = localStorage.getItem('fontSize');
 const valorFontFamily = localStorage.getItem('fontFamily');
 const valorFontColor = localStorage.getItem('fontColor');
@@ -21,7 +20,6 @@ const valorSombraTextDown = localStorage.getItem('sombraTextBaixo');
 const valorSombraTextColor = localStorage.getItem('sombraTextColor');
 const getCheckShadowText = localStorage.getItem('inputCheck');
 
-// 🔹 Restaurar valores na interface
 if (valorFontSize) {
     inputFontSize.value = valorFontSize;
     demoFonte.style.fontSize = valorFontSize + 'px';
@@ -45,7 +43,6 @@ if (checkTextShadow.checked) {
     inputCorTextShadow.disabled = false;
     inputsShadowText.forEach(input => input.disabled = false);
 
-    // aplica valores salvos da sombra
     if (valorSombraTextColor) inputCorTextShadow.value = valorSombraTextColor;
     if (valorSombraText) shadowTextBorrado.value = valorSombraText;
     if (valorSombraTextRight) shadowTextDireita.value = valorSombraTextRight;
@@ -58,7 +55,6 @@ if (checkTextShadow.checked) {
     demoFonte.style.textShadow = 'none';
 }
 
-// 🔹 Eventos
 checkTextShadow.addEventListener('input', function () {
     if (checkTextShadow.checked) {
         localStorage.setItem('inputCheck', 'true');

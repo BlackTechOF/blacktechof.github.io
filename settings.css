@@ -29,7 +29,6 @@ height: 100%;
 #fontStyle {
     display: flex;
     align-items: center;
-    justify-content: center;
     flex-direction: column;
     gap: 20px;
 }
@@ -53,6 +52,60 @@ height: 100%;
     text-align: center;
     width: 100%;
     height: 15%;
+}
+
+h3 svg {
+    width: 100%;
+    height: 100%;
+}
+
+h3 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+h3 button {
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    background: transparent;
+    border: solid black;
+    border-radius: 30px;
+    align-self: self-end;
+}
+
+select {
+    border: solid gray;
+    box-shadow: black 1px 1px 2px;
+    border-radius: 5px;
+    padding: 3px;
+    font-family: "Lucida Sans";
+    font-weight: bold;
+}
+
+select option {
+   background: none;
+   
+}
+
+.testecor {
+  background: #e5e0e0;
+}
+
+input[type='color'] {
+    border: solid gray 2px;
+    padding: 0;
+    width: 80%;
+    background: transparent;
+    border-radius: 5px;
+}
+
+#divCorTextShadow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #demoFonteDiv {

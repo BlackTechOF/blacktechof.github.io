@@ -38,4 +38,12 @@ function fontPrefs() {
   }
 }
 
+const setarTema = localStorage.getItem('theme');
+
+if (setarTema === 'dark') {
+  document.body.classList.add('dark');
+} else {
+  document.body.classList.remove('dark')
+}
+
 window.addEventListener("DOMContentLoaded", fontPrefs);
