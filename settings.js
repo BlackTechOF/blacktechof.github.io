@@ -62,16 +62,20 @@ if (checkTextShadow.checked) {
 backgroundText.addEventListener('input', function(){
     if (backgroundText.checked === true) {
       userText.style.background = '#edebeb'
+      localStorage.setItem('backgroundText', 'true')
     } else {
         userText.style.background = 'none'
+      localStorage.setItem('backgroundText', 'false')
     }
-});
+}); 
 
 borderText.addEventListener('input', function(){
     if (borderText.checked === true) {
         userText.style.border = 'solid black'
+        localStorage.setItem('borderText', 'true')
     } else {
         userText.style.border = 'none'
+        localStorage.setItem('borderText', 'false')
     }
 })
 
@@ -114,6 +118,7 @@ inputFontSize.addEventListener('input', function () {
 });
 
 btnConfirmFont.addEventListener('click', function () {
+    console.log('Alterações Salvas');
     localStorage.setItem('fontSize', inputFontSize.value);
     localStorage.setItem('fontFamily', selectFont.value);
     localStorage.setItem('fontColor', selectCorFont.value);
