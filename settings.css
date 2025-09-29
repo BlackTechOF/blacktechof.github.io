@@ -97,9 +97,14 @@ select option {
 input[type='color'] {
     border: solid gray 2px;
     padding: 0;
+    background: none;
     width: 80%;
-    background: transparent;
     border-radius: 5px;
+}
+
+input[type="color"].inputDisabled {
+  background-color: #e5e0e0;
+  border:solid transparent;
 }
 
 #divCorTextShadow {
@@ -132,3 +137,46 @@ input[type='color'] {
     width: 50px;
     height: 50px;
 }
+
+.background {
+    border: solid black;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    justify-self: center;
+    width: 80%;
+}
+
+.background #user {
+    background: #edebeb;
+    padding: 6px 20px;
+    align-self: self-end;
+    border-radius: 10px;
+    margin-right: 5%;
+    border: none;
+}
+
+.background #bot {
+    align-self: self-start;
+    padding: 6px 20px;
+    margin-left: 5%;
+}
+
+.background .inputsFundoBackground {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.background span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#divisoria {
+    width: 100%;
+    border: solid black 1px;
+}
+

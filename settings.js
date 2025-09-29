@@ -8,6 +8,10 @@ const inputCorTextShadow = document.getElementById("inputCorTextShadow");
 const shadowTextBorrado = document.getElementById('shadowTextBorrado');
 const shadowTextDireita = document.getElementById('shadowTextRight');
 const shadowTextBaixo = document.getElementById('shadowTextDown');
+const borderText = document.getElementById('borderText');
+const backgroundText = document.getElementById('backgroundText');
+const userText = document.getElementById('user')
+const botText = document.getElementById('bot')
 
 const inputsShadowText = document.querySelectorAll('#shadowTextRight, #shadowTextDown, #shadowTextBorrado');
 
@@ -55,16 +59,34 @@ if (checkTextShadow.checked) {
     demoFonte.style.textShadow = 'none';
 }
 
+backgroundText.addEventListener('input', function(){
+    if (backgroundText.checked === true) {
+      userText.style.background = '#edebeb'
+    } else {
+        userText.style.background = 'none'
+    }
+});
+
+borderText.addEventListener('input', function(){
+    if (borderText.checked === true) {
+        userText.style.border = 'solid black'
+    } else {
+        userText.style.border = 'none'
+    }
+})
+
 checkTextShadow.addEventListener('input', function () {
     if (checkTextShadow.checked) {
         localStorage.setItem('inputCheck', 'true');
         inputCorTextShadow.disabled = false;
         inputsShadowText.forEach(input => input.disabled = false);
+        inputCorTextShadow.classList.remove('inputDisabled')
         demoFonte.style.textShadow = `${inputCorTextShadow.value} 1px 2px 1px`;
     } else {
         localStorage.setItem('inputCheck', 'false');
         inputCorTextShadow.disabled = true;
         inputsShadowText.forEach(input => input.disabled = true);
+        inputCorTextShadow.classList.add('inputDisabled')
         demoFonte.style.textShadow = 'none';
     }
 });
