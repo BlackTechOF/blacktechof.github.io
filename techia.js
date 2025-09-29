@@ -344,6 +344,7 @@ async function loadHistory(chatId) {
     if (typeof hljs !== "undefined") hljs.highlightAll();
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
     fontPrefs()
+    messageStylesPrefs()
 }
 
 /* ---------- SALVAR MENSAGEM ---------- */
@@ -382,6 +383,7 @@ async function sendMessage() {
     userDiv.textContent = userMessage;
     messagesDiv.appendChild(userDiv);
     fontPrefs()
+    messageStylesPrefs()
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
     const botDiv = document.createElement("div");
@@ -389,6 +391,7 @@ async function sendMessage() {
     botDiv.textContent = 'Pensando...';
     messagesDiv.appendChild(botDiv);
     fontPrefs()
+    messageStylesPrefs()
     lastBotDiv = botDiv;
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
