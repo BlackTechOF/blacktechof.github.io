@@ -262,6 +262,9 @@ async function ensureChatExists() {
 }
 
 async function newChat() {
+    if (botOcupado === true) {
+       interromperResposta()
+    }
     const res = await fetch(`${API_URL}/chatdb/new`, {
         method: "POST",
         headers: {
@@ -369,6 +372,7 @@ async function saveMessage(role, content) {
 /* ---------- ENVIAR MENSAGEM ---------- */
 async function sendMessage() {
     if (botOcupado || !currentChatId) return;
+    h2DoChat.style.display = 'none'
     const input = document.getElementById("userInput");
     const messagesDiv = document.getElementById("messages");
     const token = localStorage.getItem("token");
@@ -458,7 +462,7 @@ function interromperResposta() {
         try { currentAbortController.abort(); } catch (e) {}
         currentAbortController = null;
     }
-    if (lastBotDiv) lastBotDiv.textContent = "✋ Resposta interrompida.";
+    if (lastBotDiv) lastBotDiv.textContent = "Resposta interrompida.";
     botOcupado = false;
     if (btnParar) btnParar.style.display = 'none';
     if (sendBtn) sendBtn.style.display = '';
@@ -466,6 +470,7 @@ function interromperResposta() {
 
 /* ---------- Deletar todos os chats ---------- */
 async function deleteAllChats() {
+    if (!confirm("Excluir todos os chats?")) return;
     try {
         const res = await fetch(`${API_URL}/chatdb/all`, {
             method: "DELETE",
