@@ -263,16 +263,16 @@ width: 35px;
 
 #chat-list button {
   align-self: center;
-  border: transparent;
   color: white;
   width: 50px;
   border-radius: 20px;
-  border-radius: 0;
+  padding: 2px;
   background: transparent;
 }
 
 #chat-list button:hover {
   border-radius: 20px;
+  transform: scale(1.1);
 }
 
 .bot {
@@ -493,7 +493,6 @@ pre code {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  margin-left: 3%;
   max-width: 85%;   /* limita largura */
   word-wrap: break-word;
   white-space: normal;
@@ -645,4 +644,3 @@ body.dark #darkModeToggle {
     width: 40px;
     height: 40px;
 }
-
