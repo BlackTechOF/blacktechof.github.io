@@ -148,12 +148,21 @@ btnConfirmFont.addEventListener('click', function () {
     } else {
          localStorage.setItem('backgroundText', 'false')
     }
+    btnConfirmFont.classList.add('animationSave')
+    btnConfirmFont.textContent = 'Alterações Salvas'
 
-    
+    setTimeout(function() {
+        btnConfirmFont.classList.remove('animationSave');
+        btnConfirmFont.textContent =  'Salvar'
+    }, 1800);
 });
 
 btnVoltar.addEventListener('click', function(){
+    if (window.history.length === 1) {
     window.history.back()
+    } else {
+        window.location.href = 'techia.html'
+    }
 })
 
 const getDarkMode = localStorage.getItem('theme') 
