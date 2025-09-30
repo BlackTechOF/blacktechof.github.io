@@ -493,6 +493,7 @@ pre code {
   display: flex;
   align-items: flex-start;
   gap: 8px;
+  margin-left: 3%;
   max-width: 85%;   /* limita largura */
   word-wrap: break-word;
   white-space: normal;
@@ -644,3 +645,4 @@ body.dark #darkModeToggle {
     width: 40px;
     height: 40px;
 }
+
