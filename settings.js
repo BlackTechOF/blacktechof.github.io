@@ -1,5 +1,6 @@
 const inputFontSize = document.getElementById('inputFontSize');
 const demoFonte = document.getElementById('demoFonte');
+const btnVoltar = document.getElementById('btnVoltar')
 const btnConfirmFont = document.getElementById('confirmFont');
 const selectFont = document.getElementById('selectFont');
 const selectCorFont = document.getElementById('selectCorFont');
@@ -128,7 +129,6 @@ inputFontSize.addEventListener('input', function () {
 });
 
 btnConfirmFont.addEventListener('click', function () {
-    alert('Alterações Salvas');
     localStorage.setItem('fontSize', inputFontSize.value);
     localStorage.setItem('fontFamily', selectFont.value);
     localStorage.setItem('fontColor', selectCorFont.value);
@@ -148,4 +148,16 @@ btnConfirmFont.addEventListener('click', function () {
     } else {
          localStorage.setItem('backgroundText', 'false')
     }
+
+    
 });
+
+btnVoltar.addEventListener('click', function(){
+    window.history.back()
+})
+
+const getDarkMode = localStorage.getItem('theme') 
+
+if (getDarkMode === 'dark') {
+    document.body.classList.toggle('dark')
+}

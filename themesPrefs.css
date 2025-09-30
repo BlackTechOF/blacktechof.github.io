@@ -1,0 +1,20 @@
+body.dark {
+    background: #333;
+    color: white;
+}
+
+body.dark h2 {
+    background: #333;
+}
+
+body.dark .messagesStyle {
+    background: #333;
+}
+
+body.dark .btnConfirmDiv {
+    background: #333;
+}
+
+body.dark .messagesStyle #user{
+    color: black;
+}
