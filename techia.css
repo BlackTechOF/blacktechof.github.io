@@ -350,6 +350,10 @@ input {
   color: white;
 }
 
+#btnHome {
+    padding: 2px;
+}
+
 /* Estilo do botão de interrupção */
 #interrupt-btn {
   padding: 5px;
