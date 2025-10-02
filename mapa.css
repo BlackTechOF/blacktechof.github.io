@@ -1,3 +1,185 @@
+
+body, html {
+  height: 100%;
+    margin: 0;
+    padding: 0;
+      }
+  
+      .logo {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        position: fixed;
+        background: green;
+        z-index: 100;
+      }
+      
+      .logo img {
+        width: 120px;
+        height: auto;
+      }
+      
+      .logo nav {
+        display: flex;
+        gap: 150px;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+      }
+      
+      .logo nav a img {
+        width: 40px;
+        height: auto;
+        transition: transform 0.3s ease;
+        border: solid white;
+        border-radius: 30px;
+        padding: 10px;
+      }
+      
+      .logo nav a img:hover {
+        transform: scale(1.2);
+      }
+  
+   #map { 
+    height: 100%; 
+    width: 100%; 
+    z-index: 98;
+  }
+  
+  #divPesquisa {
+    position: fixed;
+    margin-top: -28%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 0.5%;
+     gap: 10px;
+    z-index: 100;
+  }
+  
+  #divPesquisa svg{
+   margin-top: 20%;
+  }
+  
+  #abrirSideBar {
+   height: 40px;
+    width: 40px;
+    border-radius: 30px;
+    background: white;
+    border: solid black;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #ativarInput {
+    height: 40px;
+    width: 40px;
+    border-radius: 30px;
+    background: white;
+    border: solid black;
+  }
+  
+  #ativarInput img {
+    width: 100%;
+  }
+  
+  #inputEcoPonto {
+    border: solid black;
+    border-radius: 30px;
+    height: 30px;
+    margin-top: 2%;
+    display: none;
+    font-size: 16px;
+  }
+  
+  @keyframes ativaInput {
+     from {
+      width: 0%;
+      opacity: 0.5;
+    }
+    to {
+      width: 70%;
+      opacity: 1;
+    }
+  }
+  
+  @keyframes desativaInput {
+  from {
+      width: 70%;
+      opacity: 1;
+    }
+    to {
+      width: 0%;
+      opacity: 0.5;
+    }
+  }
+  
+  .inputEcoPontoAtiva {
+    animation: ativaInput 0.8s ease-in-out forwards;
+  }
+  
+  .inputEcoPontoDesativa {
+    animation: desativaInput 0.8s ease-in-out forwards;
+  }
+  
+  .divisoria {
+    height: 80px;
+  }
+  
+  .leaflet-left {
+    margin-top: 10%;
+    position: fixed;
+    height: 20%;
+  }
+  
+  #sidebar {
+    position: absolute;
+    width: 20%;
+    margin-top: -35.5%;
+    margin-left: 78%;
+    max-height: 73%;
+    overflow-y: auto;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.2);
+    z-index: 100;
+  }
+  
+  #sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  #sidebar li {
+    cursor: pointer;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+  }
+  #sidebar li:hover {
+    background: #f0f0f0;
+  }
+  
+  #fecharSidebar {
+    background: transparent;
+    border: none;
+    float: right;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  
+  #voltarBtn {
+    margin-top: 10px;
+    display: none;
+  }
+  #tituloEcopontos, #listaEcopontos {
+    display: none;
+  }
+
+
 @media screen and (max-width: 768px) {
 
     body, html {
