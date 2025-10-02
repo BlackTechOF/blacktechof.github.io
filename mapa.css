@@ -218,7 +218,7 @@ height: 100%;
       margin-left: 5%;
     }
     
-    .logo nav img {
+    .logo nav a img {
       width: 49%;
     }
     
@@ -231,7 +231,7 @@ height: 100%;
 
 #divPesquisa {
   position: fixed;
-  margin-top: -20%;
+  margin-top: -40%;
   display: flex;
   margin-left: 2%;
    gap: 10px;
@@ -308,7 +308,7 @@ from {
 
 
 .leaflet-left {
-  margin-top: 19%;
+  margin-top: 30%;
   position: fixed;
 }
 
@@ -345,7 +345,7 @@ from {
 
 #sidebar {
   position: absolute;
-  top: 80px;
+  top: 240px;
   right: 10px;
   width: 168px;
   max-height: 80%;
