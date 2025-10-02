@@ -2,7 +2,6 @@
 body, html {
   height: 100%;
     margin: 0;
-    padding: 0;
       }
   
       .logo {
@@ -11,7 +10,7 @@ body, html {
         justify-content: space-between;
         width: 100%;
         position: fixed;
-        background: green;
+        background: linear-gradient(to right, rgb(4, 137, 4), rgb(80, 213, 76));
         z-index: 100;
       }
       
@@ -49,10 +48,9 @@ body, html {
   
   #divPesquisa {
     position: fixed;
-    margin-top: -28%;
+    margin-top: -35%;
     display: flex;
-    flex-direction: column;
-    margin-left: 0.5%;
+    margin-left: 9%;
      gap: 10px;
     z-index: 100;
   }
@@ -62,8 +60,8 @@ body, html {
   }
   
   #abrirSideBar {
-   height: 40px;
-    width: 40px;
+   height: 45px;
+    width: 45px;
     border-radius: 30px;
     background: white;
     border: solid black;
@@ -75,8 +73,8 @@ body, html {
   }
   
   #ativarInput {
-    height: 40px;
-    width: 40px;
+    height: 45px;
+    width: 45px;
     border-radius: 30px;
     background: white;
     border: solid black;
@@ -133,6 +131,57 @@ body, html {
     margin-top: 10%;
     position: fixed;
     height: 20%;
+  }
+
+  .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .leaflet-touch .leaflet-bar {
+    border: transparent;
+  }
+  
+  .leaflet-control-zoom-out,
+  .leaflet-control-zoom-in {
+    border: solid black;
+    align-items: center;
+  }
+
+  .leaflet-control-zoom-out span {
+    content: url('imagens/logo/minus-lens.svg');
+    align-content: center;
+    padding: 0;
+    width: 70%;
+    height: 85%;
+  }
+
+  .leaflet-control-zoom-in span {
+    content: url('imagens/logo/plus-lens.svg');
+    align-content: center;
+    padding: 0;
+    width: 70%;
+    height: 85%;
+  }
+  
+  .leaflet-bar a:last-child,
+  .leaflet-bar a:first-child {
+    border-bottom: solid black;
+    height: 40px;
+    width: 40px;
+    border-radius: 190px;
+  }
+  
+  .leaflet-touch .leaflet-bar a:first-child,
+  .leaflet-touch .leaflet-bar a:last-child {
+    border-top-left-radius: 190px;
+    border-top-right-radius: 190px;
+    border-bottom-left-radius: 190px;
+    border-bottom-right-radius: 190px;
+  }
+
+  .sidebarActive {
+    display: none;
   }
   
   #sidebar {
@@ -231,7 +280,6 @@ height: 100%;
 
 #divPesquisa {
   position: fixed;
-  margin-top: -40%;
   display: flex;
   margin-left: 2%;
    gap: 10px;
@@ -243,8 +291,8 @@ height: 100%;
 }
 
 #abrirSideBar {
- height: 40px;
-  width: 40px;
+ height: 50px;
+  width: 50px;
   border-radius: 30px;
   background: white;
   border: solid black;
@@ -256,8 +304,8 @@ height: 100%;
 }
 
 #ativarInput {
-  height: 40px;
-  width: 40px;
+  height: 50px;
+  width: 50px;
   border-radius: 30px;
   background: white;
   border: solid black;

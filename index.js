@@ -105,7 +105,11 @@ if ("geolocation" in navigator) {
           });
 
           abrirBtn.addEventListener('click', function(){
+            if (sidebar.style.display === 'none') {
             sidebar.style.display = ''
+            } else {
+              sidebar.style.display = 'none'
+            }
           })
 
           mostrarBairros();
