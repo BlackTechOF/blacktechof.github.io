@@ -4,7 +4,7 @@ body, html {
     margin: 0;
       }
   
-      .logo {
+      .menu {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -12,14 +12,20 @@ body, html {
         position: fixed;
         background: linear-gradient(to right, rgb(4, 137, 4), rgb(80, 213, 76));
         z-index: 100;
+        height: 20%;
       }
       
-      .logo img {
+      .menu img {
         width: 120px;
         height: auto;
       }
+
+      main {
+        height: 100%;
+        align-items: center;
+      }
       
-      .logo nav {
+      .menu nav {
         display: flex;
         gap: 150px;
         justify-content: center;
@@ -27,7 +33,7 @@ body, html {
         flex: 1;
       }
       
-      .logo nav a img {
+      .menu nav a img {
         width: 40px;
         height: auto;
         transition: transform 0.3s ease;
@@ -36,7 +42,7 @@ body, html {
         padding: 10px;
       }
       
-      .logo nav a img:hover {
+      .menu nav a img:hover {
         transform: scale(1.2);
       }
   
@@ -47,16 +53,35 @@ body, html {
   }
   
   #divPesquisa {
-    position: fixed;
-    margin-top: -35%;
-    display: flex;
-    margin-left: 9%;
-     gap: 10px;
-    z-index: 100;
-  }
+  position: fixed;
+  top: 25%;       /* distância do topo para não ficar atrás do header */       /* distância da borda esquerda */
+  display: flex;
+  align-items: center;
+  background:white;
+  border: solid green;
+  gap: 10px;
+  border-radius: 8px;
+  left: 2%;
+  z-index: 200;     /* fica acima do mapa */
+  padding: 5px;
+  width: auto;
+}
+
+.zoomDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.zoomDiv button {
+  border: solid black;
+  width: 30px;
+  height: 30px;
+}
   
   #divPesquisa svg{
-   margin-top: 20%;
+   width: 100%;
+   height: 100%;
   }
   
   #abrirSideBar {
@@ -88,7 +113,6 @@ body, html {
     border: solid black;
     border-radius: 30px;
     height: 30px;
-    margin-top: 2%;
     display: none;
     font-size: 16px;
   }
@@ -126,77 +150,27 @@ body, html {
   .divisoria {
     height: 80px;
   }
-  
-  .leaflet-left {
-    margin-top: 10%;
-    position: fixed;
-    height: 20%;
-  }
-
-  .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .leaflet-touch .leaflet-bar {
-    border: transparent;
-  }
-  
-  .leaflet-control-zoom-out,
-  .leaflet-control-zoom-in {
-    border: solid black;
-    align-items: center;
-  }
-
-  .leaflet-control-zoom-out span {
-    content: url('imagens/logo/minus-lens.svg');
-    align-content: center;
-    padding: 0;
-    width: 70%;
-    height: 85%;
-  }
-
-  .leaflet-control-zoom-in span {
-    content: url('imagens/logo/plus-lens.svg');
-    align-content: center;
-    padding: 0;
-    width: 70%;
-    height: 85%;
-  }
-  
-  .leaflet-bar a:last-child,
-  .leaflet-bar a:first-child {
-    border-bottom: solid black;
-    height: 40px;
-    width: 40px;
-    border-radius: 190px;
-  }
-  
-  .leaflet-touch .leaflet-bar a:first-child,
-  .leaflet-touch .leaflet-bar a:last-child {
-    border-top-left-radius: 190px;
-    border-top-right-radius: 190px;
-    border-bottom-left-radius: 190px;
-    border-bottom-right-radius: 190px;
-  }
 
   .sidebarActive {
     display: none;
   }
   
   #sidebar {
-    position: absolute;
-    width: 20%;
-    margin-top: -35.5%;
-    margin-left: 78%;
-    max-height: 73%;
-    overflow-y: auto;
-    background: white;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.2);
-    z-index: 100;
-  }
+  width: 90%;          /* ocupa toda a largura da divPesquisa */
+  max-height: 300px;    /* limite de altura com scroll */
+  overflow-y: auto;
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.2);
+  z-index: 100;
+}
+
+.flexColumnSidebar {
+  display: flex;
+  flex-direction: column;
+}
+
   
   #sidebar ul {
     list-style: none;
@@ -221,7 +195,6 @@ body, html {
   }
   
   #voltarBtn {
-    margin-top: 10px;
     display: none;
   }
   #tituloEcopontos, #listaEcopontos {

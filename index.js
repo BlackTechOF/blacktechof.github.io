@@ -7,7 +7,11 @@ if ("geolocation" in navigator) {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
 
-      map = L.map('map').setView([latitude, longitude], 11.5);
+      map = L.map('map', {
+  center: [latitude, longitude],
+  zoom: 11.5,
+  zoomControl: false
+});
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
@@ -136,3 +140,12 @@ if ("geolocation" in navigator) {
 } else {
   alert("Geolocalização não é suportada no seu navegador.");
 }
+
+document.getElementById('zoomInBtn').addEventListener('click', (e) => {
+  e.preventDefault();
+  map.zoomIn();
+});
+document.getElementById('zoomOutBtn').addEventListener('click', (e) => {
+  e.preventDefault();
+  map.zoomOut();
+});
