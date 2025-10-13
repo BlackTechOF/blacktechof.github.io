@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preferencias Do Usuário</title>
+    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="themesPrefs.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&family=Story+Script&family=Kanit&family=Poppins&family=Cormorant+Garamont&family=Quicksand&family=Changa+One&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>Configurações</h1>
+    <hr class="divisoria">
+    
+    <h2 class="titles">Fonte</h2>
+    <div class="fonte">
+        <div class="demoFonteDiv">
+    <h4 id="demoFonte"><span>Olá, como posso ajudar?</span></h4>
+    </div>
+    </div>
+     <div class="optionsFont">
+        
+    <h3 id="fontSize">
+        <button id="resetTamanhoFonte" onclick="resetFontSize()"><svg xmlns="http://www.w3.org/2000/svg" fill="#000000" viewBox="0 0 1920 1920">
+    <path d="M960 0v213.333c411.627 0 746.667 334.934 746.667 746.667S1371.627 1706.667 960 1706.667 213.333 1371.733 213.333 960c0-197.013 78.4-382.507 213.334-520.747v254.08H640V106.667H53.333V320h191.04C88.64 494.08 0 720.96 0 960c0 529.28 430.613 960 960 960s960-430.72 960-960S1489.387 0 960 0" fill-rule="evenodd"/>
+</svg></button>
+        Tamanho da fonte
+        <input type="range" id="inputFontSize" min="16" max="32">
+    </h3>
+    
+
+    <h3>
+         <button id="resetFontFamily" onclick="resetFontFamily()"><svg xmlns="http://www.w3.org/2000/svg" fill="#000000" viewBox="0 0 1920 1920">
+    <path d="M960 0v213.333c411.627 0 746.667 334.934 746.667 746.667S1371.627 1706.667 960 1706.667 213.333 1371.733 213.333 960c0-197.013 78.4-382.507 213.334-520.747v254.08H640V106.667H53.333V320h191.04C88.64 494.08 0 720.96 0 960c0 529.28 430.613 960 960 960s960-430.72 960-960S1489.387 0 960 0" fill-rule="evenodd"/>
+</svg></button>
+        Fonte da letra
+        <select id="selectFont">
+            <option value="">Padrão</option>
+            <option value="Nunito" style="font-family: 'Nunito';">Nunito</option>
+            <option value="Poppins" style="font-family: 'Poppins';">Poppins</option>
+            <option value="Lucida Sans" style="font-family: 'Lucida Sans';">Lucida</option>
+            <option value="Story script" style="font-family: 'Story Script';">Story Script</option>
+        </select>
+    </h3>
+
+    <h3>
+        <button id="resetFontColor" onclick="resetFontColor()"><svg xmlns="http://www.w3.org/2000/svg" fill="#000000" viewBox="0 0 1920 1920">
+    <path d="M960 0v213.333c411.627 0 746.667 334.934 746.667 746.667S1371.627 1706.667 960 1706.667 213.333 1371.733 213.333 960c0-197.013 78.4-382.507 213.334-520.747v254.08H640V106.667H53.333V320h191.04C88.64 494.08 0 720.96 0 960c0 529.28 430.613 960 960 960s960-430.72 960-960S1489.387 0 960 0" fill-rule="evenodd"/>
+</svg></button>
+        Cor Da Fonte
+    <select id="selectCorFont">
+        <option value="">Padrão</option>
+        <option value="#FFFFFF">Branco</option>
+        <option value="#000000">Preto</option>
+        <option value="gray">Cinza</option>
+        <option value="#e5e0e0">Cinza Claro</option>
+        <option value="#3b3939">Cinza Escuro</option>
+    </select>
+    </h3>
+
+    <h3 id="fontStyle">
+        <button id="resetFontStyles" onclick="resetFontStyles()"><svg xmlns="http://www.w3.org/2000/svg" fill="#000000" viewBox="0 0 1920 1920">
+    <path d="M960 0v213.333c411.627 0 746.667 334.934 746.667 746.667S1371.627 1706.667 960 1706.667 213.333 1371.733 213.333 960c0-197.013 78.4-382.507 213.334-520.747v254.08H640V106.667H53.333V320h191.04C88.64 494.08 0 720.96 0 960c0 529.28 430.613 960 960 960s960-430.72 960-960S1489.387 0 960 0" fill-rule="evenodd"/>
+</svg></button>
+        Estilo Da Fonte
+        <span>Sombreado<input type="checkbox" id="inputCheckTextShadow"></span>
+
+        <span>Sombreamento<input type="range" id="shadowTextBorrado" min="0" max="4" value="0" disabled></span>
+
+<div class="inputsDefSombraLados">
+        <span>Direita<input type="range" id="shadowTextRight" disabled min="0" max="4" value="0"></span>
+        <span>Baixo<input type="range" id="shadowTextDown" disabled min="0" max="4" value="0"></span>
+        </div>
+
+            <span id="divCorTextShadow">Cor da sombra<input type="color" id="inputCorTextShadow" disabled></span>
+    </h3>
+</div>
+
+<hr id="divisoria1">
+<div class="messagesStyle">
+  <h2 class="titles">Estilo da Mensagem</h2>
+
+ <div class="background">
+    <p id="user">Olá</p>
+    <p id="bot">Olá, como posso ajudar?</p>
+
+    <hr id="divisoria">
+    <div class="inputsFundoBackground">
+    <span>Caixa cinza no texto<input type="checkbox" id="backgroundText"></span>
+    <span>Borda no texto<input type="checkbox" id="borderText"></span>
+    </div>
+ </div>
+ </div>
+
+ <div class="btnConfirmDiv">
+     <button id="btnVoltar"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" version="1.1">
+<g id="icomoon-ignore">
+</g>
+<path d="M14.389 7.956v4.374l1.056 0.010c7.335 0.071 11.466 3.333 12.543 9.944-4.029-4.661-8.675-4.663-12.532-4.664h-1.067v4.337l-9.884-7.001 9.884-7zM15.456 5.893l-12.795 9.063 12.795 9.063v-5.332c5.121 0.002 9.869 0.26 13.884 7.42 0-4.547-0.751-14.706-13.884-14.833v-5.381z" fill="#000000">
+</path>
+</svg></button>
+ <button id="confirmFont">Salvar</button> 
+ </div>
+
+    <script src="settings.js"></script>
+    <script src="resetFunctions.js"></script>
+</body>
+</html>
+
