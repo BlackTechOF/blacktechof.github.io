@@ -301,7 +301,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
 
         if (perguntaFuturo) {
             console.log("🌐 Pergunta detectada → BlackBox");
-            const result = await buscarNaWeb(message);
+            const result = await buscarBlackBox(message);
             respostaFinal = result ?
                 `🌐 Da web: ${result.title} - ${result.snippet}` :
                 "⚠️ Não encontrei nada na web.";
