@@ -17,7 +17,6 @@ app.use(bodyParser.json());
 
 const SECRET = process.env.SECRET || "segredo123";
 
-// ==================== GERENCIADOR DE CHAVES ====================
 let geminiKeys = process.env.GEMINI_KEYS.split(",");
 let serpapiKeys = process.env.SERPAPI_KEYS.split(",");
 
@@ -42,7 +41,6 @@ function rotateSerpApiKey() {
     return getSerpApiKey();
 }
 
-// ==================== MONGODB ====================
 async function connectToDB() {
     try {
         await mongoose.connect(process.env.MONGO_URI, {
@@ -57,7 +55,6 @@ async function connectToDB() {
 }
 connectToDB();
 
-// ==================== AUTENTICAÇÃO ====================
 function authMiddleware(req, res, next) {
     const token = req.headers["authorization"]?.split(" ")[1];
     if (!token) return res.status(401).json({
@@ -75,7 +72,6 @@ function authMiddleware(req, res, next) {
     }
 }
 
-// ==================== GEMINI REST ====================
 async function gerarRespostaGeminiComHistorico(mensagens) {
     const modelos = ["gemini-2.5-flash", "gemini-1.5-flash"];
     const historicoFormatado = [{
@@ -96,6 +92,11 @@ async function gerarRespostaGeminiComHistorico(mensagens) {
         let tentativas = 0;
         while (tentativas < geminiKeys.length) {
             const key = getGeminiKey();
+            const date = new Date();
+            const dia = date.getDay();
+            const mes = date.getMonth();
+            const ano = date.getFullYear();
+            const prompt = `a data atual é: dia ${dia}, mês ${mes}, ano ${ano} `
             try {
                 const response = await fetch(
                     `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${key}`, {
@@ -104,7 +105,17 @@ async function gerarRespostaGeminiComHistorico(mensagens) {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({
-                            contents: historicoFormatado
+                            contents: [{
+                                historicoFormatado,
+                                role: "user",
+                                parts: [{
+                                    text: prompt
+                                }]
+                            }]
+                            
+                            
+
+                            
                         })
                     }
                 );
@@ -178,7 +189,6 @@ async function gerarTituloChat(mensagem) {
     return "Novo Chat";
 }
 
-// ==================== SERPAPI ====================
 async function buscarNaWeb(query) {
     let tentativas = 0;
     while (tentativas < serpapiKeys.length) {
@@ -204,7 +214,6 @@ async function buscarNaWeb(query) {
     return null;
 }
 
-// ==================== ROTAS DE AUTENTICAÇÃO ====================
 app.post("/auth/register", async (req, res) => {
     const {
         username,
@@ -259,7 +268,6 @@ app.post("/auth/login", async (req, res) => {
     });
 });
 
-// ==================== CHAT ====================
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
     const {
         message
@@ -282,7 +290,6 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
             error: "Chat não encontrado"
         });
 
-        // Lógica para atualizar o título do chat (CORRIGIDO)
         if (chat.title === "Novo Chat") {
             console.log("Entrou na lógica de título");
             console.log("Título antes da chamada:", chat.title);
@@ -291,7 +298,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
             if (novoTitulo) {
                 console.log("Título ANTES de salvar:", chat.title);
                 chat.title = novoTitulo;
-                await chat.save(); // Salva a alteração no banco de dados!
+                await chat.save();
                 console.log("Título DEPOIS de salvar:", chat.title);
             } else {
                 console.warn("Falha ao gerar novo título, mantendo 'Novo Chat'.");
@@ -333,7 +340,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
         return res.json({
             reply: respostaFinal,
             title: chat.title
-        }); // Garante que o título atualizado seja retornado
+        });
     } catch (err) {
         console.error("❌ Erro ao processar:", err);
         return res.status(500).json({
@@ -343,7 +350,6 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
     }
 });
 
-// ==================== CHAT DB ====================
 app.get("/chatdb/list", authMiddleware, async (req, res) => {
     const chats = await Chat.find({
         userId: req.userId
