@@ -3,11 +3,14 @@ let ecopontosLayer;
 let map;
 
 if ("geolocation" in navigator) {
-  navigator.geolocation.getCurrentPosition(
+  navigator.geolocation.watchPosition(
     (position) => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
 
+      console.log(`latitude: ${latitude} \n longitude: ${longitude}`)
+
+      if (!map) {
       map = L.map('map', {
         center: [latitude, longitude],
         zoom: 11.5,
@@ -17,6 +20,7 @@ if ("geolocation" in navigator) {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
+    }
 
       L.marker([latitude, longitude]).addTo(map)
         .bindPopup("📍 Você está aqui!").openPopup();
@@ -51,9 +55,6 @@ if ("geolocation" in navigator) {
             bairros[bairro].push(f);
           });
 
-          // =========================
-          // 📍 BOTÃO "PERTO DE MIM"
-          // =========================
           const btnEcopontosProximos = document.getElementById('btnEcopontosProximos');
 
           btnEcopontosProximos.addEventListener('click', () => {
@@ -65,7 +66,7 @@ if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(position => {
               const userLat = position.coords.latitude;
               const userLng = position.coords.longitude;
-              const raioKm = 2; // raio de busca em km
+              const raioKm = 3;
 
               const ecopontosProximos = [];
 
@@ -83,7 +84,6 @@ if ("geolocation" in navigator) {
                 }
               });
 
-              // Ordena por distância
               ecopontosProximos.sort((a, b) => a.distancia - b.distancia);
 
               const listaBairros = document.getElementById("listaBairros");
@@ -118,9 +118,6 @@ if ("geolocation" in navigator) {
             });
           });
 
-          // =========================
-          // 📌 LISTAGEM POR BAIRRO
-          // =========================
           const sidebar = document.getElementById("sidebar");
           const listaBairros = document.getElementById("listaBairros");
           const listaEcopontos = document.getElementById("listaEcopontos");
@@ -187,9 +184,6 @@ if ("geolocation" in navigator) {
             }
           });
 
-          // =========================
-          // 🔎 FILTRO DE BAIRROS
-          // =========================
           inputBairros.addEventListener('input', function() {
             const valor = inputBairros.value.toLowerCase();
             listaBairros.innerHTML = "";
@@ -221,37 +215,43 @@ if ("geolocation" in navigator) {
 
           mostrarBairros();
 
-          // =========================
-          // 🔎 BUSCA DE ECOPONTO POR NOME
-          // =========================
-          document.getElementById('inputEcoPonto').addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-              const nomeBusca = this.value.toLowerCase();
+          const pesquisaInput = document.getElementById('pesquisaInput');
+const inputEcoPonto = document.getElementById('inputEcoPonto');
+
+          pesquisaInput.addEventListener('click', function () {
+              const nomeBusca = inputEcoPonto.value.toLowerCase();
               ecopontosLayer.eachLayer(function (layer) {
                 const nomeEcoponto = layer.feature.properties.nome.toLowerCase();
                 if (nomeEcoponto.includes(nomeBusca)) {
-                  map.setView(layer.getLatLng(), 16);
+                  map.setView(layer.getLatLng(), 17);
                   layer.openPopup();
+                }  
+
+                if (nomeBusca === '') {
+                  map.setView([latitude, longitude], 17)
                 }
               });
             }
-          });
+      );
         })
         .catch(err => console.error("Erro ao carregar GeoJSON:", err));
     },
     () => {
       alert("Não foi possível acessar sua localização.");
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0
     }
   );
 } else {
   alert("Geolocalização não é suportada no seu navegador.");
 }
 
-// =========================
-// 📏 FUNÇÃO PARA DISTÂNCIA
-// =========================
+
 function calcularDistancia(lat1, lon1, lat2, lon2) {
-  const R = 6371; // Raio da Terra em km
+  const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
   const a = 
@@ -262,9 +262,6 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-// =========================
-// 🕹️ CONTROLES DE ZOOM
-// =========================
 document.getElementById('zoomInBtn').addEventListener('click', (e) => {
   e.preventDefault();
   map.zoomIn();

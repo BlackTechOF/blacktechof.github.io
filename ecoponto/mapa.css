@@ -57,22 +57,22 @@ main section:hover {
   align-items: center;
   background:white;
   border: solid #333;
-  box-shadow: black 1px 2px 1px;
   gap: 10px;
   border-radius: 8px;
   z-index: 200; 
   padding: 5px;
-  width: 30%;
+  width: 45%;
   margin-top: 1%;
-  justify-content: center;
+  justify-content: start;
   
 }
 
 #divPesquisa button {
+  background: white;
   width: 35px;
   height: 35px;
   border: solid black;
-  border-radius: 20px;
+  border-radius: 15px;
   padding: 2px;
 }
 
@@ -90,6 +90,7 @@ main section:hover {
 
 main {
   padding-top: 2%;
+  height: 100%;
 }
 
 #map {
@@ -107,7 +108,7 @@ main {
   flex-direction: column;
   align-items: center;
   margin-top: 1%;
-  max-height: 480px;   
+  height: 320px;   
   overflow-y: auto;
   background: #fff;
   color: black;
@@ -156,34 +157,10 @@ margin-left: -5%;
   color: rgb(6, 88, 6);
 }
 
-@keyframes ativaInput {
-  from {
-   width: 0%;
-   opacity: 0.5;
- }
- to {
-   width: 40%;
-   opacity: 1;
- }
-}
-
-@keyframes desativaInput {
-from {
-   width: 50%;
-   opacity: 1;
- }
- to {
-   width: 0%;
-   opacity: 0.5;
- }
-}
-
-.inputEcoPontoAtiva {
- animation: ativaInput 0.8s ease-in-out forwards;
-}
-
-.inputEcoPontoDesativa {
- animation: desativaInput 0.8s ease-in-out forwards;
+#sidebar button {
+  border: solid black;
+  border-radius: 5px;
+  background: white;
 }
 
 @media screen and (max-width: 768px) {
