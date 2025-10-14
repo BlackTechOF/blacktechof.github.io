@@ -18,10 +18,8 @@ app.use(bodyParser.json());
 const SECRET = process.env.SECRET || "segredo123";
 
 let geminiKeys = process.env.GEMINI_KEYS.split(",");
-let serpapiKeys = process.env.SERPAPI_KEYS.split(",");
 
 let geminiIndex = 0;
-let serpapiIndex = 0;
 
 function getGeminiKey() {
     return geminiKeys[geminiIndex % geminiKeys.length];
@@ -30,15 +28,6 @@ function getGeminiKey() {
 function rotateGeminiKey() {
     geminiIndex++;
     return getGeminiKey();
-}
-
-function getSerpApiKey() {
-    return serpapiKeys[serpapiIndex % serpapiKeys.length];
-}
-
-function rotateSerpApiKey() {
-    serpapiIndex++;
-    return getSerpApiKey();
 }
 
 async function connectToDB() {
