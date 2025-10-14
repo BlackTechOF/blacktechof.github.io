@@ -275,9 +275,8 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
     let respostaFinal = "";
 
     const palavrasChaveWeb = [
-        "hoje", "agora", "atualmente", "momento atual", "no momento",
-        "últimas notícias", "última hora", "qual dia", "que dia", "data atual",
-        "ano atual", "hora atual", "clima atualmente", "previsão do tempo",
+        
+        "últimas notícias", "clima atualmente", "previsão do tempo",
         "futuro", "próximo", "notícias recentes"
     ];
 
