@@ -5,14 +5,28 @@ body {
   background: #333;
   color: white;
   height: 100%;
-  padding: 10px;
+  padding: 15px;
 }
 
 header {
   background: #222;
   border-radius: 10px;
-  padding: 10px 20px;
 }
+
+.questions {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.sobreEcoponto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 20px;
+}
+
 
 .logo {
   display: flex;
@@ -26,7 +40,7 @@ main section:hover {
 }
 
 .logo img {
-  width: 120px;
+  width: 100px;
   height: auto;
 }
 
@@ -39,7 +53,7 @@ main section:hover {
 }
 
 .logo nav a img {
-  width: 40px;
+  width: 30px;
   height: auto;
   transition: transform 0.3s ease;
   border: solid white;
@@ -47,7 +61,19 @@ main section:hover {
   padding: 10px;
 }
 
+.logo nav a svg {
+  border: solid white;
+  padding: 10px;
+  border-radius: 30px;
+  width: 30px;
+  transition: transform 0.3s ease;
+}
+
 .logo nav a img:hover {
+  transform: scale(1.2);
+}
+
+.logo nav a svg:hover {
   transform: scale(1.2);
 }
 
@@ -72,6 +98,10 @@ section h2 {
   padding: 5px;
 }
 
+section h2 span {
+   font-size: 17px;
+}
+
 @keyframes ecopontoTitle {
   0% {
     background-position: 200% 50%;
@@ -79,13 +109,6 @@ section h2 {
   100% {
     background-position: 0% 50%;
   }
-}
-
-.sobreEcoponto {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
 }
 
 .sobreEcoponto #title {
