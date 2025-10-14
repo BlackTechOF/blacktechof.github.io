@@ -93,32 +93,27 @@ async function gerarRespostaGeminiComHistorico(mensagens) {
         while (tentativas < geminiKeys.length) {
             const key = getGeminiKey();
             const date = new Date();
-            const dia = date.getDay();
-            const mes = date.getMonth();
+            const dia = date.getDate();
+            const mes = date.getMonth() + 1;
             const ano = date.getFullYear();
             const prompt = `a data atual é: dia ${dia}, mês ${mes}, ano ${ano} `
             try {
                 const response = await fetch(
                     `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${key}`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
+                         method: "POST",
+                        headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
-                            contents: [{
-                                historicoFormatado,
-                                role: "user",
-                                parts: [{
-                                    text: prompt
-                                }]
-                            }]
-                            
-                            
-
-                            
+                            contents: [
+                                ...historicoFormatado,
+                                {
+                                    role: "user",
+                                    parts: [{ text: prompt }]
+                                }
+                            ]
                         })
                     }
                 );
+
 
                 if (!response.ok) {
                     const erro = await response.text();
@@ -275,7 +270,6 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
     let respostaFinal = "";
 
     const palavrasChaveWeb = [
-        
         "últimas notícias", "clima atualmente", "previsão do tempo",
         "futuro", "próximo", "notícias recentes"
     ];
