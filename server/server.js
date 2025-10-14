@@ -184,29 +184,32 @@ async function gerarTituloChat(mensagem) {
     return "Novo Chat";
 }
 
-async function buscarNaWeb(query) {
-    let tentativas = 0;
-    while (tentativas < serpapiKeys.length) {
-        const key = getSerpApiKey();
-        try {
-            const results = await getJson({
-                engine: "google",
-                q: query,
-                api_key: key,
-                hl: "pt-br",
-                gl: "br"
-            });
-
-            if (results.organic_results && results.organic_results.length > 0) {
-                return results.organic_results[0];
-            }
-        } catch (err) {
-            console.warn(`⚠️ Falha SerpAPI com chave ${key}:`, err.message);
-            rotateSerpApiKey();
-            tentativas++;
-        }
+async function buscarBlackBox() {
+    try {
+const response = await fetch('https://api.blackbox.ai/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${BLACK_BOX_API}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'blackboxai/openai/gpt-4',
+    messages: [{ role: 'user', contents: mensagem }]
+  })
+});
+if (!response.ok) {
+      const errText = await response.text();
+      console.error("❌ Erro da API Blackbox:", errText);
+      return null;
     }
+
+    const data = await response.json();
+    const texto = data?.choices?.[0]?.message?.content;
+    return texto || "⚠️ Sem resposta da Blackbox.";
+  } catch (error) {
+    console.error("❌ Erro ao chamar Blackbox:", error);
     return null;
+  }
 }
 
 app.post("/auth/register", async (req, res) => {
@@ -308,7 +311,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
         ) || /futuro/i.test(message) || /\b(202[5-9]|20[3-9][0-9])\b/.test(message);
 
         if (perguntaFuturo) {
-            console.log("🌐 Pergunta detectada → SerpAPI");
+            console.log("🌐 Pergunta detectada → BlackBox");
             const result = await buscarNaWeb(message);
             respostaFinal = result ?
                 `🌐 Da web: ${result.title} - ${result.snippet}` :
@@ -317,7 +320,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
             respostaFinal = await gerarRespostaGeminiComHistorico(chat.messages);
 
             if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
-                const result = await buscarNaWeb(message);
+                const result = await buscarBlackBox(message);
                 if (result) {
                     respostaFinal = `🌐 Da web: ${result.title} - ${result.snippet}`;
                 }
