@@ -1,3 +1,4 @@
+const inputBairros = document.getElementById('inputBairros')
 let ecopontosLayer;
 let map;
 
@@ -8,10 +9,10 @@ if ("geolocation" in navigator) {
       const longitude = position.coords.longitude;
 
       map = L.map('map', {
-  center: [latitude, longitude],
-  zoom: 11.5,
-  zoomControl: false
-});
+        center: [latitude, longitude],
+        zoom: 11.5,
+        zoomControl: false
+      });
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
@@ -21,13 +22,13 @@ if ("geolocation" in navigator) {
         .bindPopup("📍 Você está aqui!").openPopup();
 
       const ecoIcon = L.icon({
-        iconUrl: 'imagens/LocalReciclagem.png',
+        iconUrl: '../imagens/LocalReciclagem.png',
         iconSize: [40, 40],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40]
       });
 
-      fetch('ecopontos.geojson')
+      fetch('./ecopontos.geojson')
         .then(response => response.json())
         .then(data => {
           ecopontosLayer = L.geoJSON(data, {
@@ -50,6 +51,76 @@ if ("geolocation" in navigator) {
             bairros[bairro].push(f);
           });
 
+          // =========================
+          // 📍 BOTÃO "PERTO DE MIM"
+          // =========================
+          const btnEcopontosProximos = document.getElementById('btnEcopontosProximos');
+
+          btnEcopontosProximos.addEventListener('click', () => {
+            if (!navigator.geolocation) {
+              alert("Geolocalização não é suportada no seu navegador.");
+              return;
+            }
+
+            navigator.geolocation.getCurrentPosition(position => {
+              const userLat = position.coords.latitude;
+              const userLng = position.coords.longitude;
+              const raioKm = 2; // raio de busca em km
+
+              const ecopontosProximos = [];
+
+              ecopontosLayer.eachLayer(layer => {
+                const ecoLat = layer.getLatLng().lat;
+                const ecoLng = layer.getLatLng().lng;
+                const distancia = calcularDistancia(userLat, userLng, ecoLat, ecoLng);
+
+                if (distancia <= raioKm) {
+                  ecopontosProximos.push({
+                    nome: layer.feature.properties.nome,
+                    distancia: distancia.toFixed(2),
+                    latlng: layer.getLatLng()
+                  });
+                }
+              });
+
+              // Ordena por distância
+              ecopontosProximos.sort((a, b) => a.distancia - b.distancia);
+
+              const listaBairros = document.getElementById("listaBairros");
+              const listaEcopontos = document.getElementById("listaEcopontos");
+              const tituloBairros = document.getElementById("tituloBairros");
+              const tituloEcopontos = document.getElementById("tituloEcopontos");
+              const voltarBtn = document.getElementById("voltarBtn");
+
+              listaBairros.style.display = "none";
+              tituloBairros.style.display = "none";
+              listaEcopontos.style.display = "";
+              tituloEcopontos.style.display = "";
+              voltarBtn.style.display = "";
+
+              listaEcopontos.innerHTML = "";
+
+              if (ecopontosProximos.length === 0) {
+                listaEcopontos.innerHTML = "<li>Nenhum ecoponto encontrado nas proximidades.</li>";
+                return;
+              }
+
+              ecopontosProximos.forEach(eco => {
+                const li = document.createElement("li");
+                li.textContent = `${eco.nome} - ${eco.distancia} km`;
+                li.addEventListener('click', () => {
+                  map.setView(eco.latlng, 17);
+                });
+                listaEcopontos.appendChild(li);
+              });
+
+              map.setView([userLat, userLng], 14);
+            });
+          });
+
+          // =========================
+          // 📌 LISTAGEM POR BAIRRO
+          // =========================
           const sidebar = document.getElementById("sidebar");
           const listaBairros = document.getElementById("listaBairros");
           const listaEcopontos = document.getElementById("listaEcopontos");
@@ -60,8 +131,8 @@ if ("geolocation" in navigator) {
           const abrirBtn = document.getElementById("abrirSideBar");
 
           function mostrarBairros() {
-            listaBairros.style.display = "block";
-            tituloBairros.style.display = "block";
+            listaBairros.style.display = "";
+            tituloBairros.style.display = "";
             listaEcopontos.style.display = "none";
             tituloEcopontos.style.display = "none";
             voltarBtn.style.display = "none";
@@ -70,9 +141,9 @@ if ("geolocation" in navigator) {
           function mostrarEcopontos(bairro) {
             listaBairros.style.display = "none";
             tituloBairros.style.display = "none";
-            listaEcopontos.style.display = "block";
-            tituloEcopontos.style.display = "block";
-            voltarBtn.style.display = "block";
+            listaEcopontos.style.display = "";
+            tituloEcopontos.style.display = "";
+            voltarBtn.style.display = "";
 
             listaEcopontos.innerHTML = "";
 
@@ -82,7 +153,7 @@ if ("geolocation" in navigator) {
               liEco.addEventListener("click", () => {
                 const [lng, lat] = f.geometry.coordinates;
                 const latlng = [lat, lng];
-                map.setView(latlng, 16);
+                map.setView(latlng, 20);
                 ecopontosLayer.eachLayer(layer => {
                   if (layer.feature.properties.nome === f.properties.nome) {
                     layer.openPopup();
@@ -110,14 +181,49 @@ if ("geolocation" in navigator) {
 
           abrirBtn.addEventListener('click', function(){
             if (sidebar.style.display === 'none') {
-            sidebar.style.display = ''
+              sidebar.style.display = ''
             } else {
               sidebar.style.display = 'none'
             }
-          })
+          });
+
+          // =========================
+          // 🔎 FILTRO DE BAIRROS
+          // =========================
+          inputBairros.addEventListener('input', function() {
+            const valor = inputBairros.value.toLowerCase();
+            listaBairros.innerHTML = "";
+
+            const bairrosFiltrados = Object.keys(bairros).filter(b => 
+              b.toLowerCase().includes(valor)
+            );
+
+            bairrosFiltrados.forEach(classe => {
+              const li = document.createElement("li");
+              li.textContent = classe;
+              li.addEventListener("click", () => {
+                mostrarEcopontos(classe);
+              });
+              listaBairros.appendChild(li);
+            });
+
+            if (valor === "") {
+              Object.keys(bairros).sort().forEach(classe => {
+                const li = document.createElement("li");
+                li.textContent = classe;
+                li.addEventListener("click", () => {
+                  mostrarEcopontos(classe);
+                });
+                listaBairros.appendChild(li);
+              });
+            }
+          });
 
           mostrarBairros();
 
+          // =========================
+          // 🔎 BUSCA DE ECOPONTO POR NOME
+          // =========================
           document.getElementById('inputEcoPonto').addEventListener('keydown', function (e) {
             if (e.key === 'Enter') {
               const nomeBusca = this.value.toLowerCase();
@@ -141,6 +247,24 @@ if ("geolocation" in navigator) {
   alert("Geolocalização não é suportada no seu navegador.");
 }
 
+// =========================
+// 📏 FUNÇÃO PARA DISTÂNCIA
+// =========================
+function calcularDistancia(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Raio da Terra em km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+// =========================
+// 🕹️ CONTROLES DE ZOOM
+// =========================
 document.getElementById('zoomInBtn').addEventListener('click', (e) => {
   e.preventDefault();
   map.zoomIn();

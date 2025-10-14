@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reciclagem Inteligente</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-    <link rel="stylesheet" href="mapa.css">
+    <link rel="stylesheet" href="./mapa.css">
 </head>
 <body>
      <header>
     <div class="logo">
       <img src="../imagens/logo/Logo Black Tech - PNG.png" id="imglogo">
-      <hr class="divisoria">
+      <hr id="divisoria">
   <nav>
       <a href="index.html" class="sidebarnav"><img src="../imagens/inicio.png"></a>
       <a href="mapa.html" class="sidebarnav" id="reciclagem"><img src="../imagens/Reciclagem Icone.png"></a>
@@ -31,7 +31,6 @@
   <button id="zoomOutBtn">−</button>
   </div>
 
-  <div class="flexCloumnSidear">
     <button id="abrirSideBar">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
 <path d="M13 5V19M16 8H18M16 11H18M16 14H18M6.2 19H17.8C18.9201 19 19.4802 19 19.908 18.782C20.2843 18.5903 20.5903 18.2843 20.782 17.908C21 17.4802 21 16.9201 21 15.8V8.2C21 7.0799 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V15.8C3 16.9201 3 17.4802 3.21799 17.908C3.40973 18.2843 3.71569 18.5903 4.09202 18.782C4.51984 19 5.07989 19 6.2 19Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -45,24 +44,28 @@
       </svg>
     </button>
     <input type="search" id="inputEcoPonto">
-
-    <div id="sidebar">
-  <button id="fecharSidebar">✖</button>
-  <h3 id="tituloBairros">Bairros</h3>
-  <ul id="listaBairros"></ul>
-
-  <h3 id="tituloEcopontos">Ecopontos</h3>
-  <ul id="listaEcopontos"></ul>
-
-  <button id="voltarBtn">Voltar</button>
+    <button id="btnEcopontosProximos">🌍</button>
 </div>
-</div>
+
+  <div id="sidebar">
+    <button id="fecharSidebar">✖</button>
+
+    <h3 id="tituloBairros">Bairros</h3>
+    <div class="buscaBairroDiv">
+      <input type="search" id="inputBairros" placeholder="Digite aqui o bairro desejado">
+      </div>
+    <ul id="listaBairros"></ul>
+  
+    <h3 id="tituloEcopontos">Ecopontos</h3>
+    <ul id="listaEcopontos"></ul>
+  
+    <button id="voltarBtn">Voltar</button>
   </div>
 
 </main>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="index.js"></script>
-  <script src="script.js"></script>
+  <script src="./index.js"></script>
+  <script src="./script.js"></script>
 </body>
 </html>
