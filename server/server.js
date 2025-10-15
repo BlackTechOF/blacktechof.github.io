@@ -296,7 +296,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
       respostaFinal = result || "⚠️ Não encontrei nada na web.";
     } else {
       // 🔹 Tenta Gemini primeiro
-      respostaFinal = await buscarBlackBox(message);
+      respostaFinal = await buscarBlackBox(chat.messages);
 
       // 🔹 Se Gemini falhar, tentar Blackbox
       if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
