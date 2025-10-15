@@ -290,21 +290,22 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
       /\b(202[5-9]|20[3-9][0-9])\b/.test(message);
 
     // 🔹 Se for pergunta de "futuro" → usar Blackbox direto
-    if (perguntaFuturo) {
-      console.log("🌐 Pergunta detectada → enviando pra Blackbox");
-      const result = await buscarBlackBox(message);
-      respostaFinal = result || "⚠️ Não encontrei nada na web.";
-    } else {
-      // 🔹 Tenta Gemini primeiro
-      respostaFinal = await buscarBlackBox(chat.messages);
+   // 🔹 Se for pergunta de "futuro" → usar Blackbox direto
+if (perguntaFuturo) {
+  console.log("🌐 Pergunta detectada → enviando pra Blackbox");
+  const result = await buscarBlackBox(message);
+  respostaFinal = result || "⚠️ Não encontrei nada na web.";
+} else {
+  // 🔹 Tenta GEMINI primeiro
+  respostaFinal = await gerarRespostaGeminiComHistorico(chat.messages);
 
-      // 🔹 Se Gemini falhar, tentar Blackbox
-      if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
-        console.warn("⚠️ Gemini falhou → fallback pra Blackbox");
-        const result = await gerarRespostaGeminiComHistorico(chat.messages);
-        respostaFinal = result || "⚠️ Nenhuma resposta disponível.";
-      }
-    }
+  // 🔹 Se GEMINI falhar → fallback pra BLACKBOX
+  if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
+    console.warn("⚠️ Gemini falhou → fallback pra Blackbox");
+    const result = await buscarBlackBox(message);
+    respostaFinal = result || "⚠️ Nenhuma resposta disponível.";
+  }
+}
 
     // 🔹 Salva resposta final
     chat.messages.push({ role: "bot", content: respostaFinal });
