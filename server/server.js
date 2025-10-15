@@ -309,7 +309,7 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
             respostaFinal = await gerarRespostaGeminiComHistorico(chat.messages);
 
             if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
-                const result = await buscarBlackBox(message);
+                const result = await buscarBlackBox(chat.messages);
                 if (result) {
                     respostaFinal = `🌐 Da web: ${result.title} - ${result.snippet}`;
                 }
