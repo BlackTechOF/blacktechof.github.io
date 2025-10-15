@@ -173,20 +173,21 @@ async function gerarTituloChat(mensagem) {
     return "Novo Chat";
 }
 
-async function buscarBlackBox() {
-    try {
-const response = await fetch('https://api.blackbox.ai/chat/completions', {
-  method: 'POST',
-  headers: {
-    'Authorization': `Bearer ${BLACK_BOX_API}`,
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    model: 'blackboxai/openai/gpt-4',
-    messages: [{ role: 'user', contents: mensagem }]
-  })
-});
-if (!response.ok) {
+async function buscarBlackBox(mensagem) {
+  try {
+    const response = await fetch("https://api.blackbox.ai/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.BLACK_BOX_API}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "blackboxai/openai/gpt-4",
+        messages: [{ role: "user", content: mensagem }]
+      })
+    });
+
+    if (!response.ok) {
       const errText = await response.text();
       console.error("❌ Erro da API Blackbox:", errText);
       return null;
@@ -256,83 +257,68 @@ app.post("/auth/login", async (req, res) => {
 });
 
 app.post("/chat/:chatId", authMiddleware, async (req, res) => {
-    const {
-        message
-    } = req.body;
-    let respostaFinal = "";
+  const { message } = req.body;
+  let respostaFinal = "";
 
-    const palavrasChaveWeb = [
-        "últimas notícias", "clima atualmente", "previsão do tempo",
-        "futuro", "próximo", "notícias recentes"
-    ];
+  const palavrasChaveWeb = [
+    "últimas notícias", "clima atualmente", "previsão do tempo",
+    "futuro", "próximo", "notícias recentes"
+  ];
 
-    try {
-        const chat = await Chat.findOne({
-            _id: req.params.chatId,
-            userId: req.userId
-        });
-        if (!chat) return res.status(404).json({
-            error: "Chat não encontrado"
-        });
+  try {
+    const chat = await Chat.findOne({
+      _id: req.params.chatId,
+      userId: req.userId
+    });
+    if (!chat) return res.status(404).json({ error: "Chat não encontrado" });
 
-        if (chat.title === "Novo Chat") {
-            console.log("Entrou na lógica de título");
-            console.log("Título antes da chamada:", chat.title);
-            const novoTitulo = await gerarTituloChat(message);
-            console.log("Novo título gerado:", novoTitulo);
-            if (novoTitulo) {
-                console.log("Título ANTES de salvar:", chat.title);
-                chat.title = novoTitulo;
-                await chat.save();
-                console.log("Título DEPOIS de salvar:", chat.title);
-            } else {
-                console.warn("Falha ao gerar novo título, mantendo 'Novo Chat'.");
-            }
-        }
-
-        chat.messages.push({
-            role: "user",
-            content: message
-        });
-
-        const perguntaFuturo = palavrasChaveWeb.some(p =>
-            message.toLowerCase().includes(p)
-        ) || /futuro/i.test(message) || /\b(202[5-9]|20[3-9][0-9])\b/.test(message);
-
-        if (perguntaFuturo) {
-            console.log("🌐 Pergunta detectada → BlackBox");
-            const result = await buscarBlackBox(message);
-            respostaFinal = result ?
-                `🌐 Da web: ${result.title} - ${result.snippet}` :
-                "⚠️ Não encontrei nada na web.";
-        } else {
-            respostaFinal = await gerarRespostaGeminiComHistorico(chat.messages);
-
-            if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
-                const result = await buscarBlackBox(chat.messages);
-                if (result) {
-                    respostaFinal = `🌐 Da web: ${result.title} - ${result.snippet}`;
-                }
-            }
-        }
-
-        chat.messages.push({
-            role: "bot",
-            content: respostaFinal
-        });
+    // 🔹 Gerar título se for novo chat
+    if (chat.title === "Novo Chat") {
+      const novoTitulo = await gerarTituloChat(message);
+      if (novoTitulo) {
+        chat.title = novoTitulo;
         await chat.save();
-
-        return res.json({
-            reply: respostaFinal,
-            title: chat.title
-        });
-    } catch (err) {
-        console.error("❌ Erro ao processar:", err);
-        return res.status(500).json({
-            reply: "⚠️ Erro ao buscar informações.",
-            title: "Erro no Chat"
-        });
+      }
     }
+
+    chat.messages.push({ role: "user", content: message });
+
+    // 🔹 Detectar se é pergunta sobre futuro / web
+    const perguntaFuturo =
+      palavrasChaveWeb.some(p => message.toLowerCase().includes(p)) ||
+      /futuro/i.test(message) ||
+      /\b(202[5-9]|20[3-9][0-9])\b/.test(message);
+
+    // 🔹 Se for pergunta de "futuro" → usar Blackbox direto
+    if (perguntaFuturo) {
+      console.log("🌐 Pergunta detectada → enviando pra Blackbox");
+      const result = await buscarBlackBox(message);
+      respostaFinal = result || "⚠️ Não encontrei nada na web.";
+    } else {
+      // 🔹 Tenta Gemini primeiro
+      respostaFinal = await gerarRespostaGeminiComHistorico(chat.messages);
+
+      // 🔹 Se Gemini falhar, tentar Blackbox
+      if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
+        console.warn("⚠️ Gemini falhou → fallback pra Blackbox");
+        const result = await buscarBlackBox(message);
+        respostaFinal = result || "⚠️ Nenhuma resposta disponível.";
+      }
+    }
+
+    // 🔹 Salva resposta final
+    chat.messages.push({ role: "bot", content: respostaFinal });
+    await chat.save();
+
+    return res.json({ reply: respostaFinal, title: chat.title });
+
+  } catch (err) {
+    console.error("❌ Erro ao processar:", err);
+    return res.status(500).json({
+      reply: "⚠️ Erro ao buscar informações.",
+      title: "Erro no Chat"
+    });
+  }
 });
 
 app.get("/chatdb/list", authMiddleware, async (req, res) => {
