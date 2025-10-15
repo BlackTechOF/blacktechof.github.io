@@ -296,12 +296,12 @@ app.post("/chat/:chatId", authMiddleware, async (req, res) => {
       respostaFinal = result || "⚠️ Não encontrei nada na web.";
     } else {
       // 🔹 Tenta Gemini primeiro
-      respostaFinal = await gerarRespostaGeminiComHistorico(chat.messages);
+      respostaFinal = await buscarBlackBox(message);
 
       // 🔹 Se Gemini falhar, tentar Blackbox
       if (!respostaFinal || respostaFinal.startsWith("⚠️")) {
         console.warn("⚠️ Gemini falhou → fallback pra Blackbox");
-        const result = await buscarBlackBox(message);
+        const result = await gerarRespostaGeminiComHistorico(chat.messages);
         respostaFinal = result || "⚠️ Nenhuma resposta disponível.";
       }
     }
