@@ -402,6 +402,28 @@ app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
   res.json({ ok: true });
 });
 
+app.patch('user/username', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.userId
+        const getUsername = await User.findById(userId)
+        const {username} = req.body
+
+        if (!getUsername) {
+            return res.status(404).json({error: 'Usuario nao encontrado'});
+        }
+
+        getUsername.username = username
+
+        await getUsername.save()
+
+        res.json({message: 'Nome de usuario atualizado com sucesso'})
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({error: 'Erro ao atualizar nome de usuario'})
+    }
+})
+
+
 app.post('/check-username', authMiddleware, async (req, res) => {
     try {
         const inapropriadas = ['pinto', 'pau', 'rola', 'penis', 'pênis', 'roludo', 'gay', 'veado', 'viado', 'hitler', 'gostosa', 'gostoso', 'bunda', 'anus', 'bumbum', 'cu', 'cucabeludo']
@@ -432,6 +454,7 @@ app.post('/check-username', authMiddleware, async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
 
