@@ -172,10 +172,12 @@ margin-left: -5%;
 
   header {
     padding: 10px;
+    background: none;
     align-items: center;
   }
 
   .logo {
+    border-radius: 10px;
     background: green;
     display: flex;
     align-items: center;
@@ -212,7 +214,6 @@ margin-left: -5%;
   
 .zoomDiv {
   display: flex;
-  flex-direction: column;
   gap: 10px;
 }
 
@@ -220,6 +221,13 @@ margin-left: -5%;
   border: solid black;
   width: 30px;
   height: 30px;
+}
+
+#divPesquisa {
+  gap: 6px;
+  align-self: center;
+  justify-self: center;
+  width: 95%;
 }
   
   #divPesquisa svg{
@@ -256,7 +264,6 @@ margin-left: -5%;
     border: solid black;
     border-radius: 30px;
     height: 30px;
-    display: none;
     font-size: 16px;
   }
 
@@ -270,14 +277,21 @@ margin-left: -5%;
   }
   
   #sidebar {
-  width: 90%;          /* ocupa toda a largura da divPesquisa */
+  width: 40%;
+  align-items: center;
+  text-align: center;
+  gap: 15px;
+  margin-left: 1.5%;
   max-height: 300px;    /* limite de altura com scroll */
   overflow-y: auto;
   background: #fff;
-  padding: 10px;
   border-radius: 8px;
   box-shadow: 0px 2px 8px rgba(0,0,0,0.2);
   z-index: 100;
+}
+
+#sidebar li {
+  text-align: center;
 }
 
 .flexColumnSidebar {
