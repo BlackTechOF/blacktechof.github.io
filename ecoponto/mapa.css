@@ -8,6 +8,7 @@ body {
 header {
   background: #222;
   border-radius: 10px;
+
   z-index: 100;
 }
 
@@ -15,7 +16,6 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
 }
 
 #divisoria {
@@ -47,23 +47,37 @@ main section:hover {
   padding: 10px;
 }
 
+.logo nav a svg {
+  width: 30px;
+  height: auto;
+  transition: transform 0.3s ease;
+  border: solid white;
+  border-radius: 30px;
+  padding: 10px;
+}
+
+
 .logo nav a img:hover {
   transform: scale(1.2);
 }
+
+.logo nav a svg:hover {
+  transform: scale(1.2);
+} 
 
 #divPesquisa {
   position: relative;     
   display: flex;
   align-items: center;
-  background:white;
-  border: solid #333;
+  background:#333;
+  border: solid #555;
   gap: 10px;
   border-radius: 8px;
   z-index: 200; 
   padding: 5px;
-  width: 45%;
+  width: 46%;
   margin-top: 1%;
-  justify-content: start;
+  justify-content: center;
   
 }
 
@@ -114,7 +128,7 @@ main {
   color: black;
   padding: 5px;
   border-radius: 8px;
-  border: none;
+  border: solid black 1px;
   z-index: 200;
 }
 
@@ -187,8 +201,7 @@ margin-left: -5%;
 
   .logo nav {
   display: flex;
-  gap: 10px;
-  display: flex;
+  gap: 8px;
   justify-content: center;
   align-items: center;
 }
@@ -203,6 +216,14 @@ margin-left: -5%;
     border: solid white;
     border-radius: 90px;
     padding: 10px;
+  }
+
+  .logo nav a svg {
+    border-radius: 90px;
+    border: solid white;
+    padding: 10px;
+    width: 30px;
+    height: 30px;
   }
 
    #map { 
@@ -221,8 +242,7 @@ margin-left: -5%;
   gap: 6px;
   align-self: center;
   justify-self: center;
-  width: 90%;
-  padding: 10px;
+  width: 100%;
 }
 
 #divPesquisa button {
