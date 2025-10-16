@@ -1,4 +1,3 @@
-/* techia.js - versão completa corrigida com Markdown e digitação segura */
 
 let botOcupado = false;
 let intervaloId = null;
@@ -35,7 +34,6 @@ const cadastroButton = document.getElementById('cadastroBtn');
 const tituloPagLogin = document.getElementById('tituloPagLogin');
 const API_URL = "https://blacktechof-github-io.onrender.com";
 
-/* ---------- Helpers ---------- */
 async function safeParseResponse(res) {
     const ct = res.headers.get("content-type") || "";
     const text = await res.text();
@@ -76,7 +74,6 @@ function loginPage() {
     loginButton.style.display = '';
 }
 
-/* ---------- Auth ---------- */
 async function register() {
     const username = document.getElementById("username")?.value;
     const password = document.getElementById("password")?.value;
@@ -167,7 +164,6 @@ async function login() {
     }
 }
 
-/* ---------- Logout ---------- */
 function logout() {
     localStorage.removeItem("token");
     currentChatId = null;
@@ -176,9 +172,10 @@ function logout() {
     loginPage();
 }
 
-/* ---------- Auto-login & Event listeners ---------- */
 window.addEventListener("DOMContentLoaded", async () => {
-    const input = document.getElementById("userInput");
+    
+
+const input = document.getElementById("userInput");
     if (input) input.addEventListener("keypress", (e) => {
         if (e.key === "Enter") sendMessage();
     });
@@ -217,48 +214,54 @@ window.addEventListener("DOMContentLoaded", async () => {
         main.style.filter = 'none'
     });
 
-    const token = localStorage.getItem("token");
-    if (token) {
-        try {
-            const res = await fetch(`${API_URL}/chatdb/list`, {
-                headers: { "Authorization": "Bearer " + token }
-            });
-            if (res.ok) {
-                document.getElementById("auth-container").style.display = "none";
-                document.getElementById("chat-container").style.display = "block";
-                await loadChats();
-                await ensureChatExists();
-            } else {
-                localStorage.removeItem("token");
-            }
-        } catch {
-            localStorage.removeItem("token");
-        }
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch(`${API_URL}/chatdb/list`, {
+      headers: { "Authorization": "Bearer " + token }
+    });
+
+    if (res.ok) {
+      document.getElementById("auth-container").style.display = "none";
+      document.getElementById("chat-container").style.display = "block";
+
+      await ensureChatExists();
+    } else {
+      localStorage.removeItem("token");
     }
+  } catch {
+    localStorage.removeItem("token");
+  }
 });
 
-/* ---------- CHATS ---------- */
 async function ensureChatExists() {
-    const res = await fetch(`${API_URL}/chatdb/list`, {
-        headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+  const res = await fetch(`${API_URL}/chatdb/list`, {
+    headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+  });
+  const chats = await safeParseResponse(res);
+
+  if (!Array.isArray(chats) || chats.length === 0) {
+    const newC = await fetch(`${API_URL}/chatdb/new`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + localStorage.getItem("token")
+      },
+      body: JSON.stringify({ title: "Novo Chat" })
     });
-    const chats = await safeParseResponse(res);
-    if (!Array.isArray(chats) || chats.length === 0) {
-        const newC = await fetch(`${API_URL}/chatdb/new`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            },
-            body: JSON.stringify({ title: "Novo Chat" })
-        });
-        const chat = await safeParseResponse(newC);
-        currentChatId = chat._id;
-        await loadChats();
-    } else {
-        currentChatId = chats[0]._id;
-        await loadHistory(currentChatId);
-    }
+
+    const chat = await safeParseResponse(newC);
+    currentChatId = chat._id;
+
+    await loadChats();
+    await loadHistory(currentChatId);
+  } else {
+    currentChatId = chats[0]._id;
+
+    await loadChats();
+    await loadHistory(currentChatId);
+  }
 }
 
 async function newChat() {
@@ -334,7 +337,6 @@ async function loadHistory(chatId) {
         const div = document.createElement("div");
         div.className = `message ${msg.role}`;
 
-        // ESCAPA HTML antes de passar pro marked
         const escapedContent = msg.content
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
@@ -350,7 +352,6 @@ async function loadHistory(chatId) {
     messageStylesPrefs()
 }
 
-/* ---------- SALVAR MENSAGEM ---------- */
 async function saveMessage(role, content) {
     if (!currentChatId) return false;
     try {
@@ -369,7 +370,6 @@ async function saveMessage(role, content) {
     }
 }
 
-/* ---------- ENVIAR MENSAGEM ---------- */
 async function sendMessage() {
     if (botOcupado || !currentChatId) return;
     h2DoChat.style.display = 'none'
@@ -421,10 +421,8 @@ async function sendMessage() {
         if (!res.ok) throw new Error((data && data.error) || "Erro na resposta do servidor");
 
         const resposta = data.reply || data.content || data.answer || data.message || "⚠️ Sem resposta";
-        await saveMessage("user", userMessage);
-        await saveMessage("bot", resposta);
+        
 
-        // animação de digitação com Markdown
         botDiv.innerHTML = '';
         let i = 0;
         const chunk = 1;
@@ -455,7 +453,6 @@ async function sendMessage() {
     }
 }
 
-/* ---------- Interromper resposta ---------- */
 function interromperResposta() {
     if (intervaloId) { clearInterval(intervaloId); intervaloId = null; }
     if (currentAbortController) {
@@ -468,7 +465,6 @@ function interromperResposta() {
     if (sendBtn) sendBtn.style.display = '';
 }
 
-/* ---------- Deletar todos os chats ---------- */
 async function deleteAllChats() {
     if (!confirm("Excluir todos os chats?")) return;
     try {
@@ -490,7 +486,16 @@ async function deleteAllChats() {
     }
 }
 
-/* ---------- Expor funções ---------- */
+window.addEventListener('visibilitychange', function(){
+    if (window.hidden) {
+        fontPrefs()
+        messageStylesPrefs()
+    } else {
+        fontPrefs()
+        messageStylesPrefs()
+    }
+})
+
 window.techia = {
     sendMessage,
     newChat,

@@ -50,18 +50,6 @@ if (checkTextShadow.checked) {
     inputCorTextShadow.disabled = false;
     inputsShadowText.forEach(input => input.disabled = false);
 
-if (valorBackgroundText === 'true') {
-   backgroundText.checked = true 
-} else {
-    backgroundText.checked = false
-}
-
-if (valorBorderText === 'true') {
-   borderText.checked = true 
-} else {
-    borderText.checked = false
-}
-
     if (valorSombraTextColor) inputCorTextShadow.value = valorSombraTextColor;
     if (valorSombraText) shadowTextBorrado.value = valorSombraText;
     if (valorSombraTextRight) shadowTextDireita.value = valorSombraTextRight;
@@ -72,6 +60,18 @@ if (valorBorderText === 'true') {
     inputCorTextShadow.disabled = true;
     inputsShadowText.forEach(input => input.disabled = true);
     demoFonte.style.textShadow = 'none';
+}
+
+if (valorBackgroundText === 'true') {
+   backgroundText.checked = true 
+} else {
+    backgroundText.checked = false
+}
+
+if (valorBorderText === 'true') {
+   borderText.checked = true 
+} else {
+    borderText.checked = false
 }
 
 backgroundText.addEventListener('input', function(){
