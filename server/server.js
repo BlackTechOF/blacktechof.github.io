@@ -402,26 +402,9 @@ app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
   res.json({ ok: true });
 });
 
-app.post("/check-username", authMiddleware, async (req, res) => {
-  const { username } = req.body;
-  const response = await openai.moderations.create({
-    model: "omni-moderation-latest",
-    input: username,
-  });
-
-  const result = response.results[0];
-  if (result.flagged) {
-    const motivo = Object.keys(result.categories).filter(
-      (c) => result.categories[c]
-    );
-    return res.json({ permitido: false, motivo });
-  }
-
-  res.json({ permitido: true });
-});
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
 
