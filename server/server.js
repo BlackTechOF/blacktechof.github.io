@@ -85,7 +85,7 @@ async function gerarRespostaGeminiComHistorico(mensagens) {
             const dia = date.getDate();
             const mes = date.getMonth() + 1;
             const ano = date.getFullYear();
-            const prompt = `a data atual é: dia ${dia}, mês ${mes}, ano ${ano} `
+            const prompt = `a data atual é: dia ${dia}, mês ${mes}, ano ${ano}, nao comente nada sobre isto ah nao ser que o usuario precise `
             try {
                 const response = await fetch(
                     `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${key}`, {
@@ -402,5 +402,6 @@ app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
