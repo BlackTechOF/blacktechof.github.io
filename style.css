@@ -190,6 +190,7 @@ footer h5 {
 @media screen and (max-width: 768px) {
   body,html {
     margin: 0;
+    padding: 5px;
   }
 
   header {
@@ -203,7 +204,7 @@ footer h5 {
 }
 
   .logo nav{
-     gap: 10px;
+     gap: 8px;
   }
 
   .logo #imglogo {
