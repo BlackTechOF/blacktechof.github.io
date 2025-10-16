@@ -96,6 +96,7 @@ function configurarSidebar(data) {
   const inputEcoPonto = document.getElementById('inputEcoPonto');
 
   btnEcopontosProximos.addEventListener('click', () => {
+    sidebar.style.display = ''
     if (!navigator.geolocation) {
       alert("Geolocalização não é suportada no seu navegador.");
       return;
