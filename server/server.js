@@ -3,6 +3,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const OpenAI = require("openai");
 const mongoose = require("mongoose");
 const { getJson } = require("serpapi");
 const fetch = require("node-fetch");
@@ -10,6 +11,7 @@ const User = require("../models/User.js");
 const Chat = require("../models/Chat.js");
 
 require("dotenv").config();
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const app = express();
 app.use(cors());
@@ -420,6 +422,7 @@ app.post("/check-username", authMiddleware, async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
 
