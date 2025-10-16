@@ -214,20 +214,24 @@ margin-left: -5%;
   
 .zoomDiv {
   display: flex;
-  gap: 10px;
-}
-
-.zoomDiv button {
-  border: solid black;
-  width: 30px;
-  height: 30px;
+  gap: 5px;
 }
 
 #divPesquisa {
   gap: 6px;
   align-self: center;
   justify-self: center;
-  width: 95%;
+  width: 90%;
+  padding: 10px;
+}
+
+#divPesquisa button {
+ width: 37px;
+ height: 36px;
+}
+
+#divPesquisa #inputEcoPonto {
+  width: 40%;
 }
   
   #divPesquisa svg{
@@ -277,7 +281,7 @@ margin-left: -5%;
   }
   
   #sidebar {
-  width: 40%;
+  width: 45%;
   align-items: center;
   text-align: center;
   gap: 15px;
@@ -321,10 +325,7 @@ margin-left: -5%;
     cursor: pointer;
     font-size: 18px;
   }
-  
-  #voltarBtn {
-    display: none;
-  }
+
   #tituloEcopontos, #listaEcopontos {
     display: none;
   }
