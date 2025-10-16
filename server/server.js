@@ -402,7 +402,7 @@ app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
   res.json({ ok: true });
 });
 
-app.patch('user/username', authMiddleware, async (req, res) => {
+app.patch('/user/username', authMiddleware, async (req, res) => {
     try {
         const userId = req.userId
         const getUsername = await User.findById(userId)
@@ -454,6 +454,7 @@ app.post('/check-username', authMiddleware, async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
 
