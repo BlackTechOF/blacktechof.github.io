@@ -402,8 +402,37 @@ app.post("/chatdb/:chatId/save", authMiddleware, async (req, res) => {
   res.json({ ok: true });
 });
 
+app.post('/check-username', authMiddleware, async (req, res) => {
+    try {
+        const inapropriadas = ['pinto', 'pau', 'rola', 'penis', 'pênis', 'roludo', 'gay', 'veado', 'viado', 'hitler', 'gostosa', 'gostoso', 'bunda', 'anus', 'bumbum', 'cu', 'cucabeludo']
+
+        const { username } = req.body
+
+        if (!username || typeof username!== 'string') {
+            return res.status(400).json({error: 'Nome invalido'});
+        }
+
+        const nomeMinusculo = username.toLowerCase();
+
+        const contemPalavra = inapropriadas.some(palavra =>
+      nomeMinusculo.includes(palavra)
+    );
+
+    if (contemPalavra) {
+        return res.json({ permitido: false});
+    }
+
+    res.json({permitido: true})
+
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({error: 'Erro de verificação'})
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
 
 
 
