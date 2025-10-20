@@ -32,7 +32,7 @@ const cadastroFun = document.getElementById('cadastroFun');
 const loginFun = document.getElementById('loginFun');
 const cadastroButton = document.getElementById('cadastroBtn');
 const tituloPagLogin = document.getElementById('tituloPagLogin');
-const API_URL = "https://blacktechof-github-io.onrender.com";
+const API_URL = "https://backend-blacktech.onrender.com";
 
 async function safeParseResponse(res) {
     const ct = res.headers.get("content-type") || "";
@@ -507,5 +507,6 @@ window.techia = {
     interromperResposta,
     deleteAllChats
 };
+
 
 
