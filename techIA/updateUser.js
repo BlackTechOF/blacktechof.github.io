@@ -4,7 +4,7 @@ async function verificarUsername() {
   const username = inputUpdateUsername.value.trim();
 
   try {
-    const resVerificar = await fetch('https://blacktechof-github-io.onrender.com/check-username', {
+    const resVerificar = await fetch('https://backend-blacktech.onrender.com/check-username', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ async function verificarUsername() {
 
     console.log('aceito');
 
-    const resUpdate = await fetch('https://blacktechof-github-io.onrender.com/user/username', {
+    const resUpdate = await fetch('https://backend-blacktech.onrender.com/user/username', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -44,4 +44,5 @@ async function verificarUsername() {
     console.error('Erro na verificação/atualização:', error);
     alert('Erro inesperado ao verificar ou atualizar o nome de usuário.');
   }
+
 }
