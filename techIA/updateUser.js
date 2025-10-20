@@ -36,7 +36,7 @@ async function verificarUsername() {
     try {
       const permitido = await verificarUsername(username)
       if (permitido) {
-           const resUpdate = await fetch('https://backend-blacktech.onrender.com/user/username', {
+           const resUpdate = await fetch('http://localhost:3000/user/username', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -58,4 +58,31 @@ async function verificarUsername() {
     } catch(error) {
        alert("faha na atualizaçao")
     }
-   }
+   };
+
+async function deleteUser() {
+  const token = localStorage.getItem('token')
+  try {
+      const res = await fetch('http://localhost:3000/delete-user', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':  `Bearer ${token}`
+        }
+      });
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        console.log('erro ao deletar usuario (Front)')
+        return;
+      }
+
+      console.log('Usuário deletado com sucesso (Front)')
+      localStorage.removeItem('token')
+      window.location.href = 'techia.html';
+  } catch (error) {
+     console.error(error)
+     alert('Erro')
+  }
+}
