@@ -148,13 +148,13 @@ btnConfirmFont.addEventListener('click', function () {
     } else {
          localStorage.setItem('backgroundText', 'false')
     }
-    btnConfirmFont.textContent = 'Alterações Salvas !'
     btnConfirmFont.classList.add('animationSave')
+    btnConfirmFont.textContent = 'Salvando...'
 
     setTimeout(function() {
         btnConfirmFont.classList.remove('animationSave')
         btnConfirmFont.textContent =  'Salvar'
-    }, 800);
+    }, 1800);
 });
 
 btnVoltar.addEventListener('click', function(){

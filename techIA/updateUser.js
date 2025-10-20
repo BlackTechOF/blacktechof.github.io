@@ -18,12 +18,25 @@ async function verificarUsername() {
     if (!dataVerificar.permitido) {
       console.log('inapropriado');
       alert('Nome de usuário inapropriado');
-      return;
+      return false;
     }
 
-    console.log('aceito');
+    console.log('aceito')
+    return true;
+  }  catch (error) {
+    console.error('Erro na verificação/atualização:', error);
+    alert('Erro inesperado ao verificar nome de usuario.');
+  }
+}
 
-    const resUpdate = await fetch('https://backend-blacktech.onrender.com/user/username', {
+   async function updateUsername() {
+    const token = localStorage.getItem('token');
+  const inputUpdateUsername = document.getElementById('inputUpdateUsername');
+  const username = inputUpdateUsername.value.trim();
+    try {
+      const permitido = await verificarUsername(username)
+      if (permitido) {
+           const resUpdate = await fetch('https://backend-blacktech.onrender.com/user/username', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -39,10 +52,10 @@ async function verificarUsername() {
     } else {
       alert('Erro: ' + (dataUpdate.error || 'Não foi possível atualizar o nome de usuário.'));
     }
-
-  } catch (error) {
-    console.error('Erro na verificação/atualização:', error);
-    alert('Erro inesperado ao verificar ou atualizar o nome de usuário.');
+  } else {
+    alert('falha na atualizaçao de usuario')
   }
-
-}
+    } catch(error) {
+       alert("faha na atualizaçao")
+    }
+   }
