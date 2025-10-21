@@ -11,8 +11,12 @@ body.dark .menu {
 
 body.dark #darkModeToggle svg,
 body.dark #logoutBtn svg, 
-body.dark #settings svg {
+body.dark #settings svg{
   fill: #ffffff;
+}
+
+body.dark #btnHome svg path {
+stroke: #ffffff;
 }
 
 body.dark #path1,
