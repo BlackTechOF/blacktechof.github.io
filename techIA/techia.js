@@ -76,8 +76,9 @@ function loginPage() {
 
 async function register() {
     const username = document.getElementById("username")?.value;
+    const email = document.getElementById("email")?.value;
     const password = document.getElementById("password")?.value;
-    if (!username || !password) return alert("Preencha usuário e senha.");
+    if (!username || !email || !password) return alert("Preencha os campos vazios.");
 
     loginButton.style.display = 'none';
     cadastroButton.style.display = 'none';
@@ -92,7 +93,7 @@ async function register() {
         const res = await fetch(`${API_URL}/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ username, email, password })
         });
 
         esconderCarregamento();
@@ -117,8 +118,9 @@ async function register() {
 
 async function login() {
     const username = document.getElementById("username")?.value;
+    const email = document.getElementById("email")?.value;
     const password = document.getElementById("password")?.value;
-    if (!username || !password) return alert("Preencha usuário e senha.");
+    if (!username || !email || !password) return alert("Preencha usuário e senha.");
 
     loginButton.style.display = 'none';
     cadastroButton.style.display = 'none';
@@ -133,7 +135,7 @@ async function login() {
         const res = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ username, email, password })
         });
 
         esconderCarregamento();
