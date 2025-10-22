@@ -133,6 +133,25 @@ main {
   align-items: flex-start;
 }
 
+.userData {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.userData button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 90px;
+  padding: 0;
+  background: white;
+}
+
+.userData button svg {
+  width: 100%;
+  height: 100%;
+}
 
 .message {
   padding: 7px 12px;

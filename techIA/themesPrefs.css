@@ -39,7 +39,7 @@ body.dark #btnVoltar svg path {
 }
 
 body.dark #confirmFont {
-    background: #edebeb;
+    background-color: #edebeb;
     color: #333;
     text-shadow: #555 1px 1px 1px;
     border: solid black;

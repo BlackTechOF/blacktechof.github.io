@@ -31,6 +31,7 @@ const sendBtn = document.getElementById("inputs");
 const cadastroFun = document.getElementById('cadastroFun');
 const loginFun = document.getElementById('loginFun');
 const cadastroButton = document.getElementById('cadastroBtn');
+const inputUsername = document.getElementById("username");
 const tituloPagLogin = document.getElementById('tituloPagLogin');
 const API_URL = "https://backend-blacktech.onrender.com";
 
@@ -61,6 +62,7 @@ function showLocalError(message) {
 function cadastroPage() {
     tituloPagLogin.textContent = 'Cadastrar em TechIA';
     cadastroFun.style.display = 'none';
+    inputUsername.style.display = '';
     loginFun.style.display = '';
     cadastroButton.style.display = '';
     loginButton.style.display = 'none';
@@ -69,6 +71,7 @@ function cadastroPage() {
 function loginPage() {
     tituloPagLogin.textContent = 'Fazer Login em TechIA';
     cadastroFun.style.display = '';
+    inputUsername.style.display = 'none';
     loginFun.style.display = 'none';
     cadastroButton.style.display = 'none';
     loginButton.style.display = '';
@@ -117,10 +120,9 @@ async function register() {
 }
 
 async function login() {
-    const username = document.getElementById("username")?.value;
     const email = document.getElementById("email")?.value;
     const password = document.getElementById("password")?.value;
-    if (!username || !email || !password) return alert("Preencha usuário e senha.");
+    if (!email || !password) return alert("Preencha usuário e senha.");
 
     loginButton.style.display = 'none';
     cadastroButton.style.display = 'none';
@@ -135,7 +137,7 @@ async function login() {
         const res = await fetch(`${API_URL}/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, email, password })
+            body: JSON.stringify({ email, password })
         });
 
         esconderCarregamento();

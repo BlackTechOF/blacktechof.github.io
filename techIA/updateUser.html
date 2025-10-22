@@ -29,19 +29,35 @@
     <main>
 
       <div class="updateDataInputs">
+        <div id="updateUsername" class='updateDataDiv'>
         <h3>Atualizar nome de usuario</h3>
 
         <input type="text" id="inputUpdateUsername" placeholder="Novo nome de usuário">
          <button id="verificarNome" onclick="updateUsername()">Verificar</button>
     </div>
 
+    <hr id="divisoria">
+
+    <div id="updateEmail" class="updateDataDiv">
     <h3>Atualizar email</h3>
 
     <input type="email" id="inputUpdateEmail" placeholder="Digite um endereço de email">
-    <button id="verificarEmail" onclick="verificarEmail()">Verificar</button>
+    <button id="verificarEmail" onclick="updateEmail()">Verificar</button>
+    </div>
 
-    <button onclick="deleteUser()">Delete User</button>
+    <hr id="divisoria">
+
+    <div id="updatePassword" class="updateDataDiv">
+    <h3>Atualizar senha do usuário</h3>
+
+    <input type="password" id="inputUpdatePassword" placeholder="Digite sua nova senha">
+    <button id="verificarSenha" onclick="updatePassword()">Verificar</button>
+    </div>
+
+    </div>
     </main>
+
+    <button id="deleteBtn" onclick="deleteUser()">Deletar</button>
 
 
     <script src="updateUser.js"></script>

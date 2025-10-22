@@ -22,7 +22,7 @@
 </g>
 </svg> TechIA</h2>
     <h2 id="tituloPagLogin">Fazer Login em TechIA</h2>
-    <input type="text" id="username" placeholder="Usuário" />
+    <input type="text" id="username" placeholder="Usuário" style="display: none;"/>
     <input type="email" id="email" placeholder="Email">
     <input type="password" id="password" placeholder="Senha" />
     <div class="auth-buttons">
@@ -54,6 +54,7 @@
 TechIA</h2>
       </div>
       <div class="menu-center">
+        <div class="userData"></div>
       </div>
       <div class="menu-right">
 
@@ -118,7 +119,7 @@ TechIA</h2>
 
       <div class="principal">
       <div class="chat-container">
-        <h2 id="h2DoChat">Olá, como posso ajudar?</h2>
+        <h2 id="h2DoChat"></h2>
         <div id="messages" class="messages"></div>
 
         <div class="input-area">
@@ -146,5 +147,6 @@ TechIA</h2>
   <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="themes.js"></script>
+  <script src="userData.js"></script>
 </body>
 </html>
