@@ -85,3 +85,6 @@ async function getUserData() {
 }
 
 window.onload = getUserData
+
+
+window.onload = getUserData
