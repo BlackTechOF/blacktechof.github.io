@@ -4,7 +4,7 @@ async function verificarUsername() {
   const username = inputUpdateUsername.value.trim();
 
   try {
-    const resVerificar = await fetch('https://backend-blacktech.onrender.com/check-username', {
+    const resVerificar = await fetch('http://localhost:3000/check-username', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ async function returnRolesSVg() {
   const token = localStorage.getItem('token')
 
   try {
-    const res = await fetch("https://backend-blacktech.onrender.com/get-data-user", {
+    const res = await fetch("http://localhost:3000/get-data-user", {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -79,7 +79,7 @@ async function getUserData() {
   const token = localStorage.getItem('token')
 
   try {
-    const res = await fetch("https://backend-blacktech.onrender.com/get-data-user", {
+    const res = await fetch("http://localhost:3000/get-data-user", {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -116,7 +116,7 @@ async function getUserData() {
     try {
       const permitido = await verificarUsername(username)
       if (permitido) {
-           const resUpdate = await fetch('https://backend-blacktech.onrender.com/user/username', {
+           const resUpdate = await fetch('http://localhost:3000/user/username', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ async function getUserData() {
     }
 
     try {
-    const res = await fetch("https://backend-blacktech.onrender.com/update-email", {
+    const res = await fetch("http://localhost:3000/update-email", {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -177,7 +177,7 @@ async function getUserData() {
     const token = localStorage.getItem('token')
     try {
       const password = document.getElementById('inputUpdatePassword').value;
-      const res = await fetch('https://backend-blacktech.onrender.com/updatePassword', {
+      const res = await fetch('http://localhost:3000/updatePassword', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -205,7 +205,7 @@ async function deleteUser() {
   const token = localStorage.getItem('token')
 
   try {
-  const res = await fetch("https://backend-blacktech.onrender.com/delete-user", {
+  const res = await fetch("http://localhost:3000/delete-user", {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

@@ -33,7 +33,7 @@ const loginFun = document.getElementById('loginFun');
 const cadastroButton = document.getElementById('cadastroBtn');
 const inputUsername = document.getElementById("username");
 const tituloPagLogin = document.getElementById('tituloPagLogin');
-const API_URL = "https://backend-blacktech.onrender.com";
+const API_URL = "http://localhost:3000";
 
 async function safeParseResponse(res) {
     const ct = res.headers.get("content-type") || "";
@@ -288,6 +288,7 @@ async function newChat() {
 }
 
 async function loadChats() {
+    getUserData();
     const res = await fetch(`${API_URL}/chatdb/list`, {
         headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
     });

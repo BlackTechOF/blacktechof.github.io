@@ -2,7 +2,7 @@ async function returnRolesSVg() {
   const token = localStorage.getItem('token')
 
   try {
-    const res = await fetch("https://backend-blacktech.onrender.com/get-data-user", {
+    const res = await fetch("http://localhost:3000/get-data-user", {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -49,7 +49,7 @@ async function getUserData() {
   const token = localStorage.getItem('token')
 
   try {
-    const res = await fetch("https://backend-blacktech.onrender.com/get-data-user", {
+    const res = await fetch("http://localhost:3000/get-data-user", {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -83,8 +83,3 @@ async function getUserData() {
     alert('Erro ao coletar seus dados!', error);
   }
 }
-
-window.onload = getUserData
-
-
-window.onload = getUserData
