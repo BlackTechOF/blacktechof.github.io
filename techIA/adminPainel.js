@@ -6,7 +6,7 @@ const dataOptions = document.querySelector('.dataOptions')
 
 async function verifyAdmin() {
     const token = localStorage.getItem('token');
-    const res = await fetch('/get-data-user', {
+    const res = await fetch('http://localhost:3000/get-data-user', {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -19,24 +19,23 @@ async function verifyAdmin() {
         return alert('erro ao coletar dados do usuario');
     }
 
-    if (data.role =! 'admin') {
+    if (data.role !== 'admin') {
         alert('voce nao é adm') 
-        return;
+        return false;
+    } else {
+        return true;
     }
-}
+};
 
 
 async function getDados() {
     const token = localStorage.getItem('token')
 
-    try {
-        const permitido = await verifyAdmin()
+    const permitido = await verifyAdmin()
 
-        if (!permitido) {
-            alert('tu nao e adm')
-            return;
-        }
-        
+        if (permitido) {
+            console.log('Admin detectado')
+    try {
         const email = document.getElementById('userEmailInput').value;
     const idUser = document.getElementById('userIdInput').value;
 
@@ -89,15 +88,26 @@ async function getDados() {
         console.error(error)
         alert('erro')
     }
-};
+    }
+}
 
 const rolesButtons = document.querySelectorAll('#rolesDiv .btnRole');
 
+const roleAdmin = document.getElementById('roleAdmin').value = 'admin'
 
+const roleTester = document.getElementById('roleTester').value = 'tester'
+
+const roleUser = document.getElementById('roleUser').value = 'user'
 
 rolesButtons.forEach(btn => {
     btn.addEventListener('click', async function () {
         const token = localStorage.getItem('token')
+
+        const permitido = await verifyAdmin()
+
+        if (permitido) {
+            console.log('Adm permitido pra mudança de cargo');
+
         try {
             const email = document.getElementById('userEmailInput')?.value.trim();
     const idUser = document.getElementById('userIdInput')?.value.trim();
@@ -145,9 +155,9 @@ rolesButtons.forEach(btn => {
             console.error(error)
             alert('Erro na autenticação com o servidor');
         }
+    }
     })
 })
- 
 inputEmail.addEventListener('keydown', async function(e){
     if (e.key === 'Enter') {
        await getDados()
