@@ -82,6 +82,30 @@ function carregarEcopontos() {
     .catch(err => console.error("Erro ao carregar GeoJSON:", err));
 }
 
+let buscaProximosAbortada = false;
+let buscaEmAndamento = false
+ const interromperBuscaEcopontos = document.getElementById('interromperBuscaEcopontos')
+
+function abortarEcopontosProximos() {
+  if (!buscaEmAndamento) return;
+
+  buscaProximosAbortada = true;
+  buscaEmAndamento = false;
+ 
+
+  const feedback = document.getElementById('feedback-proximidade');
+  if (feedback) feedback.style.display = 'none';
+
+  const btnEcopontosProximos = document.getElementById('btnEcopontosProximos');
+
+  interromperBuscaEcopontos.style.display = 'none'
+  btnEcopontosProximos.style.display = ''
+
+
+  console.log("Busca de ecopontos próximos cancelada.");
+}
+
+
 function configurarSidebar(data) {
   const btnEcopontosProximos = document.getElementById('btnEcopontosProximos');
   const sidebar = document.getElementById("sidebar");
@@ -96,13 +120,36 @@ function configurarSidebar(data) {
   const inputEcoPonto = document.getElementById('inputEcoPonto');
 
   btnEcopontosProximos.addEventListener('click', () => {
-    sidebar.style.display = ''
-    if (!navigator.geolocation) {
-      alert("Geolocalização não é suportada no seu navegador.");
+
+    if (buscaEmAndamento) {
+      console.log("Já existe uma busca em andamento.");
       return;
     }
 
+    buscaProximosAbortada = false;
+    buscaEmAndamento = true;
+
+    sidebar.style.display = '';
+    if (!navigator.geolocation) {
+      alert("Geolocalização não é suportada no seu navegador.");
+      buscaEmAndamento = false;
+      return;
+    }
+
+    const feedbackProximidade = document.getElementById('feedback-proximidade');
+    btnEcopontosProximos.style.display = 'none'
+    interromperBuscaEcopontos.style.display = ''
+
+    feedbackProximidade.style.display = '';
+
     navigator.geolocation.getCurrentPosition(position => {
+
+      if (buscaProximosAbortada) {
+        console.log("Busca abortada");
+        buscaEmAndamento = false;
+        return;
+      }
+
       const userLat = position.coords.latitude;
       const userLng = position.coords.longitude;
       const raioKm = 3;
@@ -110,6 +157,7 @@ function configurarSidebar(data) {
       const ecopontosProximos = [];
 
       ecopontosLayer.eachLayer(layer => {
+        if (buscaProximosAbortada) return;
         const ecoLat = layer.getLatLng().lat;
         const ecoLng = layer.getLatLng().lng;
         const distancia = calcularDistancia(userLat, userLng, ecoLat, ecoLng);
@@ -123,8 +171,23 @@ function configurarSidebar(data) {
         }
       });
 
-      console.log('achou os ecoponto')
+      if (buscaProximosAbortada) {
+        console.log("Busca abortada após cálculo.");
+        interromperBuscaEcopontos.style.display ='none';
+        btnEcopontosProximos.style.display = '';
+        buscaEmAndamento = false;
+        return;
+      }
+
+      feedbackProximidade.style.display = 'none'
       mostrarListaEcopontos(ecopontosProximos, listaBairros, listaEcopontos, tituloBairros, tituloEcopontos, voltarBtn, userLat, userLng);
+
+      interromperBuscaEcopontos.style.display = 'none'
+       btnEcopontosProximos.style.display = ''
+       buscaEmAndamento = false;
+        }, err => {
+    console.error("Erro ao obter localização:", err);
+    buscaEmAndamento = false;
     });
   });
 
@@ -158,7 +221,7 @@ function configurarSidebar(data) {
     });
   });
 
-  inputBairros.addEventListener('input', function() {
+  inputBairros.addEventListener('input', function () {
     const valor = inputBairros.value.toLowerCase();
     listaBairros.innerHTML = "";
 

@@ -112,16 +112,42 @@ main {
 
 #sidebar #btnEcopontosProximos {
   border-radius: 25px;
-  padding: 7px;
   width: 35px;
   height: 33px;
-  border: solid rgb(0, 255, 0);
-  background: #333;
+  padding: 3px;
+  border: solid #106cf9;
 }
 
 #sidebar #btnEcopontosProximos svg {
-  border-radius: 30px;
-  fill: rgb(0, 255, 0);
+  width: 100%;
+  height: 100%;
+}
+
+#sidebar #interromperBuscaEcopontos {
+  border-radius: 25px;
+  width: 36px;
+  height: 33px;
+  padding: 6px;
+  border: none;
+}
+
+#sidebar #interromperBuscaEcopontos svg {
+  width: 100%;
+  height: 100%;
+  fill: orangered;
+}
+
+@keyframes moverDireita {
+  0% {opacity: 0.2;}
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
+#feedback-proximidade {
+ display: inline-block;
+  animation-name: moverDireita;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
 }
 
 #map {
@@ -151,7 +177,8 @@ main {
 
 #sidebar #fecharSidebar {
   align-self: self-start;
-  width: 15%;
+  width: 30px;
+  height: 30px;
 }
 
 #sidebar input {
@@ -159,6 +186,11 @@ main {
   border: solid black;
   border-radius: 10px;
   padding: 3px;
+}
+
+#sidebar #voltarBtn {
+  width: 50px;
+  height: 25px;
 }
 
 .buscaBairroDiv {
