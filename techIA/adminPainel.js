@@ -4,11 +4,39 @@ const inputRole = document.getElementById('roleInput')
 const dataSection = document.querySelector('.data')
 const dataOptions = document.querySelector('.dataOptions')
 
+async function verifyAdmin() {
+    const token = localStorage.getItem('token');
+    const res = await fetch('/get-data-user', {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    });
+
+    const data = await res.json()
+
+    if (!res.ok) {
+        return alert('erro ao coletar dados do usuario');
+    }
+
+    if (data.role =! 'admin') {
+        alert('voce nao é adm') 
+        return;
+    }
+}
+
 
 async function getDados() {
     const token = localStorage.getItem('token')
 
     try {
+        const permitido = await verifyAdmin()
+
+        if (!permitido) {
+            alert('tu nao e adm')
+            return;
+        }
+        
         const email = document.getElementById('userEmailInput').value;
     const idUser = document.getElementById('userIdInput').value;
 
@@ -19,7 +47,7 @@ async function getDados() {
     } else if (idUser) {
         body = {idUser}
     } else {
-        body = null
+        alert('Preencha o email ou ID antes de atualizar o cargo');
     }
 
         const res = await fetch('http://localhost:3000/get-dados', {
@@ -63,12 +91,22 @@ async function getDados() {
     }
 };
 
-async function changeRole() {
-    const token = localStorage.getItem('token')
-    try {
-        const email = document.getElementById('userEmailInput').value;
-    const idUser = document.getElementById('userIdInput').value;
-    const role = document.getElementById('roleInput').value;
+const rolesButtons = document.querySelectorAll('#rolesDiv .btnRole');
+
+
+
+rolesButtons.forEach(btn => {
+    btn.addEventListener('click', async function () {
+        const token = localStorage.getItem('token')
+        try {
+            const email = document.getElementById('userEmailInput')?.value.trim();
+    const idUser = document.getElementById('userIdInput')?.value.trim();
+    const role = btn.value;
+
+    if (!email && !idUser) {
+        alert('Insira um email ou ID valido de um usuário para mudar as permissões')
+        return;
+    }
 
     let body;
 
@@ -79,29 +117,37 @@ async function changeRole() {
     } else {
         body = null
     }
-    
+
     const res = await fetch('http://localhost:3000/change-roles', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(body),
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(body),
     });
 
     const data = await res.json()
 
     if (!res.ok) {
-        console.log(data)
+        console.error('Erro na API', data)
+        alert(`Erro: ${data.message} || Falha ao atualizar o cargo`)
+        return;
     }
 
-    alert('Cargo atualizado com sucesso');
-    } catch (error) {
-        console.error(error)
-        alert('erro 500')
+    if (email) {
+    alert(`Cargo do usuário ${email} atualizado com sucesso para ${role}`)
+    } else if (idUser) {
+        alert(`Cargo do usuário ${idUser} atualizado com sucesso para ${role}`)
     }
-};
-
+    console.log(data);
+        } catch (error) {
+            console.error(error)
+            alert('Erro na autenticação com o servidor');
+        }
+    })
+})
+ 
 inputEmail.addEventListener('keydown', async function(e){
     if (e.key === 'Enter') {
        await getDados()
@@ -111,12 +157,6 @@ inputEmail.addEventListener('keydown', async function(e){
 inputId.addEventListener('keydown', async function(e){
     if (e.key === 'Enter') {
        await getDados()
-    }
-})
-
-inputRole.addEventListener('keydown', async function(e){
-    if (e.key === 'Enter') {
-       await changeRole()
     }
 })
 
