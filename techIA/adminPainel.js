@@ -20,52 +20,51 @@ async function verifyAdmin() {
     }
 
     if (data.role !== 'admin') {
-        alert('voce nao é adm') 
+        alert('voce nao é adm')
         return false;
     } else {
         return true;
     }
 };
 
-
 async function getDados() {
     const token = localStorage.getItem('token')
 
     const permitido = await verifyAdmin()
 
-        if (permitido) {
-            console.log('Admin detectado')
-    try {
-        const email = document.getElementById('userEmailInput').value;
-    const idUser = document.getElementById('userIdInput').value;
+    if (permitido) {
+        console.log('Admin detectado')
+        try {
+            const email = document.getElementById('userEmailInput').value;
+            const idUser = document.getElementById('userIdInput').value;
 
-    let body;
+            let body;
 
-    if (email) {
-        body = {email}
-    } else if (idUser) {
-        body = {idUser}
-    } else {
-        alert('Preencha o email ou ID antes de atualizar o cargo');
-    }
+            if (email) {
+                body = { email }
+            } else if (idUser) {
+                body = { idUser }
+            } else {
+                alert('Preencha o email ou ID antes de atualizar o cargo');
+            }
 
-        const res = await fetch('http://localhost:3000/get-dados', {
-            method: 'POST',
-           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-           },
-           body: JSON.stringify(body)
-        });
+            const res = await fetch('http://localhost:3000/get-dados', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(body)
+            });
 
-        if (!res.ok) {
-            alert('Erro ao coletar dados de usuario (Front)')
-            return;
-        }
+            if (!res.ok) {
+                alert('Erro ao coletar dados de usuario (Front)')
+                return;
+            }
 
-        const data = await res.json()
+            const data = await res.json()
 
-        dataSection.innerHTML = `
+            dataSection.innerHTML = `
         <p><strong>User:</strong> ${data.username}</p>
         <p><strong>Email:</strong> ${data.email}</p>
         <p id='dataId'><strong>ID:</strong><strong id='partId'>${data._id}</strong> <button id='copiarId'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
@@ -73,23 +72,25 @@ async function getDados() {
 </svg></button></p>
         <p><strong>Permissões:</strong> ${data.role}</p>
         `
-        document.getElementById('copiarId').addEventListener('click', async () => {
-            const texto = document.getElementById('partId').textContent;
-          
-            try {
-              await navigator.clipboard.writeText(texto);
-              alert('Texto copiado com sucesso!');
-            } catch (err) {
-              console.error('Erro ao copiar: ', err);
-            }
-          });
 
-    } catch (error) {
-        console.error(error)
-        alert('erro')
-    }
+            document.getElementById('copiarId').addEventListener('click', async () => {
+                const texto = document.getElementById('partId').textContent;
+
+                try {
+                    await navigator.clipboard.writeText(texto);
+                    alert('Texto copiado com sucesso!');
+                } catch (err) {
+                    console.error('Erro ao copiar: ', err);
+                }
+            });
+
+        } catch (error) {
+            console.error(error)
+            alert('erro')
+        }
     }
 }
+
 
 const rolesButtons = document.querySelectorAll('#rolesDiv .btnRole');
 
@@ -108,65 +109,65 @@ rolesButtons.forEach(btn => {
         if (permitido) {
             console.log('Adm permitido pra mudança de cargo');
 
-        try {
-            const email = document.getElementById('userEmailInput')?.value.trim();
-    const idUser = document.getElementById('userIdInput')?.value.trim();
-    const role = btn.value;
+            try {
+                const email = document.getElementById('userEmailInput')?.value.trim();
+                const idUser = document.getElementById('userIdInput')?.value.trim();
+                const role = btn.value;
 
-    if (!email && !idUser) {
-        alert('Insira um email ou ID valido de um usuário para mudar as permissões')
-        return;
-    }
+                if (!email && !idUser) {
+                    alert('Insira um email ou ID valido de um usuário para mudar as permissões')
+                    return;
+                }
 
-    let body;
+                let body;
 
-    if (email) {
-        body = {email, role}
-    } else if (idUser) {
-        body = {idUser, role}
-    } else {
-        body = null
-    }
+                if (email) {
+                    body = { email, role }
+                } else if (idUser) {
+                    body = { idUser, role }
+                } else {
+                    body = null
+                }
 
-    const res = await fetch('http://localhost:3000/change-roles', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(body),
-    });
+                const res = await fetch('http://localhost:3000/change-roles', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(body),
+                });
 
-    const data = await res.json()
+                const data = await res.json()
 
-    if (!res.ok) {
-        console.error('Erro na API', data)
-        alert(`Erro: ${data.message} || Falha ao atualizar o cargo`)
-        return;
-    }
+                if (!res.ok) {
+                    console.error('Erro na API', data)
+                    alert(`Erro: ${data.message} || Falha ao atualizar o cargo`)
+                    return;
+                }
 
-    if (email) {
-    alert(`Cargo do usuário ${email} atualizado com sucesso para ${role}`)
-    } else if (idUser) {
-        alert(`Cargo do usuário ${idUser} atualizado com sucesso para ${role}`)
-    }
-    console.log(data);
-        } catch (error) {
-            console.error(error)
-            alert('Erro na autenticação com o servidor');
+                if (email) {
+                    alert(`Cargo do usuário ${email} atualizado com sucesso para ${role}`)
+                } else if (idUser) {
+                    alert(`Cargo do usuário ${idUser} atualizado com sucesso para ${role}`)
+                }
+                console.log(data);
+            } catch (error) {
+                console.error(error)
+                alert('Erro na autenticação com o servidor');
+            }
         }
-    }
     })
 })
-inputEmail.addEventListener('keydown', async function(e){
+inputEmail.addEventListener('keydown', async function (e) {
     if (e.key === 'Enter') {
-       await getDados()
+        await getDados()
     }
 });
 
-inputId.addEventListener('keydown', async function(e){
+inputId.addEventListener('keydown', async function (e) {
     if (e.key === 'Enter') {
-       await getDados()
+        await getDados()
     }
 })
 
@@ -179,3 +180,20 @@ function dadosSection() {
     dataOptions.style.display = 'none'
     dataSection.style.display = ''
 }
+ 
+const btnShowPainel = document.getElementById('btnAdminPainel')
+
+btnShowPainel.addEventListener('click', async function(){
+    const permitido = await verifyAdmin()
+
+    if (permitido) {
+    const adminPainel = document.querySelector('.adminPainel')
+    if (adminPainel.style.visibility === 'hidden') {
+        adminPainel.style.visibility = 'visible'
+    } else {
+        adminPainel.style.visibility = 'hidden'
+    }
+    } 
+})
+    
+    

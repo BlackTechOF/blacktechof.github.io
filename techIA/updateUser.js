@@ -102,7 +102,7 @@ async function getUserData() {
     userDataDiv.innerHTML = `
     <p id='username'>${data.username}</p>
     <p id='username'>${data.email}</p>
-    <button id='role'>${getRoleSvg}</button>
+    <button id='role' onclick='showAdminPainel()'>${getRoleSvg}</button>
     `
   } catch (error) {
     console.error(error)
@@ -229,4 +229,9 @@ async function deleteUser() {
 }
 }
 
-window.onload = getUserData
+window.onload = getUserData()
+
+
+
+
+
