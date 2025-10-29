@@ -1,0 +1,249 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Story+Script&family=Kanit&Poppins&family=Cormorant+Garamont&family=Quicksand&Changa+One&display=swap');
+
+body {
+  font-family: 'Lucida Sans', sans-serif;
+  background: #333;
+  color: white;
+  height: 100%;
+  padding: 15px;
+}
+
+header {
+  background: #222;
+  border-radius: 10px;
+}
+
+.questions {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.sobreEcoponto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-top: 20px;
+}
+
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+main section:hover {
+  transform: scale(1.05);
+}
+
+.logo img {
+  width: 100px;
+  height: auto;
+}
+
+.logo nav {
+  display: flex;
+  gap: 150px;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.logo nav a img {
+  width: 30px;
+  height: auto;
+  transition: transform 0.3s ease;
+  border: solid white;
+  border-radius: 30px;
+  padding: 10px;
+}
+
+.logo nav a svg {
+  border: solid white;
+  padding: 10px;
+  border-radius: 30px;
+  width: 30px;
+  transition: transform 0.3s ease;
+}
+
+.logo nav a img:hover {
+  transform: scale(1.2);
+}
+
+.logo nav a svg:hover {
+  transform: scale(1.2);
+}
+
+main {
+  margin-top: 40px;
+  display: flex;
+  gap: 40px;
+  padding: 0 20px;
+}
+
+.introducao {
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#sobrenos {
+  font-size: 24px;
+}
+
+section h2 {
+  display: inline-block;
+  padding: 5px;
+}
+
+section h2 span {
+   font-size: 17px;
+}
+
+@keyframes ecopontoTitle {
+  0% {
+    background-position: 200% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.sobreEcoponto #title {
+  background: linear-gradient( to right,rgb(25, 219, 7), white, rgb(25, 219, 7), white, rgb(25, 219, 7));
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ecopontoTitle 5s linear infinite;
+  text-shadow: none;
+}
+
+.sobreEcoponto .faq-item-ecoponto {
+  height: auto;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.sobreEcoponto a {
+  background: white;
+  padding: 4px;
+  border: solid black;
+  border-radius: 10px;
+  text-shadow: black 1px 1px 1px;
+}
+
+section h2:hover {
+  background-position: left bottom;
+  color: white;
+}
+
+section {
+  text-shadow: black 1px 2px 1px;
+}
+
+.projetos img {
+  width: 100%;
+  max-width: 600px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+}
+
+.perguntas {
+  text-align: center;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background: #222;
+  margin-top: 40px;
+}
+
+footer h5 {
+  margin: 0;
+  font-size: 14px;
+  color: #bbb;
+}
+
+.divisoria {
+  height: 50px;
+}
+
+.faq-item {
+  background: #555;
+  border: solid white;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.faqs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 0;
+}
+
+
+@media screen and (max-width: 768px) {
+  body,html {
+    margin: 0;
+    padding: 5px;
+  }
+
+  header {
+    padding: 0;
+  }
+
+  .sobreEcoponto {
+  display: grid;
+  align-items: center;
+  text-align: center;
+}
+
+  .logo nav{
+     gap: 8px;
+  }
+
+  .logo #imglogo {
+     width: 25%;
+  }
+
+  .logo nav a img {
+    width: 30px;
+    height: 30px;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+#divisoria {
+  width: 100%;
+}
+
+.questions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+section {
+  padding: 8px;
+}
+
+section p {
+  font-size: 18px;
+}
+
+.faqs {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 30px;
+    padding: 10px;
+}
+}

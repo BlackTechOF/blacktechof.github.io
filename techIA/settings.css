@@ -1,0 +1,313 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Story+Script&family=Kanit&family=Poppins&family=Cormorant+Garamont&family=Quicksand&Changa+One&display=swap');
+
+body, html {
+font-family: 'Nunito';
+align-items: center;
+text-align: center;
+height: 100%;
+}
+
+.title-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+}
+
+.title-flex h1 {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+  padding: 15px;
+}
+
+#darkModeToggle {
+  position: absolute;
+  right: 0; 
+  margin-right: 20px; 
+  background: white;
+  border: solid black;
+  cursor: pointer;
+  align-self: self-start;
+  color: black;
+  width: 37px;
+  height: 37px;
+  border-radius: 50%;
+}
+
+#darkModeToggle svg{
+   width: 100%;
+   height: 100%;
+}
+
+.updateUserData {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.updateUserData ul p {
+    display: flex;
+    flex-direction: column;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.updateUserData button{
+  width: 50px;
+  height: 50px;
+  border:solid black;
+  background: white;
+  border-radius: 30px;
+  padding: 10px;
+}
+
+.updateUserData button:hover {
+    background: #dcd9d9;
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+.updateUserData a svg {
+    width: 100%;
+    height: 100%;
+}
+
+.titles {
+   border: solid #333;
+   padding: 3px;
+   border-radius: 15px;
+   width: 90%;
+   justify-self: center;
+}
+
+#btnHome svg {
+    padding: 0;
+}
+
+.btnConfirmDiv {
+    align-self: center;
+    justify-self: center;
+    display: flex;
+    gap: 15px;
+    width: 80%;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+#btnVoltar {
+    width: 55px;
+    border-radius: 40px;
+    height: 50px;
+    border: solid black;
+    background: black;
+}
+
+#btnVoltar:hover {
+    background: #333;
+    transform: scale(1.01);
+}
+
+#btnVoltar svg path {
+    fill: #ffffff;
+}
+
+.messagesStyle {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    background: transparent;
+}
+
+#fontSize {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.inputsDefSombraLados {
+    display: flex;
+}
+
+.optionsFont h3 {
+    border: solid gray 2px;
+    box-shadow: black 1px 1px 2px;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#fontStyle {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+
+#confirmFont {
+    padding: 5px;
+    background-color: black;
+    width: 100%;
+    color: white;
+    text-shadow: black 1px 2px 1px;
+    border: solid black 3px;
+    border-radius: 10px;
+    font-family: "Nunito";
+    font-size: 20px;
+}
+
+#confirmFont:hover {
+    background-color: #333;
+    transform: scale(1.01);
+}
+
+.fonte {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 15%;
+}
+
+h3 svg {
+    width: 100%;
+    height: 100%;
+}
+
+h3 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 90%;
+    justify-self: center;
+}
+
+h3 button {
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    background: transparent;
+    border: solid black;
+    border-radius: 30px;
+    align-self: self-end;
+}
+
+select {
+    border: none;
+    box-shadow: black 1px 1px 2px;
+    border-radius: 5px;
+    padding: 3px;
+    font-family: "Lucida Sans";
+    font-weight: bold;
+}
+
+select option {
+   background: none;
+   
+}
+
+.testecor {
+  background: #e5e0e0;
+}
+
+input[type='color'] {
+    border: solid gray 2px;
+    padding: 0;
+    background: none;
+    width: 80%;
+    border-radius: 5px;
+}
+
+input[type="color"].inputDisabled {
+  background-color: #e5e0e0;
+  border:solid transparent;
+}
+
+#divCorTextShadow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#demoFonteDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    resize: vertical;
+}
+
+#demoFonte {
+   display: block;
+}
+
+#btnVoltar svg {
+    width: 100%;
+    height: 100%;
+}
+
+.background {
+    border: solid black;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    justify-self: center;
+    width: 80%;
+}
+
+.background #user {
+    background: none;
+    padding: 6px 20px;
+    align-self: self-end;
+    border-radius: 10px;
+    margin-right: 5%;
+    border: none;
+}
+
+.background #bot {
+    align-self: self-start;
+    padding: 6px 20px;
+    margin-left: 5%;
+}
+
+.background .inputsFundoBackground {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.background span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#divisoria {
+    width: 100%;
+    border: solid black 1px;
+}
+
+@keyframes moverFundoVerde {
+  0% {
+    background-position: 200% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animationSave {
+  background: linear-gradient( to right,rgb(25, 219, 7), white, rgb(25, 219, 7), white, rgb(25, 219, 7));
+  background-size: 200% auto;
+  animation: moverFundoVerde 8s linear infinite;
+}
+

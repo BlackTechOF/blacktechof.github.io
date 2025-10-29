@@ -1,0 +1,164 @@
+/* ===== DARK MODE ===== */
+body.dark {
+  background: #121212;
+  color: #f0f0f0;
+}
+
+body.dark .menu {
+  background: #333;
+  color: rgb(209, 203, 203);
+}
+
+body.dark #darkModeToggle svg,
+body.dark #logoutBtn svg, 
+body.dark #settings svg{
+  fill: #ffffff;
+}
+
+body.dark #btnHome svg path {
+stroke: #ffffff;
+}
+
+body.dark #path1,
+body.dark #path2,
+body.dark #path3 {
+  stroke: #ffffff;
+}
+
+body.dark .sidebar {
+  background: #333;
+}
+
+body.dark #chat-list li{
+   background: #333;
+   color: #e5e0e0;
+   border: solid #e5e0e0;
+}
+
+body.dark #chat-list li svg {
+  fill: #e5e0e0;
+}
+
+body.dark #deleteAllChats {
+  background: #e5e0e0;
+}
+
+body.dark #new-chat-btn {
+  background: #e5e0e0;
+  color: black;
+  font-weight: bold;
+}
+
+body.dark #fecharSideBar {
+  background: none;
+  border: none;
+}
+
+
+body.dark #logoSideBar1,
+body.dark #logoSideBar2 {
+  fill: #FFFFFF;
+}
+
+body.dark #pathFecharSideBar1,
+body.dark #pathFecharSideBar2 {
+  fill: #FFFFFF;
+}
+
+body.dark .menu-left svg g {
+  fill: #ffffff;
+}
+
+body.dark #inputs {
+  background: #333;
+  border: solid #e5e0e0;
+}
+
+body.dark #pathSideBar1,
+body.dark #pathSideBar2 {
+  fill: #FFFFFF;
+}
+
+body.dark .menu button {
+  border: solid #e5e0e0;
+}
+
+body.dark .chat-container {
+  background: #121212;
+}
+
+body.dark .messages {
+  background: #121212;
+}
+
+body.dark .message.bot {
+  background: #2a2a2a;
+  border-color: #555;
+  color: #fff;
+}
+
+body.dark .message.user {
+  background: #333;
+  border-color: #555;
+  color: #fff;
+}
+
+body.dark input {
+  background: #555;
+  color: black;
+  border: 2px solid #333;
+}
+
+body.dark button {
+  background: #555;
+  color: #fff;
+  border: solid #555;
+}
+
+body.dark button:hover {
+  background: #333;
+  color: #fff;
+}
+
+body.dark .divisoria {
+  height: 1px;
+  color: white;
+  background: white;
+}
+
+body.dark .input-area {
+  background: #333;
+  border: solid black;
+}
+/* Dark Mode Tela Auth */
+
+body.dark h2 {
+    color: #e5e0e0;
+}
+
+body.dark #auth-container svg g {
+  background: transparent;
+  fill: #e5e0e0;
+}
+
+body.dark #auth-container button {
+  color: white;
+}
+
+body.dark #darkModeToggleAuth {
+  background: #333;
+  border: solid white;
+}
+
+body.dark #darkModeToggleAuth svg {
+  fill: #e5e0e0;
+}
+
+body.dark input {
+  background: #555;
+  color: #e5e5e5;
+}
+
+body.dark input::placeholder {
+  color: #e5e0e0;
+}

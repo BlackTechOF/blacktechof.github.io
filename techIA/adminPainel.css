@@ -1,0 +1,39 @@
+.adminPainel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.adminOptions {
+  border: solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.data {
+  border: solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.data-ban {
+  border: solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.adminPainel .roles button {
+  width: 30px;
+  height: 30px;
+}
+
+.adminPainel #roles svg {
+  width: 100%;
+  height: 100%;
+}

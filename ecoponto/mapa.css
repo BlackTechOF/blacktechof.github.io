@@ -1,0 +1,408 @@
+body {
+  font-family: 'Lucida Sans', sans-serif;
+  background: #333;
+  color: white;
+  height: 100%;
+}
+
+header {
+  background: #222;
+  border-radius: 10px;
+  z-index: 100;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#divisoria {
+  height: 80px;
+}
+
+main section:hover {
+  transform: scale(1.05);
+}
+
+.logo img {
+  width: 100px;
+}
+
+.logo nav {
+  display: flex;
+  gap: 150px;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.logo nav a img {
+  width: 30px;
+  height: auto;
+  transition: transform 0.3s ease;
+  border: solid white;
+  border-radius: 30px;
+  padding: 10px;
+}
+
+.logo nav a svg {
+  width: 30px;
+  height: auto;
+  transition: transform 0.3s ease;
+  border: solid white;
+  border-radius: 30px;
+  padding: 10px;
+}
+
+
+.logo nav a img:hover {
+  transform: scale(1.2);
+}
+
+.logo nav a svg:hover {
+  transform: scale(1.2);
+} 
+
+#divPesquisa {
+  position: relative;     
+  display: flex;
+  align-items: center;
+  background:#333;
+  border: solid #555;
+  gap: 10px;
+  border-radius: 8px;
+  z-index: 200; 
+  padding: 5px;
+  width: 46%;
+  margin-top: 1%;
+  justify-content: center;
+  
+}
+
+#divPesquisa button {
+  background: white;
+  width: 35px;
+  height: 35px;
+  border: solid black;
+  border-radius: 15px;
+  padding: 2px;
+}
+
+#divPesquisa button svg {
+  width: 100%;
+  height: 100%;
+}
+
+#inputBairros::placeholder {
+  text-align: center;
+}
+
+#divPesquisa #inputEcoPonto {
+  border: solid black;
+  padding: 3px;
+  border-radius: 10px;
+  width: 50%;
+}
+
+main {
+  padding-top: 2%;
+  height: 100%;
+}
+
+#sidebar #btnEcopontosProximos {
+  border-radius: 25px;
+  width: 35px;
+  height: 33px;
+  padding: 3px;
+  border: solid #106cf9;
+}
+
+#sidebar #btnEcopontosProximos svg {
+  width: 100%;
+  height: 100%;
+}
+
+#sidebar #interromperBuscaEcopontos {
+  border-radius: 25px;
+  width: 36px;
+  height: 33px;
+  padding: 6px;
+  border: none;
+}
+
+#sidebar #interromperBuscaEcopontos svg {
+  width: 100%;
+  height: 100%;
+  fill: orangered;
+}
+
+@keyframes moverDireita {
+  0% {opacity: 0.2;}
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
+#feedback-proximidade {
+ display: inline-block;
+  animation-name: moverDireita;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  justify-self: center;
+  position: absolute;
+  z-index: 99;
+}
+
+#sidebar {
+  position: relative;
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1%;
+  height: 320px;   
+  overflow-y: auto;
+  background: #fff;
+  color: black;
+  padding: 5px;
+  border-radius: 8px;
+  border: solid black 1px;
+  z-index: 200;
+}
+
+#sidebar #fecharSidebar {
+  align-self: self-start;
+  width: 30px;
+  height: 30px;
+}
+
+#sidebar input {
+  width: 90%;
+  border: solid black;
+  border-radius: 10px;
+  padding: 3px;
+}
+
+#sidebar #voltarBtn {
+  width: 50px;
+  height: 25px;
+}
+
+.buscaBairroDiv {
+  display: flex;
+  gap: 10px;
+}
+
+#sidebar h3 {
+  text-align: center;
+}
+
+#sidebar ul {
+  display: flex;
+flex-direction: column;
+gap: 8px;
+margin-left: -5%;
+}
+
+#sidebar li {
+  border-bottom: solid black 1px;
+  color: rgb(111, 104, 104);
+  text-align: start;
+  cursor: pointer;
+}
+
+#sidebar li:hover {
+  transform: scale(1.1);
+  color: rgb(6, 88, 6);
+}
+
+#sidebar button {
+  border: solid black;
+  border-radius: 5px;
+  background: white;
+}
+
+#sidebar button {
+  width: 100%;
+  height: 100%;
+}
+
+@media screen and (max-width: 768px) {
+
+  body,html {
+    padding: 0;
+    margin: 0;
+  }
+
+  header {
+    padding: 0;
+    background: none;
+    align-items: center;
+  }
+
+  .logo {
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .logo nav {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+  .logo #imglogo {
+     width: 22%;
+  }
+
+  .logo nav a img {
+    width: 30px;
+    height: auto;
+    border: solid white;
+    border-radius: 90px;
+    padding: 10px;
+  }
+
+  .logo nav a svg {
+    border-radius: 90px;
+    border: solid white;
+    padding: 10px;
+    width: 30px;
+    height: 30px;
+  }
+
+   #map { 
+    height: 100%; 
+    width: 100%; 
+    z-index: 98;
+  }
+  
+  
+.zoomDiv {
+  display: flex;
+  gap: 5px;
+}
+
+#divPesquisa {
+  gap: 6px;
+  align-self: center;
+  width: 90%;
+  margin-left: 1.5%;
+}
+
+#divPesquisa button {
+ width: 37px;
+ height: 36px;
+}
+
+#divPesquisa #inputEcoPonto {
+  width: 40%;
+}
+  
+  #divPesquisa svg{
+   width: 100%;
+   height: 100%;
+  }
+  
+  #abrirSideBar {
+   height: 45px;
+    width: 45px;
+    border-radius: 30px;
+    background: white;
+    border: solid black;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #ativarInput {
+    height: 45px;
+    width: 45px;
+    border-radius: 30px;
+    background: white;
+    border: solid black;
+  }
+  
+  #ativarInput img {
+    width: 100%;
+  }
+  
+  #inputEcoPonto {
+    border: solid black;
+    border-radius: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+
+  
+  .divisoria {
+    height: 80px;
+  }
+
+  .sidebarActive {
+    display: none;
+  }
+  
+  #sidebar {
+  width: 60%;
+  align-items: center;
+  text-align: center;
+  gap: 15px;
+  margin-left: 1.5%;
+  max-height: 300px;    /* limite de altura com scroll */
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.2);
+  z-index: 100;
+}
+
+#sidebar li {
+  text-align: center;
+}
+
+.flexColumnSidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+  
+  #sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  #sidebar li {
+    cursor: pointer;
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+  }
+  #sidebar li:hover {
+    background: #f0f0f0;
+  }
+  
+  #fecharSidebar {
+    background: transparent;
+    border: none;
+    float: right;
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  #tituloEcopontos, #listaEcopontos {
+    display: none;
+  }
+
+
+}

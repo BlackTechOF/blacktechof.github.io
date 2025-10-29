@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar dados de usuário</title>
+    <link rel="stylesheet" href="updateUser.css">
+</head>
+
+<body>
+    <header>
+        <h2><svg xmlns="http://www.w3.org/2000/svg" version="1.0" viewBox="0 0 300.000000 300.000000" class="icon"
+                preserveAspectRatio="xMidYMid meet">
+                <g transform="translate(0.000000,300.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
+                    <path id="logoTechIA1"
+                        d="M1395 2957 c-33 -18 -195 -111 -360 -207 -346 -200 -569 -328 -709 -408 -62 -36 -106 -68 -118 -87 -17 -28 -18 -68 -18 -748 0 -762 -1 -747 46 -788 11 -9 111 -70 224 -134 225 -129 465 -268 780 -450 172 -99 213 -119 255 -122 49 -4 55 -2 365 177 173 100 421 243 550 317 331 191 338 194 368 226 l27 28 3 325 c3 299 1 325 -14 331 -18 7 -123 -45 -201 -97 l-38 -26 -5 -184 c-3 -113 -10 -193 -17 -205 -16 -29 -51 -58 -103 -87 -25 -13 -180 -103 -345 -198 -536 -310 -535 -310 -584 -310 -47 0 -27 -11 -631 338 -359 207 -373 216 -397 251 l-23 34 0 564 c0 597 0 593 46 635 11 9 105 66 209 126 105 60 316 182 469 271 342 197 316 192 491 93 249 -141 811 -466 832 -481 49 -35 53 -62 53 -319 0 -132 3 -247 6 -256 11 -27 46 -17 149 42 l100 58 3 279 c2 258 1 282 -16 310 -15 23 -165 114 -630 383 -696 400 -651 382 -767 319z" />
+                    <path id="logoTechIA2"
+                        d="M1440 2457 c-107 -59 -633 -363 -682 -394 -47 -29 -55 -79 -20 -115 9 -9 174 -106 366 -217 312 -179 355 -201 395 -201 48 0 79 16 425 217 88 51 164 93 168 93 4 0 8 -154 8 -343 l0 -342 -263 -153 c-145 -83 -278 -157 -296 -163 -49 -17 -87 -5 -231 79 -74 43 -189 110 -255 148 -66 38 -128 77 -137 86 -16 16 -18 41 -18 243 l0 225 -102 60 c-66 39 -112 59 -128 58 l-25 -3 -3 -358 -2 -358 22 -20 c41 -37 782 -459 816 -465 45 -9 78 6 277 121 94 54 260 149 370 212 110 63 208 124 218 135 16 19 17 57 17 500 l0 479 -22 22 c-26 26 -220 137 -238 137 -13 0 -56 -24 -369 -204 -234 -134 -229 -134 -391 -40 -134 77 -144 85 -136 111 8 26 235 153 285 160 31 4 52 -1 92 -22 28 -14 60 -24 71 -22 31 9 207 111 212 125 11 25 -9 41 -157 127 -162 94 -216 110 -267 82z" />
+                </g>
+            </svg>
+            TechIA</h2>
+
+            <div class="userData">
+
+            </div>
+    </header>
+
+    <main>
+
+      <div class="updateDataInputs">
+        <div id="updateUsername" class='updateDataDiv'>
+        <h3>Atualizar nome de usuario</h3>
+
+        <input type="text" id="inputUpdateUsername" placeholder="Novo nome de usuário">
+         <button id="verificarNome" onclick="updateUsername()">Verificar</button>
+    </div>
+
+    <hr id="divisoria">
+
+    <div id="updateEmail" class="updateDataDiv">
+    <h3>Atualizar email</h3>
+
+    <input type="email" id="inputUpdateEmail" placeholder="Digite um endereço de email">
+    <button id="verificarEmail" onclick="updateEmail()">Verificar</button>
+    </div>
+
+    <hr id="divisoria">
+
+    <div id="updatePassword" class="updateDataDiv">
+    <h3>Atualizar senha do usuário</h3>
+
+    <input type="password" id="inputUpdatePassword" placeholder="Digite sua nova senha">
+    <button id="verificarSenha" onclick="updatePassword()">Verificar</button>
+    </div>
+
+    </div>
+    </main>
+
+    <button id="deleteBtn" onclick="deleteUser()">Deletar</button>
+
+
+    <script src="updateUser.js"></script>
+</body>
+
+</html>

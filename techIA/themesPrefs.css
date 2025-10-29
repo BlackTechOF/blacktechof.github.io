@@ -1,0 +1,58 @@
+body.dark {
+    background: #333;
+    color: white;
+}
+
+body.dark h2 {
+    background: #333;
+    border: solid #edebeb;
+}
+
+body.dark h3 button {
+    border: solid #edebeb;
+}
+
+body.dark h3 button svg {
+    fill: #edebeb;
+}
+
+body.dark h3 {
+    box-shadow: #edebeb 1px 1px 2px;
+}
+
+body.dark .messagesStyle {
+    background: #333;
+}
+
+body.dark .divisoria,
+body.dark #divisoria {
+   border: solid #edebeb 1px;
+}
+
+body.dark #btnVoltar {
+    background: #edebeb;
+    border: solid black;
+}
+
+body.dark #btnVoltar svg path {
+    fill: #000000;
+}
+
+body.dark #confirmFont {
+    background-color: #edebeb;
+    color: #333;
+    text-shadow: #555 1px 1px 1px;
+    border: solid black;
+}
+
+body.dark .background {
+    border: solid #edebeb;
+}
+
+body.dark .btnConfirmDiv {
+    background: #333;
+}
+
+body.dark .messagesStyle #user{
+    color: black;
+}

@@ -1,0 +1,1385 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Story+Script&family=Kanit&Poppins&family=Cormorant+Garamont&family=Quicksand&Changa+One&display=swap');
+
+body, html {
+  font-family: Arial, sans-serif;
+  background: white;
+  height: 100%;
+  margin: 0;
+}
+
+main {
+  display: flex;
+  height: calc(100vh - 60px);
+  width: 100%;
+}
+
+#loginFun,
+#cadastroFun {
+  border: none;
+  background: none;
+  color: black;
+}
+
+.loadingScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  background: none;
+  z-index: 9999;
+}
+
+.loadingScreen h3 {
+  display: flex;
+  position: relative;
+  bottom: 7%;
+}
+
+.loadingScreen img {
+  background: black;
+  border-radius: 30px;
+  padding: 10px;
+}
+
+#logoutBtn {
+  display: flex;
+  align-items: center;
+  align-self: center;
+  gap: 5px;
+}
+
+#logoutBtn svg {
+ width: 25px;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  position: fixed;
+  width: 100%;
+  background: white;
+  z-index: 100;
+}
+
+.menu-left {
+  display: flex;
+}
+
+.menu-left button {
+  width: 100%;
+  height: 50px;
+}
+
+.menu-left button svg {
+  width: 100%;
+  height: 100%;
+}
+
+.menu-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.menu-center svg {
+  width: 100%;
+  height: 100%;
+}
+
+.menu-right {
+  display: flex;
+  margin-right: 3%;
+  gap: 7px;
+}
+
+.menu-right svg {
+  width: 100%;
+  height: 100%;
+}
+
+#h2DoChat {
+  margin-top: 20%;
+}
+
+.menu h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  margin-left: 5%;
+}
+
+.menu svg {
+  border-radius: 50%;
+}
+
+.principal {
+  width: 100%;
+}
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  overflow-y: auto;
+  height: 90%;
+}
+
+.messages {
+  z-index: 99;
+  flex: 1;
+  width: 100%;
+  margin-top: 10%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.userData {
+  position: fixed;
+  line-height: 1px;
+  margin-top: 90px;
+  margin-left: 3%;
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  border: solid black;
+  padding-left: 7px;
+  padding-right: 7px;
+  border-radius: 10px;
+}
+
+.menu-list {
+  display: none;
+    z-index: 999;
+  position: fixed;
+  margin-top: 89px;
+  right: 0;
+  padding: 5px;
+  margin-right: 20px;
+  line-height: 0.1px;
+  box-shadow: rgb(170, 169, 169) 1px 2px 1px;
+  background: white;
+}
+
+.menu-list_visible {
+  display:initial;
+}
+
+.menu-list .menu-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-list .menu-options p:hover {
+  transform: scale(1.1);
+}
+
+.userData button {
+  width: 35px;
+  height: 35px;
+  border: none;
+  border-radius: 90px;
+  padding: 0;
+  background: transparent;
+}
+
+.userData button svg {
+  width: 100%;
+  height: 100%;
+}
+
+.message {
+  padding: 7px 12px;
+  margin: 6px 0;
+  border-radius: 10px;
+  max-width: 80%;
+  word-wrap: break-word;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.sidebar {
+  position: fixed;
+  left: -100%;
+  width: 30%;
+  height: 100%;
+  background: white;
+  border-right: solid black;
+  padding: 10px;
+  transition: left 0.3s ease;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: self-end; 
+}
+
+.principal.blurred {
+  user-select: none;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+.sidebar h2 {
+  display: flex;
+  align-self: center;
+  gap: 10px;
+}
+
+.sidebar h2 svg {
+ border-radius: 30px;
+ 
+}
+
+.sidebar button {
+  border-radius: 20px;
+  border: none;
+  background: none;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.sideBarTools {
+  display: flex;
+  align-self: center;
+  width: 100%;
+  gap: 10px;
+}
+
+#deleteAllChats svg {
+  width: 100%;
+  height: 100%;
+}
+
+#deleteAllChats:hover {
+  background: red;
+}
+
+#deleteAllChats svg:hover {
+  color: white;
+  fill: #ffffff;
+}
+
+#fecharSideBar {
+  position: relative;
+width: 35px;
+ height: 35px;
+ align-self: self-end;
+ top: -15%;
+}
+
+#svgTechIA {
+  
+}
+
+#fecharSideBar svg {
+  width: 100%;
+  height: 100%;
+}
+
+#new-chat-btn {
+  width: 100%;
+  height: 100%;
+  border: solid black;
+  border-radius: 20px;
+  background: black;
+  color: white;
+}
+
+#chat-list {
+  width: 100%;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Nunito";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 20px;
+  gap: 10px;
+}
+
+#chat-list li {
+  display: flex;
+  width: 90%;
+  list-style: none;
+  border: solid black;
+  justify-content: space-between;
+}
+
+#chat-list li span {
+  width: 70%;
+  font-size: 17px;
+  margin-left: 5%;
+  align-self: center;
+}
+
+#chat-list button {
+  align-self: center;
+  color: white;
+  width: 50px;
+  border-radius: 20px;
+  padding: 2px;
+  background: transparent;
+}
+
+#chat-list button:hover {
+  border-radius: 20px;
+  transform: scale(1.1);
+}
+
+.bot {
+  background: white;
+  color: black;
+  border: transparent;
+  font-weight: bold;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+  align-self: flex-start;
+}
+
+.user {
+  color: black;
+  font-family: "Nunito";
+  border-radius: 10px;
+  font-size: 16px;
+  padding: 0;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#userInput  {
+  flex: 1;
+  padding: 10px;
+  border: solid black 1px;
+  border-radius: 8px;
+  outline: none;
+  font-size: 16px; 
+  width: 100%;
+  resize: none;
+}
+
+#inputs {
+  padding: 11px;
+  background: black;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 30px;
+  color: white;
+  cursor: pointer;
+}
+
+#voiceRecorder {
+  background: white;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 30px;
+  cursor: pointer;
+  border: solid black;
+  display: flex;
+}
+
+#gerarImagem {
+  background: white;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 30px;
+  cursor: pointer;
+  border: none;
+  display: flex;
+}
+
+#gerarImagem svg {
+  width: 100%;
+  height: 100%;
+}
+
+#voiceRecorder img {
+  width: 100%;
+  height: 100%;
+  margin-top: -0.5px;
+}
+
+#voiceRecorder svg {
+  width: 100%;
+  height: 100%;
+}
+
+#inputs svg {
+  fill: white;
+  width: 100%;
+  height: 100%;
+}
+
+#parar {
+  padding: 5px;
+  background: red;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 30px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#parar svg {
+  width: 80%;
+  height: 80%;
+}
+
+#inputs:hover {
+  background: #333;
+  color: white;
+}
+
+#btnHome {
+    padding: 2px;
+}
+
+#auth-container path{
+  background: black;
+  border-radius: 90px;
+}
+
+#auth-container input {
+  padding: 10px;
+  border-radius: 10px;
+}
+
+#interrupt-btn:hover {
+  background-color: red;
+}
+
+#interrupt-btn svg {
+  width: 20px;
+  height: 35px;
+  align-items: center;
+}
+
+img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+@keyframes moverDireita {
+  0% {opacity: 0.2;}
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
+.authText {
+  display: flex;
+  gap: 4px;
+}
+
+.authText span {
+  display: inline-block;
+  animation-name: moverDireita;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+.authText span:nth-child(1) { animation-delay: 0s; }
+.authText span:nth-child(2) { animation-delay: 0.3s; }
+.authText span:nth-child(3) { animation-delay: 0.6s; }
+
+pre code {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  display: block;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.input-area input[type="file"] {
+  display: none;
+}
+
+.input-area label {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.input-area {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  position: fixed;
+  width: 85%;
+  top: 80%;
+  border: solid black 1px;
+  padding: 13px;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 0 5px #888888;
+  z-index: 99;
+}
+
+.menu-right button {
+  background: white;
+  border: solid black;
+  cursor: pointer;
+  color: black;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+
+#imageInput {
+  width: 100%;
+}
+
+.input-area input[type="file"]:focus + label {
+  border: 2px solid #007bff;
+}
+
+.message.user {
+  word-break: break-all;
+  border: solid black;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-end; 
+  text-align: center;
+  margin-right: 3%;
+}
+
+.message.user p {
+  padding: 0;
+}
+
+.message.user svg {
+  width: 20px;
+  height: 20px;
+  background: white;
+  color: black;
+  padding: 2px;
+  border-radius: 20px;
+}
+
+.message.bot {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 85%;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.bot-icon {
+  flex-shrink: 0;
+}
+
+.bot-icon svg {
+  width: 24px;
+  height: 24px;
+  background: white;
+  color: black;
+  border-radius: 20px;
+  padding: 2px;
+}
+
+
+.bot-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  width: 100%;
+}
+
+.message pre, 
+.message code {
+  max-width: 100%;
+  overflow-x: auto;
+  word-break: break-word;
+  white-space: pre-wrap; 
+  box-sizing: border-box;
+}
+
+.authDiv {
+  height: 100%;
+}
+
+ol {
+  display: flex;
+    gap: 20px;
+    flex-direction: column;
+}
+
+#auth-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 15px;
+}
+
+#auth-container input {
+  border: solid black;
+  font-size: 16px;
+  display: flex;
+}
+
+#auth-container svg {
+  border-radius: 30px;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.auth-buttons button {
+  border: solid black;
+  background: black;
+  color: white;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+#toggleSidebar {
+  cursor: pointer;
+  border: transparent;
+  background: transparent;
+  color: black;
+  padding: 0;
+}
+
+#settings {
+  align-items: center;
+  justify-content: center;
+}
+
+
+#darkModeToggleAuth {
+  background: white;
+  border: solid black;
+  cursor: pointer;
+  color: black;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  align-self: center;
+}
+
+#darkModeToggleAuth svg {
+  width: 100%;
+  height: 100%;
+}
+
+body.dark #darkModeToggle {
+  color: white;
+}
+
+.message.bot.bot_ativo {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Nunito';
+  font-weight: normal;
+}
+
+.message.bot.bot_ativo strong {
+  font-weight: bold;
+}
+
+.message.bot.bot_ativo li {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.message.bot svg {
+  width: 20px;
+  height: 20px;
+  background: white;
+  color: black;
+  padding: 2px;
+  border-radius: 20px;
+}
+
+.divisoria {
+  color: black;
+  background: black;
+}
+
+#divisoria {
+  height: 10px;
+  background: black;
+  color: black;
+}
+
+.menu h2 .icon {
+    display: block;
+    width: 40px;
+    height: 40px;
+}
+
+@media screen and (max-width: 768px) {
+  
+body, html {
+  font-family: Arial, sans-serif;
+  background: white;
+  height: 100%;
+  margin: 0;
+}
+
+main {
+  display: flex;
+  height: calc(100vh - 60px);
+  width: 100%;
+}
+
+#h2DoChat {
+  font-size: 22px;
+}
+
+#loginFun,
+#cadastroFun {
+  border: none;
+  background: none;
+  color: black;
+}
+
+.loadingScreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 60px;
+  background: none;
+  z-index: 9999;
+}
+
+.loadingScreen h3 {
+  display: flex;
+  position: relative;
+  bottom: 7%;
+}
+
+.loadingScreen img {
+  background: black;
+  border-radius: 30px;
+  padding: 10px;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  position: fixed;
+  width: 100%;
+  background: white;
+  z-index: 100;
+}
+
+.menu-left {
+  display: flex;
+}
+
+.menu-left button {
+  width: 100%;
+  height: 50px;
+}
+
+.menu-left button svg {
+  width: 100%;
+  height: 100%;
+}
+
+.menu-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.menu-center svg {
+  width: 100%;
+  height: 100%;
+}
+
+.menu-right {
+  flex: 1;
+  display: flex;
+  margin-right: 3%;
+  gap: 8px;
+}
+
+.menu-right svg {
+  width: 100%;
+  height: 100%;
+}
+
+
+.menu h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  margin-left: 5%;
+}
+
+.menu svg {
+  border-radius: 50%;
+}
+
+.principal {
+  width: 100%;
+}
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 30%;
+  width: 100%;
+  align-items: center;
+  overflow-y: auto;
+  height: 68%;
+}
+
+.messages {
+  z-index: 99;
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 80%;
+}
+
+
+.message {
+  padding: 7px 12px;
+  margin: 6px 0;
+  border-radius: 10px;
+  max-width: 80%;
+  word-wrap: break-word;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.sidebar {
+  position: fixed;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: white;
+  border-right: solid black;
+  padding: 10px;
+  transition: left 0.3s ease;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: self-end; 
+}
+
+.principal.blurred {
+  user-select: none;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+.sidebar h2 {
+  display: flex;
+  gap: 10px;
+}
+
+.sidebar h2 svg {
+ border-radius: 30px;
+ 
+}
+
+.sidebar button {
+  border-radius: 20px;
+  border: none;
+  background: none;
+  padding: 2px;
+}
+
+.sideBarTools {
+  display: flex;
+  align-self: center;
+  width: 100%;
+  gap: 10px;
+}
+
+#deleteAllChats svg {
+  width: 100%;
+  height: 100%;
+}
+
+#deleteAllChats:hover {
+  background: red;
+}
+
+#deleteAllChats svg:hover {
+  color: white;
+  fill: #ffffff;
+}
+
+#fecharSideBar {
+margin-top: -15%;
+width: 35px;
+ height: 35px;
+ 
+}
+
+#svgTechIA {
+  
+}
+
+#fecharSideBar svg {
+  width: 100%;
+  height: 100%;
+}
+
+#new-chat-btn {
+  width: 100%;
+  height: 100%;
+  border: solid black;
+  border-radius: 20px;
+  background: black;
+  color: white;
+}
+
+#chat-list {
+  width: 100%;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: "Nunito";
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 20px;
+  gap: 10px;
+}
+
+#chat-list li {
+  display: flex;
+  width: 90%;
+  list-style: none;
+  border: solid black;
+  justify-content: space-between;
+}
+
+#chat-list li span {
+  width: 70%;
+  font-size: 17px;
+  margin-left: 5%;
+  align-self: center;
+}
+
+#chat-list button {
+  align-self: center;
+  color: white;
+  width: 50px;
+  border-radius: 20px;
+  padding: 2px;
+  background: transparent;
+}
+
+#chat-list button:hover {
+  border-radius: 20px;
+  transform: scale(1.1);
+}
+
+.bot {
+  background: white;
+  color: black;
+  border: transparent;
+  font-weight: bold;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+  align-self: flex-start;
+}
+
+.user {
+  color: black;
+  font-family: "Nunito";
+  border-radius: 10px;
+  font-size: 16px;
+  padding: 0px 10px;
+}
+
+#userInput {
+  width: 100%;
+  resize: none;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  border: solid black 1px;
+  border-radius: 8px;
+  outline: none;
+  font-size: 16px;
+}
+
+#inputs {
+  padding: 11px;
+  background: black;
+  align-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 30px;
+  color: white;
+  cursor: pointer;
+}
+
+#inputs svg {
+  fill: white;
+  width: 100%;
+  height: 100%;
+}
+
+#parar {
+  padding: 5px;
+  background: red;
+  border: none;
+  width: 15%;
+  height: 48px;
+  border-radius: 30px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#parar svg {
+  width: 80%;
+  height: 80%;
+}
+
+#inputs:hover {
+  background: #333;
+  color: white;
+}
+
+#btnHome {
+    padding: 2px;
+}
+
+#interrupt-btn {
+  padding: 5px;
+  background: black;
+  border: none;
+  width: 15%;
+  height: 48px;
+  border-radius: 30px;
+  color: white;
+  cursor: pointer;
+  text-align: center;
+}
+
+#auth-container path{
+  background: black;
+  border-radius: 90px;
+}
+
+#interrupt-btn:hover {
+  background-color: red;
+}
+
+#interrupt-btn svg {
+  width: 20px;
+  height: 35px;
+  align-items: center;
+}
+
+img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+@keyframes moverDireita {
+  0% {opacity: 0.2;}
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
+.authText {
+  display: flex;
+  gap: 4px;
+}
+
+.authText span {
+  display: inline-block;
+  animation-name: moverDireita;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+.authText span:nth-child(1) { animation-delay: 0s; }
+.authText span:nth-child(2) { animation-delay: 0.3s; }
+.authText span:nth-child(3) { animation-delay: 0.6s; }
+
+pre code {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  display: block;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.input-area input[type="file"] {
+  display: none;
+}
+
+.input-area label {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.input-area {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  position: fixed;
+  width: 85%;
+  top: 85%;
+  border: solid black 1px;
+  padding: 13px;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 0 5px #888888;
+  z-index: 99;
+}
+
+.menu-right button {
+  background: white;
+  border: solid black;
+  cursor: pointer;
+  color: black;
+  width: 37px;
+  height: 37px;
+  border-radius: 50%;
+}
+
+#imageInput {
+  width: 100%;
+}
+
+.input-area input[type="file"]:focus + label {
+  border: 2px solid #007bff;
+}
+
+.message.user {
+  word-break: break-all;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-end; 
+  text-align: center;
+  margin-right: 3%;
+}
+
+.message.user svg {
+  width: 20px;
+  height: 20px;
+  background: white;
+  color: black;
+  padding: 2px;
+  border-radius: 20px;
+}
+
+.message.bot {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 85%;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.bot-icon {
+  flex-shrink: 0;
+}
+
+.bot-icon svg {
+  width: 24px;
+  height: 24px;
+  background: white;
+  color: black;
+  border-radius: 20px;
+  padding: 2px;
+}
+
+
+.bot-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  width: 100%;
+}
+
+.message pre, 
+.message code {
+  max-width: 100%;
+  overflow-x: auto;
+  word-break: break-word;
+  white-space: pre-wrap; 
+  box-sizing: border-box;
+}
+
+.authDiv {
+  height: 100%;
+}
+
+#auth-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  top: 16%;
+  gap: 15px;
+}
+
+#auth-container input {
+  border: solid black;
+  font-size: 16px;
+  display: flex;
+}
+
+#auth-container svg {
+  border-radius: 30px;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.auth-buttons button {
+  border: solid black;
+  background: black;
+  color: white;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+#toggleSidebar {
+  cursor: pointer;
+  border: transparent;
+  background: transparent;
+  color: black;
+  padding: 0;
+}
+
+#settings {
+  align-items: center;
+  justify-content: center;
+}
+
+
+#darkModeToggleAuth {
+  background: white;
+  border: solid black;
+  cursor: pointer;
+  color: black;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  align-self: center;
+}
+
+#darkModeToggleAuth svg {
+  width: 100%;
+  height: 100%;
+}
+
+body.dark #darkModeToggle {
+  color: white;
+}
+
+.message.bot.bot_ativo {
+  display: flex;
+  flex-direction: column;
+  font-family: 'Nunito';
+  font-weight: normal;
+}
+
+.message.bot.bot_ativo strong {
+  font-weight: bold;
+}
+
+.message.bot.bot_ativo li {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.message.bot svg {
+  width: 20px;
+  height: 20px;
+  background: white;
+  color: black;
+  padding: 2px;
+  border-radius: 20px;
+}
+
+.divisoria {
+  color: black;
+  background: black;
+}
+
+#divisoria {
+  height: 10px;
+  background: black;
+  color: black;
+}
+
+.menu h2 .icon {
+    display: block;
+    width: 40px;
+    height: 40px;
+}
+}

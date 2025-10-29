@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reciclagem Inteligente</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <link rel="stylesheet" href="./mapa.css">
+</head>
+<body>
+     <header>
+    <div class="logo">
+      <img src="../imagens/logo/Logo Black Tech - PNG.png" id="imglogo">
+      <hr id="divisoria">
+  <nav>
+      <a href="../index.html" class="sidebarnav"><img src="../imagens/inicio.png"></a>
+      <a href="mapa.html" class="sidebarnav" id="reciclagem"><img src="../imagens/Reciclagem Icone.png"></a>
+    <a href="../faqs.html" class="sidebarnav" id="contato"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M4 21V19.5C4 16.4624 6.46243 14 9.5 14H12.5C15.5376 14 18 16.4624 18 19.5V21M7 21V18M15 21V18M16.5 6L16.8367 5.49493C17.1969 4.95461 17.9371 4.82782 18.4566 5.21745C19.0073 5.63047 19.0645 6.43549 18.5778 6.92224L17.8536 7.64645C17.6272 7.87282 17.5 8.17986 17.5 8.5M17.5 10V10.2M13.8281 4.89801C14.6435 3.74945 15.9842 3 17.5 3C19.9853 3 22 5.01472 22 7.5C22 9.98528 19.9853 12 17.5 12C16.2549 12 15.1279 11.4943 14.3131 10.6771M15 8.00001C15 5.79086 13.2091 4 11 4C8.79086 4 7 5.79086 7 8.00001C7 10.2092 8.79086 12 11 12C11.8312 12 12.6032 11.7465 13.2429 11.3125C14.3033 10.5931 15 9.37794 15 8.00001Z" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4"/></svg></a>
+      <a href="../techIA/techia.html" class="sidebarnav"><img src="../imagens/techIA icone.png" alt=""></a>
+  </nav>
+    </div>
+  </header>
+
+  <main>
+  <div id="map"></div>
+
+  <div id="divPesquisa">
+
+    <div class="zoomDiv">
+    <button id="zoomInBtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+<path d="M6 12H18M12 6V18" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></button>
+  <button id="zoomOutBtn"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+<path d="M6 12L18 12" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></button>
+  </div>
+
+    <button id="abrirSideBar">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+<path d="M13 5V19M16 8H18M16 11H18M16 14H18M6.2 19H17.8C18.9201 19 19.4802 19 19.908 18.782C20.2843 18.5903 20.5903 18.2843 20.782 17.908C21 17.4802 21 16.9201 21 15.8V8.2C21 7.0799 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V15.8C3 16.9201 3 17.4802 3.21799 17.908C3.40973 18.2843 3.71569 18.5903 4.09202 18.782C4.51984 19 5.07989 19 6.2 19Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+    </button>
+    <input type="search" id="inputEcoPonto">
+    <button id="pesquisaInput">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" width="800px" height="800px" viewBox="0 0 24 24" id="search-alt-3" data-name="Flat Line" class="icon flat-line">
+        <circle id="secondary" cx="10" cy="10" r="7" style="fill: rgb(134, 218, 231); stroke-width: 2;"/>
+        <line id="primary-upstroke" x1="20.5" y1="20.5" x2="17" y2="17" style="fill: none; stroke: gray; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.5;"/>
+        <path id="primary" d="M20,20,15,15M10,3a7,7,0,1,0,7,7A7,7,0,0,0,10,3Z" style="fill: none; stroke: gray; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"/>
+      </svg>
+    </button>
+</div>
+
+  <div id="sidebar">
+    <button id="fecharSidebar">✖</button>
+
+    <h3 id="tituloBairros">Bairros</h3>
+    <div class="buscaBairroDiv">
+      <input type="search" id="inputBairros" placeholder="Pesquise por um bairro">
+      <button id="btnEcopontosProximos"><svg xmlns="http://www.w3.org/2000/svg" version="1.0" viewBox="0 0 300.000000 300.000000" preserveAspectRatio="xMidYMid meet">  <g transform="translate(0.000000,300.000000) scale(0.050000,-0.050000)" fill="#106cf9" stroke="none"> <path d="M2720 5901 c-2452 -260 -3512 -3223 -1772 -4951 1845 -1833 4958 -545 4958 2050 0 1715 -1499 3080 -3186 2901z m220 -408 l0 -307 -165 -12 c-296 -22 -676 -149 -913 -307 -107 -71 -109 -71 -176 -39 -121 57 -239 28 -324 -80 -47 -60 -59 -223 -19 -263 18 -18 4 -49 -57 -129 -278 -366 -431 -741 -460 -1131 l-12 -165 -307 0 c-232 0 -307 6 -307 25 9 1395 1245 2644 2685 2712 l55 3 0 -307z m406 277 c1342 -178 2305 -1197 2444 -2585 l12 -125 -308 0 -308 0 -12 165 c-23 306 -161 704 -331 953 -68 100 -80 130 -63 161 107 201 -121 453 -326 359 -42 -19 -64 -9 -186 82 -299 224 -788 400 -1112 400 l-96 0 0 310 c0 282 3 310 35 310 19 -1 132 -14 251 -30z m129 -760 c194 -45 420 -140 595 -249 252 -158 255 -160 228 -238 -56 -162 97 -338 278 -317 108 12 106 14 232 -216 140 -255 211 -482 249 -795 l16 -135 -305 0 -305 0 -14 115 c-80 657 -617 1194 -1274 1274 l-115 14 0 305 0 305 145 -17 c80 -10 201 -31 270 -46z m-535 -249 l0 -298 -115 -14 c-659 -80 -1194 -615 -1274 -1274 l-14 -115 -298 0 -299 0 0 78 c0 316 183 807 412 1105 l89 115 96 -11 c178 -21 293 81 293 262 l0 100 130 76 c252 147 651 270 885 274 l95 1 0 -299z m-1261 -74 c53 -67 52 -123 -2 -181 -93 -98 -237 -40 -237 96 0 134 156 190 239 85z m2953 -114 c148 -127 -27 -352 -179 -232 -105 83 -42 279 89 279 19 0 60 -21 90 -47z m-1692 -540 l0 -308 -75 -10 c-261 -35 -545 -319 -580 -580 l-10 -75 -309 0 -308 0 12 95 c79 582 538 1070 1093 1163 195 32 177 61 177 -285z m407 255 c505 -124 893 -575 983 -1143 l14 -85 -310 0 -309 0 -13 81 c-43 267 -316 539 -577 574 l-75 10 0 309 0 310 85 -14 c47 -7 138 -26 202 -42z m-407 -958 l0 -270 -270 0 c-267 0 -270 1 -270 45 2 160 228 419 415 475 129 39 125 46 125 -250z m326 217 c150 -78 298 -265 325 -412 l13 -75 -272 0 -272 0 0 272 0 272 74 -13 c41 -8 100 -28 132 -44z m-2446 -703 c0 -325 179 -822 402 -1116 100 -133 102 -137 79 -213 -60 -200 158 -398 339 -308 62 31 65 30 179 -48 252 -172 649 -310 956 -333 l165 -12 0 -307 c0 -255 -5 -307 -29 -307 -1349 0 -2572 1175 -2700 2595 l-13 145 311 0 311 0 0 -96z m731 -19 c80 -657 617 -1194 1274 -1274 l115 -14 0 -305 0 -305 -135 16 c-322 38 -606 132 -877 292 l-142 83 9 100 c18 186 -101 299 -292 276 l-96 -11 -74 98 c-210 282 -343 630 -390 1024 l-16 135 305 0 305 0 14 -115z m734 40 c35 -261 307 -534 574 -577 l81 -13 0 -309 0 -310 -85 14 c-646 100 -1085 539 -1185 1185 l-14 85 310 0 309 0 10 -75z m655 -195 c0 -267 -1 -270 -45 -270 -180 2 -448 259 -486 465 l-13 75 272 0 272 0 0 -270z m660 244 c0 -192 -253 -466 -465 -505 l-75 -13 0 272 0 272 270 0 c210 0 270 -6 270 -26z m740 5 c0 -214 -178 -646 -258 -624 -216 59 -380 -116 -315 -337 26 -86 -299 -237 -622 -288 l-85 -14 0 310 0 309 75 10 c261 35 534 307 577 574 l13 81 308 0 c199 0 307 -7 307 -21z m714 -124 c-83 -967 -1000 -1855 -1916 -1855 l-78 0 0 299 0 299 95 12 c226 29 415 92 591 199 103 61 125 67 220 57 217 -22 369 176 274 354 -16 30 -5 66 48 164 80 146 141 337 161 501 l14 115 301 0 302 0 -12 -145z m737 20 c-153 -1457 -1149 -2453 -2606 -2606 l-125 -13 0 309 0 309 165 12 c986 73 1876 963 1949 1949 l12 165 309 0 309 0 -13 -125z m-1696 -654 c85 -79 75 -167 -26 -233 -132 -87 -273 110 -160 223 59 59 129 63 186 10z m-2430 -644 c75 -100 -27 -241 -151 -210 -109 27 -143 162 -61 243 49 49 164 32 212 -33z"/> </g> </svg></button>
+      <button id="interromperBuscaEcopontos" onclick="abortarEcopontosProximos()" style="display: none;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+
+<path d="M0 0h48v48H0z" fill="none"/>
+<g id="Shopicon">
+	<polygon points="40,5.172 24,21.172 8,5.172 5.171,8 21.172,24 5.171,40 8,42.828 24,26.828 40,42.828 42.829,40 26.828,24    42.829,8  "/>
+</g>
+</svg></button>
+      </div>
+      <p id="feedback-proximidade" style="display: none;">Buscando ecopontos próximos de você...</p>
+    <ul id="listaBairros"></ul>
+  
+    <h3 id="tituloEcopontos">Ecopontos</h3>
+    <ul id="listaEcopontos"></ul>
+  
+    <button id="voltarBtn">Voltar</button>
+  </div>
+
+</main>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="./index.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
