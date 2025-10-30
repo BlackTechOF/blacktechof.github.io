@@ -27,6 +27,10 @@ header {
   margin-top: 5%;
 }
 
+.adminPainel h4 {
+  line-height: 0;
+}
+
 .adminOptions {
   border: solid black;
   border-radius: 10px;
@@ -35,8 +39,28 @@ header {
   justify-content: center;
   align-items: center;
   padding: 8px;
-  gap: 10px;
+  gap: 15px;
   flex-wrap: wrap;
+}
+
+.adminOptions input {
+  padding: 3px;
+  border: solid black;
+  border-radius: 10px;
+}
+
+.adminOptions .roles {
+  display: flex;
+  gap: 15px;
+}
+
+.adminOptions .roles button {
+  width: 35px;
+  height: 35px;
+  padding: 3px;
+  border: solid black;
+  border-radius: 90px;
+  background: none;
 }
 
 .data {
@@ -52,6 +76,10 @@ header {
 .data #dataId {
   display: flex;
   gap: 10px;
+}
+
+.data #dataId #partId {
+  color: orangered;
 }
 
 .data #dataId button{
