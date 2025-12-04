@@ -161,6 +161,8 @@ rolesButtons.forEach(btn => {
                     return;
                 }
 
+                getDados()
+
                 if (email) {
                     alert(`Cargo do usuário ${email} atualizado com sucesso para ${role}`)
                 } else if (idUser) {
@@ -224,6 +226,7 @@ async function deleteOneUser() {
             return;
         }
 
+        getDados()
         alert(`Usuário ${email || userId}, Deletado com sucesso`);
     } catch (error) {
         console.error(error)
@@ -256,6 +259,7 @@ async function removeToken() {
             return alert(data.error);
         }
 
+        getDados()
         alert(data.message);
     } catch (error) {
         console.error(error)
@@ -287,6 +291,7 @@ async function deleteChats() {
             return alert(data.error);
         }
 
+        getDados()
         alert(data.message);
     } catch (error) {
         console.error(error)
@@ -318,6 +323,7 @@ async function banUser() {
             return alert(data.error);
         }
 
+        getDados()
         alert(data.message)
     } catch (error) {
         console.error(error)
@@ -349,6 +355,7 @@ async function unbanUser() {
             return alert(data.error);
         }
 
+        getDados()
         alert(data.message)
     } catch (error) {
         console.error(error)
@@ -380,6 +387,7 @@ async function clearUser() {
             return alert(data.error);
         }
 
+        getDados()
         alert(data.message)
     } catch (error) {
         console.error(error)
@@ -407,7 +415,6 @@ window.onload = async function () {
         window.location.href = 'techia.html'
     }
 }
-
 
 
 
