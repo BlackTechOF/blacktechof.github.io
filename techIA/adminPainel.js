@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://backend-blacktech.onrender.com';
 
 const inputEmail = document.getElementById('userEmailInput')
 const inputId = document.getElementById('userIdInput')
@@ -407,6 +407,7 @@ window.onload = async function () {
         window.location.href = 'techia.html'
     }
 }
+
 
 
 
