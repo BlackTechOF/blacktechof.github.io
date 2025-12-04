@@ -113,4 +113,9 @@ main {
         height: 0;
         width: 300px;
     }
+
+    main {
+        flex-direction: column;
+        gap: 80px;
+    }
 }

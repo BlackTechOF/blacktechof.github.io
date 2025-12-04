@@ -33,6 +33,10 @@ body.dark #feedbackCustom {
   color: black;
 }
 
+body.dark #chat-list button {
+  border: none;
+}
+
 body.dark #feedbackCustom button{
   color: black;
 }

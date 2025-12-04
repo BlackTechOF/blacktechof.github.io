@@ -1,4 +1,4 @@
-const API_URL = 'https://backend-blacktech.onrender.com
+const API_URL = 'https://backend-blacktech.onrender.com';
 
 const tools = document.querySelector('.tools')
 
@@ -260,17 +260,14 @@ async function deleteUser() {
 
 const theme = localStorage.getItem('theme')
 
-if (theme == 'dark') {
-  document.body.classList.add('dark')
-} else {
-  document.body.classList.remove('dark')
-}
+  if (theme == 'dark') {
+    document.body.classList.add('dark')
+  }
 
 setInterval(() => {
   getUserData()
 }, 2000);
   
-
 
 
 
