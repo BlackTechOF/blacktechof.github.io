@@ -3,6 +3,7 @@
     margin: 0;
     box-sizing: border-box;
     color: white;
+    text-shadow: #333 1px 1px 1px;
 }
 
 body {
@@ -109,3 +110,4 @@ button a svg {
         box-shadow: none;
     }
 }
+
