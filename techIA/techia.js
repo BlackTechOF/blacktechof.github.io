@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://backend-blacktech.onrender.com';
 
 let botOcupado = false;
 let intervaloId = null;
@@ -806,6 +806,7 @@ window.techia = {
     interromperResposta,
     deleteAllChats
 };
+
 
 
 
