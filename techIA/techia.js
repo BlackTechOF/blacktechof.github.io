@@ -316,6 +316,8 @@ function logout() {
 
 window.addEventListener("DOMContentLoaded", async () => {
 
+    darkMode()
+
     const input = document.getElementById("userInput");
     if (input) input.addEventListener("keypress", (e) => {
         if (e.key === "Enter") sendMessage();
