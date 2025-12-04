@@ -36,7 +36,7 @@ body.dark #feedbackCustom button{
   color: black;
 }
 
-.menu-list {
+body.dark .menu-list {
   background: #333;
 }
 
