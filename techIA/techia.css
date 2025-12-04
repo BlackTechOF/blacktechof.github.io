@@ -157,6 +157,7 @@ main {
   margin-left: 3%;
   display: flex;
   gap: 7px;
+  background: white;
   align-items: center;
   border: solid black;
   padding-left: 7px;
@@ -1423,4 +1424,5 @@ body.dark #darkModeToggle {
     width: 40px;
     height: 40px;
 }
+
 }
