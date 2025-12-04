@@ -1,45 +1,48 @@
+:root {
+    font-family: 'Inter';
+}
+
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
     color: white;
+    text-shadow: #333 1px 1px 1px;
 }
 
 body {
-    padding: 20px;
-    background: #004aad;
+    padding: 15px;
+    background: green;
 }
 
-:root {
-    font-family: 'Inter';
+.logo {
+display: flex;
+flex-direction: column;
+gap: 3px;
+align-items: center;
+margin-top: 5dvh;
 }
 
-.flexLogo {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    align-items: center;
-}
-
-.flexLogo a {
+.logo a {
     width: 50px;
     height: 50px;
+}
 
-    & svg {
-        width: 100%;
-        height: 100%;
-    }
+.logo a img {
+    width: 100%;
+    height: 100%;
 }
 
 .container {
     display: flex;
-    margin-top: 10dvh;
+    flex-direction: column;
+    margin-top: 5dvh;
 }
 
 .info {
     display: flex;
     flex-direction: column;
-    gap: 50px;
+    gap: 25px;
     align-items: center;
     text-align: center;
 
@@ -51,7 +54,7 @@ body {
         & .box1, .box2 {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         border-radius: 90px;
         padding: 15px;
         max-width: 450px;
@@ -66,37 +69,32 @@ body {
     }
 }
 
+.box1:hover, .box2:hover {
+    transform: scale(1.1);
+    box-shadow: #ffffff 1px 1px 1px;
+}
+
 button {
-    display: flex;
-    gap: 8px;
-    align-items: center;
     border: solid black;
+    border-radius: 20px;
     background: white;
-    border-radius: 10px;
-    font-weight: 700;
-    color: black;
     padding: 5px;
+    color: white;
+    background: #333;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 button:hover {
     transform: scale(1.1);
 }
 
-button a {
-    width: 25px;
-    height: 25px;
-}
-
-button a svg {
-    width: 100%;
+button img {
+    width: 20%;
     height: 100%;
 }
-
-.box1:hover, .box2:hover {
-    transform: scale(1.1);
-    box-shadow: #ffffff 1px 1px 1px;
-}
-
 
 @media screen and (max-width: 768px){
     .boxContainer {

@@ -120,13 +120,13 @@ return `Não`
     const banned = banVerify(data.banned)
 
     tools.innerHTML = `
-    <h3 id='toolsUsername'>Usuário:  ${data.username}</h3>
+    <h3 id='toolsUsername'>${data.username}</h3>
     <p id='userId'>ID: ${data._id}</p>
     <p id='toolBan'>Banido: ${banned}</p>
     <p id='toolsEmail'>Email:  ${data.email}</p>
     <p id='toolsRole'>Permissões: ${data.role}</p>
-    <p id='toolsAvisos'>total de avisos:  ${data.warn}</p>
-    <p id='toolsTotalBan'>Usuário banido  ${data.totalban} vezes</p>
+    <p id='toolsAvisos'>Avisos:  ${data.warn}</p>
+    <p id='toolsTotalBan'>Banido  ${data.totalban} vezes</p>
     <p id='toolsTokens'>Tokens excluidos:  ${data.warn}</p>
     <button id="deleteBtn" onclick="deleteUser()">Deletar Conta</button>
     `
