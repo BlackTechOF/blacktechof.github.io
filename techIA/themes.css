@@ -26,6 +26,20 @@ body.dark #btnHome svg path {
 stroke: #ffffff;
 }
 
+body.dark #feedbackCustom {
+  border: solid black;
+  background: white;
+  color: black;
+}
+
+body.dark #feedbackCustom button{
+  color: black;
+}
+
+.menu-list {
+  background: #333;
+}
+
 body.dark #path1,
 body.dark #path2,
 body.dark #path3 {
