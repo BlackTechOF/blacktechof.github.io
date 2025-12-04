@@ -1,4 +1,4 @@
-const API_URL = 'https://backend-blacktech.onrender.com';
+const API_URL = 'http://localhost:3000';
 
 let botOcupado = false;
 let intervaloId = null;
@@ -40,7 +40,7 @@ function esconderCarregamento() {
 
 async function verifyAdmin() {
     const token = localStorage.getItem('token');
-    const res = await fetch(`${API_URL}/user/get-data-user`, {
+    const res = await fetch(`http://localhost:3000/user/get-data-user`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -63,7 +63,7 @@ async function verifyAdmin() {
 async function verifyText() {
     const texto = input.value;
     const token = localStorage.getItem('token');
-    const res = await fetch(`${API_URL}/status/get-warn`, {
+    const res = await fetch(`http://localhost:3000/status/get-warn`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ async function verifyText() {
 
 async function verifyBan() {
     const token = localStorage.getItem('token')
-    const res = await fetch(`${API_URL}/status/verify-ban`, {
+    const res = await fetch(`http://localhost:3000/status/verify-ban`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -102,7 +102,7 @@ async function verifyBan() {
 async function gerarNovoToken() {
     const token = localStorage.getItem('token')
     const getEmail = localStorage.getItem('userEmail')
-    const res = await fetch(`${API_URL}/auth/novo-token`, {
+    const res = await fetch(`http://localhost:3000/auth/novo-token`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ async function gerarNovoToken() {
         alert('Novo token gerado')
         localStorage.setItem('token', data.token)
 
-        const res = await fetch(`${API_URL}/auth/invalidar-token`, {
+        const res = await fetch(`http://localhost:3000/auth/invalidar-token`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -806,7 +806,6 @@ window.techia = {
     interromperResposta,
     deleteAllChats
 };
-
 
 
 

@@ -1,4 +1,4 @@
-const API_URL = 'https://backend-blacktech.onrender.com';
+const API_URL = 'http://localhost:3000';
 
 const inputEmail = document.getElementById('userEmailInput')
 const inputId = document.getElementById('userIdInput')

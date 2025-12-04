@@ -1,4 +1,4 @@
-const API_URL = 'https://backend-blacktech.onrender.com';
+const API_URL = 'http://localhost:3000';
 
 const tools = document.querySelector('.tools')
 
