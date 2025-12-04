@@ -1,3 +1,10 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family: 'Inter';
+    font-weight: 500;
+}
+
 body {
     padding: 10px;
 }
@@ -8,7 +15,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 5px 30px;
+    padding: 25px 30px;
 }
 
 header h2 {
@@ -38,18 +45,21 @@ header h2 svg {
 
 main {
     display: flex;
-    flex-direction: column;
     gap: 60px;
     align-items: center;
+    margin-top: 5%;
+    justify-content: space-around;
 }
 
-#divisoria {
-    height: 300px;
+.divisoria {
+    width: 500px;
+    background: black;
 }
 
 .updateDataInputs {
     display: flex;
     align-items: center;
+    flex-direction: column;
     gap: 70px;
 }
 
@@ -57,13 +67,41 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 30px;
+}
+
+.updateDataDiv input {
+    padding: 3px;
+    border-radius: 10px;
+    border: solid black;
+}
+
+.updateDataDiv button {
+    padding: 3px;
+    border-radius: 10px;
+    border: solid black;
+    background: white;
 }
 
 .userData {
     display: flex;
     gap: 15px;
     align-items: center;
+}
+
+.tools {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    height: 100dvh;
+    align-items: center;
+}
+
+.tools button {
+    border: solid red;
+    border-radius: 10px;
+    padding: 3px;
+    color: red;
 }
 
 @media screen and (max-width: 768px){

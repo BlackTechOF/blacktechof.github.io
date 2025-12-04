@@ -1,25 +1,11 @@
-async function returnRolesSVg() {
+async function returnRolesSVg(data) {
   const token = localStorage.getItem('token')
 
-  try {
-    const res = await fetch("http://localhost:3000/get-data-user", {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    });
-
-    const data = await res.json()
-
-    if (!res.ok) {
-      return alert(data.error);
-    }
-
-    if (data.role === 'admin') {
+    if (data == 'admin') {
       console.log('Admin')
       return '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" viewBox="0 0 128 128" enable-background="new 0 0 128 128" xml:space="preserve"><path fill="#FFA000" d="M112,36c-6.629,0-12,5.375-12,12c0,1.68,0.352,3.273,0.973,4.727L84,60L69.801,34.445  C73.48,32.391,76,28.508,76,24c0-6.625-5.371-12-12-12s-12,5.375-12,12c0,4.508,2.52,8.391,6.199,10.445L44,60l-16.973-7.273  C27.648,51.273,28,49.68,28,48c0-6.625-5.371-12-12-12S4,41.375,4,48s5.371,12,12,12c0.93,0,1.822-0.133,2.695-0.328L28,100v8  c0,4.422,3.582,8,8,8h56c4.418,0,8-3.578,8-8v-8l9.309-40.328C110.176,59.875,111.07,60,112,60c6.629,0,12-5.375,12-12  S118.629,36,112,36z M64,20c2.207,0,4,1.797,4,4s-1.793,4-4,4s-4-1.797-4-4S61.793,20,64,20z M12,48c0-2.203,1.793-4,4-4  s4,1.797,4,4s-1.793,4-4,4S12,50.203,12,48z M92,108H36v-8h56V108z M93.633,92H34.367L27.34,61.563l13.508,5.789  C41.871,67.789,42.941,68,43.996,68c2.828,0,5.547-1.5,6.996-4.117L64,40.477l13.008,23.406C78.457,66.5,81.176,68,84.004,68  c1.055,0,2.125-0.211,3.148-0.648l13.508-5.789L93.633,92z M112,52c-2.207,0-4-1.797-4-4s1.793-4,4-4s4,1.797,4,4S114.207,52,112,52  z"/></svg>'
     } 
-    else if (data.role === 'tester') {
+    else if (data == 'tester') {
       console.log('Tester')
       return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" version="1.1" id="Layer_1" viewBox="0 0 512 512" xml:space="preserve">
 <g>
@@ -38,10 +24,6 @@ async function returnRolesSVg() {
 <path d="M5 21C5 17.134 8.13401 14 12 14C15.866 14 19 17.134 19 21M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>`;
     }
-} catch (error) {
- console.error(error)
- alert('falha ao carregar permissões do usuario')
-}
 }
 
 
@@ -49,7 +31,7 @@ async function getUserData() {
   const token = localStorage.getItem('token')
 
   try {
-    const res = await fetch("http://localhost:3000/get-data-user", {
+    const res = await fetch(`${API_URL}/user/get-data-user`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -69,7 +51,7 @@ async function getUserData() {
 
     h2DoChat.textContent = `Olá ${data.username}, como posso ajudar?`
 
-    const getRoleSvg = await returnRolesSVg()
+    const getRoleSvg = await returnRolesSVg(data.role)
 
     const userDataDiv = document.querySelector('.userData')
 

@@ -1,12 +1,15 @@
+const API_URL = 'https://backend-blacktech.onrender.com';
+
 const inputEmail = document.getElementById('userEmailInput')
 const inputId = document.getElementById('userIdInput')
 const dataSection = document.querySelector('.data')
 const dataBanSection = document.querySelector('.data-ban')
 const dataOptions = document.querySelector('.dataOptions')
+const btnDeleteUser = document.getElementById('deleteUser');
 
 async function verifyAdmin() {
     const token = localStorage.getItem('token');
-    const res = await fetch('http://localhost:3000/get-data-user', {
+    const res = await fetch(`${API_URL}/user/get-data-user`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -48,7 +51,7 @@ async function getDados() {
                 alert('Preencha o email ou ID antes de atualizar o cargo');
             }
 
-            const res = await fetch('http://localhost:3000/get-dados', {
+            const res = await fetch(`${API_URL}/admin/get-dados`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -63,10 +66,12 @@ async function getDados() {
             }
 
             dataSection.style.display = ''
-            dataBanSection.style.display =''
+            dataBanSection.style.display = ''
 
             const data = await res.json()
-            const rolesvg = await returnRolesSVg()
+
+            console.log(data.role)
+            const rolesvg = await returnRolesSVg(data.role)
 
             dataSection.innerHTML = `
         <p><strong>User:</strong> ${data.username}</p>
@@ -92,7 +97,12 @@ async function getDados() {
              <p><strong>Avisos total:</strong> ${data.warn}</p>
              <p><strong>Tokens total:</strong> ${data.TokenVersion}</p>
              <p><strong>Banimentos:</strong> ${data.totalban}</p>
-
+             
+             <div class='data-ban-btns'>
+             <button id="unban-user" onclick='unbanUser()'>Desbanir</button>
+             <button id="reset-warn" onclick='clearUser()'>Limpar Avisos</button>
+             <button id="ban" onclick='banUser()'>Banir</button>
+             </div>
             `
 
         } catch (error) {
@@ -104,12 +114,6 @@ async function getDados() {
 
 
 const rolesButtons = document.querySelectorAll('#rolesDiv .btnRole');
-
-const roleAdmin = document.getElementById('roleAdmin').value = 'admin'
-
-const roleTester = document.getElementById('roleTester').value = 'tester'
-
-const roleUser = document.getElementById('roleUser').value = 'user'
 
 rolesButtons.forEach(btn => {
     btn.addEventListener('click', async function () {
@@ -140,7 +144,7 @@ rolesButtons.forEach(btn => {
                     body = null
                 }
 
-                const res = await fetch('http://localhost:3000/change-roles', {
+                const res = await fetch(`${API_URL}/admin/change-roles`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -169,7 +173,219 @@ rolesButtons.forEach(btn => {
             }
         }
     })
-})
+});
+
+async function deleteOneUser() {
+    console.log("funcao deleteoneuser chamada")
+    const token = localStorage.getItem('token')
+
+    try {
+
+        const email = document.getElementById('userEmailInput')?.value.trim();
+    const userId = document.getElementById('userIdInput')?.value.trim();
+
+        if (!email && !userId) {
+            alert('Insira um ID ou Email válido!')
+            return;
+        }
+
+        const permitido = await verifyAdmin();
+
+        if (!permitido) {
+            return;
+        }
+
+        let body;
+
+        if (email) {
+            body = { email }
+            console.log('email')
+        } else if (userId) {
+            body = { userId }
+            console.log('id')
+        } else {
+            body = null
+            console.log('nulo')
+        }
+
+        const res = await fetch(`${API_URL}/admin/delete-one-user`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(body)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(`Erro, ${data}`)
+            return;
+        }
+
+        alert(`Usuário ${email || userId}, Deletado com sucesso`);
+    } catch (error) {
+        console.error(error)
+        alert('error 500');
+    }
+}
+
+async function removeToken() {
+    const email = document.getElementById('userEmailInput')?.value.trim();
+    const userId = document.getElementById('userIdInput')?.value.trim();
+    const token = localStorage.getItem('token')
+
+    try {
+        let body;
+
+        body = email? {email} : {userId}
+
+        const res = await fetch(`${API_URL}/admin/remove-token`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`           
+            },
+            body: JSON.stringify( body )
+        });
+
+        const data = await res.json()
+
+        if (!res.ok) {
+            return alert(data.error);
+        }
+
+        alert(data.message);
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+async function deleteChats() {
+    const email = document.getElementById('userEmailInput')?.value.trim();
+    const userId = document.getElementById('userIdInput')?.value.trim();
+    const token = localStorage.getItem('token')
+
+    try {
+        let body;
+
+        body = email ? {email} : {userId}
+
+        const res = await fetch(`${API_URL}/admin/delete-chats`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(body)
+        })
+
+        const data = await res.json()
+
+        if (!res.ok) {
+            return alert(data.error);
+        }
+
+        alert(data.message);
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+async function banUser() {
+    const email = document.getElementById('userEmailInput')?.value.trim();
+    const userId = document.getElementById('userIdInput')?.value.trim();
+    const token = localStorage.getItem('token')
+
+    try {
+        let body;
+
+        body = email ? {email} : {userId}
+
+        const res = await fetch(`${API_URL}/admin/ban-user`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(body)
+        });
+
+        const data = await res.json()
+
+        if (!res.ok) {
+            return alert(data.error);
+        }
+
+        alert(data.message)
+    } catch (error) {
+        console.error(error)
+    }
+};
+
+async function unbanUser() {
+    const email = document.getElementById('userEmailInput')?.value.trim();
+    const userId = document.getElementById('userIdInput')?.value.trim();
+    const token = localStorage.getItem('token')
+
+    try {
+        let body;
+
+        body = email ? {email} : {userId}
+
+        const res = await fetch(`${API_URL}/admin/unban-user`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(body)
+        });
+
+        const data = await res.json()
+
+        if (!res.ok) {
+            return alert(data.error);
+        }
+
+        alert(data.message)
+    } catch (error) {
+        console.error(error)
+    }
+};
+
+async function clearUser() {
+    const email = document.getElementById('userEmailInput')?.value.trim();
+    const userId = document.getElementById('userIdInput')?.value.trim();
+    const token = localStorage.getItem('token')
+
+    try {
+        let body;
+
+        body = email ? {email} : {userId}
+
+        const res = await fetch(`${API_URL}/admin/clear-user`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(body)
+        });
+
+        const data = await res.json()
+
+        if (!res.ok) {
+            return alert(data.error);
+        }
+
+        alert(data.message)
+    } catch (error) {
+        console.error(error)
+    }
+};
+
 inputEmail.addEventListener('keydown', async function (e) {
     if (e.key === 'Enter') {
         await getDados()
@@ -180,26 +396,16 @@ inputId.addEventListener('keydown', async function (e) {
     if (e.key === 'Enter') {
         await getDados()
     }
-})
-
-function optionsSection() {
-    dataOptions.style.display = ''
-    dataSection.style.display = 'none'
-}
-
-function dadosSection() {
-    dataOptions.style.display = 'none'
-    dataSection.style.display = ''
-}
+});
 
 window.onload = async function () {
-  const permitido = await verifyAdmin()
+    const permitido = await verifyAdmin()
 
-  if (permitido) {
-    console.log('Admin detectado')
-  } else {
-    window.location.href = 'techia.html'
-  }
+    if (permitido) {
+        console.log('Admin detectado')
+    } else {
+        window.location.href = 'techia.html'
+    }
 }
 
 

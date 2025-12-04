@@ -1,3 +1,5 @@
+const API_URL = 'https://backend-blacktech.onrender.com';
+
 let botOcupado = false;
 let intervaloId = null;
 let currentAbortController = null;
@@ -12,6 +14,17 @@ const input = document.getElementById("userInput");
 const btnSettings = document.getElementById('settings')
 const menu_list = document.querySelector('.menu-list')
 const option_setting = document.getElementById('option-settings')
+const feedbackCustom = document.getElementById('feedbackCustom')
+
+function borrarTela() {
+    main.style.filter = 'blur(4px)';
+    authContainer.style.filter = 'blur(3.8px)';
+}
+
+function desborrarTela() {
+    main.style.filter = 'none';
+    authContainer.style.filter = 'none';
+}
 
 function telaCarregamento() {
     loadScreen.style.display = '';
@@ -27,7 +40,7 @@ function esconderCarregamento() {
 
 async function verifyAdmin() {
     const token = localStorage.getItem('token');
-    const res = await fetch('http://localhost:3000/get-data-user', {
+    const res = await fetch(`http://localhost:3000/user/get-data-user`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -50,7 +63,7 @@ async function verifyAdmin() {
 async function verifyText() {
     const texto = input.value;
     const token = localStorage.getItem('token');
-    const res = await fetch('http://localhost:3000/get-warn', {
+    const res = await fetch(`http://localhost:3000/status/get-warn`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -70,7 +83,7 @@ async function verifyText() {
 
 async function verifyBan() {
     const token = localStorage.getItem('token')
-    const res = await fetch('http://localhost:3000/verify-ban', {
+    const res = await fetch(`http://localhost:3000/status/verify-ban`, {
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -89,7 +102,7 @@ async function verifyBan() {
 async function gerarNovoToken() {
     const token = localStorage.getItem('token')
     const getEmail = localStorage.getItem('userEmail')
-    const res = await fetch('http://localhost:3000/novo-token', {
+    const res = await fetch(`http://localhost:3000/auth/novo-token`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -105,7 +118,7 @@ async function gerarNovoToken() {
         alert('Novo token gerado')
         localStorage.setItem('token', data.token)
 
-        const res = await fetch('http://localhost:3000/invalidar-token', {
+        const res = await fetch(`http://localhost:3000/auth/invalidar-token`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -146,7 +159,6 @@ const loginFun = document.getElementById('loginFun');
 const cadastroButton = document.getElementById('cadastroBtn');
 const inputUsername = document.getElementById("username");
 const tituloPagLogin = document.getElementById('tituloPagLogin');
-const API_URL = "http://localhost:3000";
 
 async function safeParseResponse(res) {
     const ct = res.headers.get("content-type") || "";
@@ -218,7 +230,7 @@ async function register() {
     telaCarregamento();
 
     try {
-        const res = await fetch(`${API_URL}/auth/register`, {
+        const res = await fetch(`${API_URL}/auth/auth/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, email, password })
@@ -259,7 +271,7 @@ async function login() {
     telaCarregamento();
 
     try {
-        const res = await fetch(`${API_URL}/auth/login`, {
+        const res = await fetch(`${API_URL}/auth/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
@@ -314,9 +326,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         sendMessage();
     });
 
-    const interruptBtn = document.getElementById("interrupt-btn");
-    if (interruptBtn) interruptBtn.addEventListener("click", interromperResposta);
-
     const newChatBtn = document.getElementById("new-chat-btn");
     if (newChatBtn) newChatBtn.addEventListener("click", newChat);
 
@@ -343,31 +352,39 @@ window.addEventListener("DOMContentLoaded", async () => {
         main.style.filter = 'none'
     });
 
-    const token = localStorage.getItem("token");
+        const token = localStorage.getItem('token')
+
     if (!token) return;
 
-    const res = await fetch(`${API_URL}/chatdb/list`, {
-        headers: { "Authorization": "Bearer " + token }
-    });
+    const res = await fetch(`${API_URL}/auth/auto-login`, {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    })
 
-    if (res.ok) {
-        document.getElementById("auth-container").style.display = "none";
+    const data = await res.json()
+
+    if (!res.ok) {
+    return alert(data.error);
+    }
+
+    console.log('Logado automaticamente');
+     document.getElementById("auth-container").style.display = "none";
         document.getElementById("chat-container").style.display = "block";
 
-        await ensureChatExists();
-    } else {
-        alert('Erro ao carregar os Chats do usuário');
-    }
+        await ensureChatExists()
+    
 });
 
 async function ensureChatExists() {
-    const res = await fetch(`${API_URL}/chatdb/list`, {
+    const res = await fetch(`${API_URL}/chat/chatdb/list`, {
         headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
     });
     const chats = await safeParseResponse(res);
 
     if (!Array.isArray(chats) || chats.length === 0) {
-        const newC = await fetch(`${API_URL}/chatdb/new`, {
+        const newC = await fetch(`${API_URL}/chat/chatdb/new`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -393,7 +410,7 @@ async function newChat() {
     if (botOcupado === true) {
         interromperResposta()
     }
-    const res = await fetch(`${API_URL}/chatdb/new`, {
+    const res = await fetch(`${API_URL}/chat/chatdb/new`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -411,12 +428,24 @@ async function newChat() {
 async function loadChats() {
     const banido = await verifyBan()
 
-if (banido) {
-    alert('Voce esta banido da plataforma, entre em contato com nosso suporte')
-    localStorage.removeItem('token')
-    window.location.href = 'techia.html'
-    return;
-}
+    if (banido) {
+        borrarTela()
+        document.querySelector('main').style.display = 'none'
+        feedbackCustom.style.display = ''
+        feedbackCustom.innerHTML = `
+      <h3 style='color: red;'>Voce foi banido!</h3>
+      <p>Voce esta banido da plataforma, em breve sua conta sera deletada</p>
+      <div class='btns' style='display: flex;'>
+      <button id='yes'>Sair</button>
+</div>
+      `
+
+      yes.onclick = () => {
+         localStorage.removeItem('token')
+        window.location.href = 'techia.html'
+      }
+        return;
+    }
 
     const permitido = await verifyAdmin();
 
@@ -425,7 +454,7 @@ if (banido) {
     }
 
     getUserData();
-    const res = await fetch(`${API_URL}/chatdb/list`, {
+    const res = await fetch(`${API_URL}/chat/chatdb/list`, {
         headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
     });
     const chats = await safeParseResponse(res);
@@ -447,7 +476,7 @@ if (banido) {
         delBtn.onclick = async (e) => {
             e.stopPropagation();
             if (!confirm("Excluir este chat?")) return;
-            await fetch(`${API_URL}/chatdb/${c._id}`, {
+            await fetch(`${API_URL}/chat/chatdb/${c._id}`, {
                 method: "DELETE",
                 headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
             });
@@ -464,7 +493,7 @@ if (banido) {
 }
 
 async function loadHistory(chatId) {
-    const res = await fetch(`${API_URL}/chatdb/${chatId}`, {
+    const res = await fetch(`${API_URL}/chat/chatdb/${chatId}`, {
         headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
     });
     const history = await safeParseResponse(res);
@@ -494,10 +523,12 @@ async function loadHistory(chatId) {
     fontPrefs();
 }
 
+let abortada = false
+
 async function saveMessage(role, content) {
     if (!currentChatId) return false;
     try {
-        const res = await fetch(`${API_URL}/chatdb/${currentChatId}/save`, {
+        const res = await fetch(`${API_URL}/chat/chatdb/${currentChatId}/save`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -513,11 +544,31 @@ async function saveMessage(role, content) {
 }
 
 async function sendMessage() {
-    if (botOcupado || !currentChatId) return;
+    if (botOcupado) return;
+
+    if (!currentChatId) {
+       await newChat()
+       return;
+    }
+
     const banido = await verifyBan()
 
     if (banido) {
-        alert('Voce esta banido da plataforma, entre em contato com nosso suporte')
+       borrarTela()
+        document.querySelector('main').style.display = 'none'
+        feedbackCustom.style.display = ''
+        feedbackCustom.innerHTML = `
+      <h3 style='color: red;'>Voce foi banido!</h3>
+      <p>Voce esta banido da plataforma, em breve sua conta sera deletada</p>
+      <div class='btns' style='display: flex;'>
+      <button id='yes'>Sair</button>
+</div>
+      `
+
+      yes.onclick = () => {
+         localStorage.removeItem('token')
+        window.location.href = 'techia.html'
+      }
         return;
     }
     const permitido = await verifyText()
@@ -563,39 +614,45 @@ async function sendMessage() {
             return;
         }
 
-        const res = await fetch(`${API_URL}/chat/${currentChatId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
-            },
-            body: JSON.stringify({ message: userMessage }),
-            signal
-        });
-
-        const data = await safeParseResponse(res);
-        if (!res.ok) throw new Error((data && data.error) || "Erro na resposta do servidor");
-
-        const resposta = data.reply || data.content || data.answer || data.message || "⚠️ Sem resposta";
-
-        botDiv.innerHTML = '';
-        let i = 0;
-        const chunk = 1;
-        const speedMs = 12;
-        intervaloId = setInterval(() => {
-            if (i < resposta.length) {
-                botDiv.innerHTML = marked.parse(resposta.slice(0, i + chunk));
-                i += chunk;
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            } else {
-                clearInterval(intervaloId);
-                intervaloId = null;
-                botOcupado = false;
-                if (btnParar) btnParar.style.display = 'none';
-                if (sendBtn) sendBtn.style.display = '';
+        setTimeout(async () => {
+            if (abortada == true) {
+                console.log('Requisição abortada')
+                return;
             }
-        }, speedMs);
+            const res = await fetch(`${API_URL}/chat/chat/${currentChatId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({ message: userMessage }),
+                signal
+            });
 
+            const data = await safeParseResponse(res);
+            if (!res.ok) throw new Error((data && data.error) || "Erro na resposta do servidor");
+
+            const resposta = data.reply || data.content || data.answer || data.message || "⚠️ Sem resposta";
+
+            botDiv.innerHTML = '';
+            let i = 0;
+            const chunk = 1;
+            const speedMs = 12;
+            intervaloId = setInterval(() => {
+                if (i < resposta.length) {
+                    botDiv.innerHTML = marked.parse(resposta.slice(0, i + chunk));
+                    i += chunk;
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                } else {
+                    clearInterval(intervaloId);
+                    intervaloId = null;
+                    botOcupado = false;
+                    if (btnParar) btnParar.style.display = 'none';
+                    if (sendBtn) sendBtn.style.display = '';
+                }
+            }, speedMs);
+
+        }, 2000)
     } catch (err) {
         if (err.name === 'AbortError') lastBotDiv.textContent = "Resposta interrompida.";
         else lastBotDiv.textContent = "⚠️ Erro na IA.";
@@ -608,22 +665,42 @@ async function sendMessage() {
     }
 }
 
-function interromperResposta() {
+async function interromperResposta() {
+    abortada = true;
     if (intervaloId) { clearInterval(intervaloId); intervaloId = null; }
+
     if (currentAbortController) {
         try { currentAbortController.abort(); } catch (e) { }
         currentAbortController = null;
     }
-    if (lastBotDiv) lastBotDiv.textContent = "Resposta interrompida.";
+
+    if (lastBotDiv) {
+        lastBotDiv.textContent = "Resposta interrompida.";
+        if (currentChatId) {
+            try {
+                await fetch(`${API_URL}/chat/chat/${currentChatId}/last-two`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                });
+            } catch (e) {
+                console.warn("Erro ao salvar resposta interrompida:", e);
+            }
+        }
+    }
+
     botOcupado = false;
     if (btnParar) btnParar.style.display = 'none';
     if (sendBtn) sendBtn.style.display = '';
 }
 
+
 async function deleteAllChats() {
     if (!confirm("Excluir todos os chats?")) return;
     try {
-        const res = await fetch(`${API_URL}/chatdb/all`, {
+        const res = await fetch(`${API_URL}/chat/chatdb/all`, {
             method: "DELETE",
             headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
         });
@@ -656,8 +733,8 @@ recognition.lang = "pt-BR";
 recognition.continuous = false;
 recognition.interimResults = false;
 
-window.addEventListener('keypress', function (e) {
-    if (e.key === '1') {
+window.addEventListener('keydown', function (e) {
+    if (e.ctrlKey && (e.key === 'q' || e.key === 'Q')) {
         recognition.start();
         input.placeholder = "🎤 Ouvindo...";
     }

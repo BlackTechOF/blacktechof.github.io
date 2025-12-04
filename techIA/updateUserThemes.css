@@ -1,0 +1,14 @@
+body.dark {
+    background: #333;
+    color: white;
+}
+
+body.dark header svg g {
+    fill: white;
+}
+
+body.dark .updateDataDiv button {
+    background: #333;
+    border: solid white;
+    color: white;
+}

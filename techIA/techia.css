@@ -7,6 +7,12 @@ body, html {
   margin: 0;
 }
 
+#auth-container {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 main {
   display: flex;
   height: calc(100vh - 60px);
@@ -138,7 +144,7 @@ main {
   z-index: 99;
   flex: 1;
   width: 100%;
-  margin-top: 10%;
+  margin-top: 15%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -147,7 +153,7 @@ main {
 .userData {
   position: fixed;
   line-height: 1px;
-  margin-top: 90px;
+  margin-top: 110px;
   margin-left: 3%;
   display: flex;
   gap: 7px;
@@ -155,6 +161,7 @@ main {
   border: solid black;
   padding-left: 7px;
   padding-right: 7px;
+  z-index: 100;
   border-radius: 10px;
 }
 
@@ -164,11 +171,16 @@ main {
   position: fixed;
   margin-top: 89px;
   right: 0;
-  padding: 5px;
+  padding: 9px;
+  border-radius: 10px;
   margin-right: 20px;
   line-height: 0.1px;
   box-shadow: rgb(170, 169, 169) 1px 2px 1px;
   background: white;
+}
+
+.menu-list p {
+  cursor: pointer;
 }
 
 .menu-list_visible {
@@ -276,7 +288,7 @@ main {
 width: 35px;
  height: 35px;
  align-self: self-end;
- top: -15%;
+ top: -10%;
 }
 
 #svgTechIA {
@@ -313,6 +325,8 @@ width: 35px;
   display: flex;
   width: 90%;
   list-style: none;
+  border-radius: 15px;
+  align-items: center;
   border: solid black;
   justify-content: space-between;
 }
@@ -572,7 +586,7 @@ pre code {
 }
 
 .message.user p {
-  padding: 0;
+  margin: 2px;
 }
 
 .message.user svg {
@@ -741,6 +755,37 @@ body.dark #darkModeToggle {
     display: block;
     width: 40px;
     height: 40px;
+}
+
+#feedbackCustom {
+  position: absolute;
+  width: 25%;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 5px;
+  text-align: center;
+  align-items: center;
+  border: solid black;
+  z-index: 200;
+  background: white;
+  justify-self: center;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow: 1px 2px 2px gray;
+}
+
+#feedbackCustom button {
+  border: solid black;
+  border-radius: 13px;
+  background: white;
+  padding: 8px;
+}
+
+#feedbackCustom .btns {
+  display: flex;
+  gap: 20px;
 }
 
 @media screen and (max-width: 768px) {
@@ -954,14 +999,10 @@ main {
 }
 
 #fecharSideBar {
-margin-top: -15%;
+margin-top: -3%;
 width: 35px;
  height: 35px;
  
-}
-
-#svgTechIA {
-  
 }
 
 #fecharSideBar svg {

@@ -148,6 +148,7 @@ main {
   animation-name: moverDireita;
   animation-duration: 1s;
   animation-iteration-count: infinite;
+  text-align: center;
 }
 
 #map {

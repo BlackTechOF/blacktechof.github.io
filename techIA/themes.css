@@ -11,8 +11,15 @@ body.dark .menu {
 
 body.dark #darkModeToggle svg,
 body.dark #logoutBtn svg, 
-body.dark #settings svg{
+body.dark #settings svg path,
+body.dark #btnAdminPainel svg{
   fill: #ffffff;
+  stroke: #ffffff;
+}
+
+body.dark .userData {
+  border: solid white;
+  color: white;
 }
 
 body.dark #btnHome svg path {

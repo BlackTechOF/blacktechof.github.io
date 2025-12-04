@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atualizar dados de usuário</title>
     <link rel="stylesheet" href="updateUser.css">
+    <link rel="stylesheet" href="updateUserThemes.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Story+Script&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -26,7 +30,7 @@
             </div>
     </header>
 
-    <main>
+    <main class="container">
 
       <div class="updateDataInputs">
         <div id="updateUsername" class='updateDataDiv'>
@@ -36,7 +40,7 @@
          <button id="verificarNome" onclick="updateUsername()">Verificar</button>
     </div>
 
-    <hr id="divisoria">
+    <hr class="divisoria">
 
     <div id="updateEmail" class="updateDataDiv">
     <h3>Atualizar email</h3>
@@ -45,7 +49,7 @@
     <button id="verificarEmail" onclick="updateEmail()">Verificar</button>
     </div>
 
-    <hr id="divisoria">
+    <hr class="divisoria">
 
     <div id="updatePassword" class="updateDataDiv">
     <h3>Atualizar senha do usuário</h3>
@@ -55,10 +59,12 @@
     </div>
 
     </div>
-    </main>
 
-    <button id="deleteBtn" onclick="deleteUser()">Deletar</button>
+    <div class="tools">
 
+    <div class="user_info"></div>
+    </div>
+</main>
 
     <script src="updateUser.js"></script>
 </body>

@@ -1,10 +1,14 @@
+const API_URL = 'https://backend-blacktech.onrender.com';
+
+const tools = document.querySelector('.tools')
+
 async function verificarUsername() {
   const token = localStorage.getItem('token');
   const inputUpdateUsername = document.getElementById('inputUpdateUsername');
   const username = inputUpdateUsername.value.trim();
 
   try {
-    const resVerificar = await fetch('http://localhost:3000/check-username', {
+    const resVerificar = await fetch(`${API_URL}/user/check-username`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,7 +37,7 @@ async function returnRolesSVg() {
   const token = localStorage.getItem('token')
 
   try {
-    const res = await fetch("http://localhost:3000/get-data-user", {
+    const res = await fetch(`${API_URL}/user/get-data-user`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -79,7 +83,7 @@ async function getUserData() {
   const token = localStorage.getItem('token')
 
   try {
-    const res = await fetch("http://localhost:3000/get-data-user", {
+    const res = await fetch(`${API_URL}/user/get-data-user`, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -101,13 +105,37 @@ async function getUserData() {
 
     userDataDiv.innerHTML = `
     <p id='username'>${data.username}</p>
-    <button id='role' onclick='showAdminPainel()'>${getRoleSvg}</button>
+    <button id='role'>${getRoleSvg}</button>
+    `
+
+    function banVerify(banned) {
+
+      if (banned == false) {
+return `Não`
+      } else {
+        return `sim`
+      }
+    }
+
+    const banned = banVerify(data.banned)
+
+    tools.innerHTML = `
+    <h3 id='toolsUsername'>Usuário:  ${data.username}</h3>
+    <p id='userId'>ID: ${data._id}</p>
+    <p id='toolBan'>Banido: ${banned}</p>
+    <p id='toolsEmail'>Email:  ${data.email}</p>
+    <p id='toolsRole'>Permissões: ${data.role}</p>
+    <p id='toolsAvisos'>total de avisos:  ${data.warn}</p>
+    <p id='toolsTotalBan'>Usuário banido  ${data.totalban} vezes</p>
+    <p id='toolsTokens'>Tokens excluidos:  ${data.warn}</p>
+    <button id="deleteBtn" onclick="deleteUser()">Deletar Conta</button>
     `
   } catch (error) {
     console.error(error)
     alert('Erro ao coletar seus dados!', error);
   }
 }
+
    async function updateUsername() {
     const token = localStorage.getItem('token');
   const inputUpdateUsername = document.getElementById('inputUpdateUsername');
@@ -115,7 +143,7 @@ async function getUserData() {
     try {
       const permitido = await verificarUsername(username)
       if (permitido) {
-           const resUpdate = await fetch('http://localhost:3000/user/username', {
+           const resUpdate = await fetch(`${API_URL}/user/user/username`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -149,7 +177,7 @@ async function getUserData() {
     }
 
     try {
-    const res = await fetch("http://localhost:3000/update-email", {
+    const res = await fetch(`${API_URL}/user/update-email`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -176,7 +204,7 @@ async function getUserData() {
     const token = localStorage.getItem('token')
     try {
       const password = document.getElementById('inputUpdatePassword').value;
-      const res = await fetch('http://localhost:3000/updatePassword', {
+      const res = await fetch(`${API_URL}/user/updatePassword`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -203,8 +231,10 @@ async function getUserData() {
 async function deleteUser() {
   const token = localStorage.getItem('token')
 
+  if (!confirm("Voce deseja exlcuir esta conta permanentemente?")) return;
+
   try {
-  const res = await fetch("http://localhost:3000/delete-user", {
+  const res = await fetch(`${API_URL}/user/delete-user`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -228,7 +258,21 @@ async function deleteUser() {
 }
 }
 
-getUserData();
+const theme = localStorage.getItem('theme')
+
+if (theme == 'dark') {
+  document.body.classList.add('dark')
+} else {
+  document.body.classList.remove('dark')
+}
+
+setInterval(() => {
+  getUserData()
+}, 2000);
+  
+
+
+
 
 
 
