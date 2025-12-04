@@ -20,6 +20,7 @@ body.dark #btnAdminPainel svg{
 body.dark .userData {
   border: solid white;
   color: white;
+  background: #333;
 }
 
 body.dark #btnHome svg path {
