@@ -1,185 +1,111 @@
-/* ===== DARK MODE ===== */
-body.dark {
-  background: #121212;
-  color: #f0f0f0;
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    color: white;
 }
 
-body.dark .menu {
-  background: #333;
-  color: rgb(209, 203, 203);
+body {
+    padding: 20px;
+    background: #004aad;
 }
 
-body.dark #darkModeToggle svg,
-body.dark #logoutBtn svg, 
-body.dark #settings svg path,
-body.dark #btnAdminPainel svg{
-  fill: #ffffff;
-  stroke: #ffffff;
+:root {
+    font-family: 'Inter';
 }
 
-body.dark .userData {
-  border: solid white;
-  color: white;
+.flexLogo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
 }
 
-body.dark #btnHome svg path {
-stroke: #ffffff;
+.flexLogo a {
+    width: 50px;
+    height: 50px;
+
+    & svg {
+        width: 100%;
+        height: 100%;
+    }
 }
 
-body.dark #feedbackCustom {
-  border: solid black;
-  background: white;
-  color: black;
+.container {
+    display: flex;
+    margin-top: 10dvh;
 }
 
-body.dark #feedbackCustom button{
-  color: black;
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    align-items: center;
+    text-align: center;
+
+    & .boxContainer {
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+
+        & .box1, .box2 {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        border-radius: 90px;
+        padding: 15px;
+        max-width: 450px;
+        align-items: center;
+        justify-content: center;
+
+        & .modules {
+            display: flex;
+            flex-direction: column;
+        }
+    }
+    }
 }
 
-body.dark .menu-list {
-  background: #333;
+button {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    border: solid black;
+    background: white;
+    border-radius: 10px;
+    font-weight: 700;
+    color: black;
+    padding: 5px;
 }
 
-body.dark #path1,
-body.dark #path2,
-body.dark #path3 {
-  stroke: #ffffff;
+button:hover {
+    transform: scale(1.1);
 }
 
-body.dark .sidebar {
-  background: #333;
+button a {
+    width: 25px;
+    height: 25px;
 }
 
-body.dark #chat-list li{
-   background: #333;
-   color: #e5e0e0;
-   border: solid #e5e0e0;
+button a svg {
+    width: 100%;
+    height: 100%;
 }
 
-body.dark #chat-list li svg {
-  fill: #e5e0e0;
-}
-
-body.dark #deleteAllChats {
-  background: #e5e0e0;
-}
-
-body.dark #new-chat-btn {
-  background: #e5e0e0;
-  color: black;
-  font-weight: bold;
-}
-
-body.dark #fecharSideBar {
-  background: none;
-  border: none;
+.box1:hover, .box2:hover {
+    transform: scale(1.1);
+    box-shadow: #ffffff 1px 1px 1px;
 }
 
 
-body.dark #logoSideBar1,
-body.dark #logoSideBar2 {
-  fill: #FFFFFF;
-}
+@media screen and (max-width: 768px){
+    .boxContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 50px;
+    }
 
-body.dark #pathFecharSideBar1,
-body.dark #pathFecharSideBar2 {
-  fill: #FFFFFF;
-}
-
-body.dark .menu-left svg g {
-  fill: #ffffff;
-}
-
-body.dark #inputs {
-  background: #333;
-  border: solid #e5e0e0;
-}
-
-body.dark #pathSideBar1,
-body.dark #pathSideBar2 {
-  fill: #FFFFFF;
-}
-
-body.dark .menu button {
-  border: solid #e5e0e0;
-}
-
-body.dark .chat-container {
-  background: #121212;
-}
-
-body.dark .messages {
-  background: #121212;
-}
-
-body.dark .message.bot {
-  background: #2a2a2a;
-  border-color: #555;
-  color: #fff;
-}
-
-body.dark .message.user {
-  background: #333;
-  border-color: #555;
-  color: #fff;
-}
-
-body.dark input {
-  background: #555;
-  color: black;
-  border: 2px solid #333;
-}
-
-body.dark button {
-  background: #555;
-  color: #fff;
-  border: solid #555;
-}
-
-body.dark button:hover {
-  background: #333;
-  color: #fff;
-}
-
-body.dark .divisoria {
-  height: 1px;
-  color: white;
-  background: white;
-}
-
-body.dark .input-area {
-  background: #333;
-  border: solid black;
-}
-/* Dark Mode Tela Auth */
-
-body.dark h2 {
-    color: #e5e0e0;
-}
-
-body.dark #auth-container svg g {
-  background: transparent;
-  fill: #e5e0e0;
-}
-
-body.dark #auth-container button {
-  color: white;
-}
-
-body.dark #darkModeToggleAuth {
-  background: #333;
-  border: solid white;
-}
-
-body.dark #darkModeToggleAuth svg {
-  fill: #e5e0e0;
-}
-
-body.dark input {
-  background: #555;
-  color: #e5e5e5;
-}
-
-body.dark input::placeholder {
-  color: #e5e0e0;
+    .box1:hover, .box2:hover {
+        box-shadow: none;
+    }
 }
